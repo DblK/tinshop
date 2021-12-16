@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/dblk/tinshop/utils"
 	"github.com/vmware/go-nfs-client/nfs"
 	"github.com/vmware/go-nfs-client/nfs/rpc"
 	"github.com/vmware/go-nfs-client/nfs/util"
@@ -99,11 +100,11 @@ func lookIntoNfsDirectory(v *nfs.Target, share string, path string) []FileDesc {
 				}
 
 				newFile := FileDesc{size: dir.Size(), path: nfsRootPath + "/" + dir.FileName}
-				names := ExtractGameId(dir.FileName)
+				names := utils.ExtractGameId(dir.FileName)
 
-				if names.ShortId != "" {
-					newFile.gameId = names.ShortId
-					newFile.gameInfo = names.FullId
+				if names.ShortId() != "" {
+					newFile.gameID = names.ShortId()
+					newFile.gameInfo = names.FullId()
 					newFile.hostType = NFSShare
 					newGameFiles = append(newGameFiles, newFile)
 				} else {

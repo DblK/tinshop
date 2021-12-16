@@ -4,13 +4,14 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
+	"github.com/dblk/tinshop/utils"
 	"github.com/gorilla/mux"
 )
 
@@ -30,17 +31,11 @@ const (
 )
 
 type FileDesc struct {
-	gameId   string
+	gameID   string
 	size     int64
 	gameInfo string
 	path     string
 	hostType HostType
-}
-
-type GameId struct {
-	FullId    string
-	ShortId   string
-	Extension string
 }
 
 func main() {
@@ -74,7 +69,7 @@ func main() {
 	var uniqueGames int
 	for _, entry := range Games["titledb"].(map[string]interface{}) {
 		if entry.(map[string]interface{})["iconUrl"] != nil {
-			uniqueGames += 1
+			uniqueGames++
 		}
 	}
 	log.Printf("Total of %d unique games in your library\n", uniqueGames)
@@ -132,11 +127,11 @@ func notAllowed(w http.ResponseWriter, r *http.Request) {
 func loadTitlesLibrary() {
 	// Open our jsonFile
 	jsonFile, err := os.Open("titles.US.en.json")
-	if err != nil {
 
+	if err != nil {
 		if err.Error() == "open titles.US.en.json: no such file or directory" {
 			log.Println("Missing 'titles.US.en.json'! Start downloading it.")
-			downloadErr := DownloadFile("https://github.com/AdamK2003/titledb/releases/download/latest/titles.US.en.json", "titles.US.en.json")
+			downloadErr := utils.DownloadFile("https://github.com/AdamK2003/titledb/releases/download/latest/titles.US.en.json", "titles.US.en.json")
 			if downloadErr != nil {
 				log.Fatalln(err, downloadErr)
 			} else {
@@ -148,13 +143,12 @@ func loadTitlesLibrary() {
 		} else {
 			log.Fatalln(err)
 		}
-
 	}
 	log.Println("Successfully Opened titles library")
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
 
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue, _ := io.ReadAll(jsonFile)
 
 	err = json.Unmarshal([]byte(byteValue), &library)
 	if err != nil {
@@ -191,25 +185,24 @@ func GamesHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	log.Println("Requesting game", vars["game"])
 
-	idx := Search(len(gameFiles), func(index int) bool {
-		return gameFiles[index].gameId == vars["game"]
+	idx := utils.Search(len(gameFiles), func(index int) bool {
+		return gameFiles[index].gameID == vars["game"]
 	})
 
 	if idx == -1 {
 		w.WriteHeader(http.StatusNotFound)
 		log.Printf("Game '%s' not found!", vars["game"])
 		return
-	} else {
-		log.Println(gameFiles[idx].path)
-		switch gameFiles[idx].hostType {
-		case LocalFile:
-			downloadLocalFile(w, r, vars["game"], gameFiles[idx].path)
-		case NFSShare:
-			downloadNfsFile(w, r, gameFiles[idx].path)
+	}
+	log.Println(gameFiles[idx].path)
+	switch gameFiles[idx].hostType {
+	case LocalFile:
+		downloadLocalFile(w, r, vars["game"], gameFiles[idx].path)
+	case NFSShare:
+		downloadNfsFile(w, r, gameFiles[idx].path)
 
-		default:
-			w.WriteHeader(http.StatusNotImplemented)
-			log.Printf("The type '%s' is not implemented to download game", gameFiles[idx].hostType)
-		}
+	default:
+		w.WriteHeader(http.StatusNotImplemented)
+		log.Printf("The type '%s' is not implemented to download game", gameFiles[idx].hostType)
 	}
 }

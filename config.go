@@ -48,15 +48,15 @@ func loadConfig() {
 		// Retrieve current IP
 		host, _ := os.Hostname()
 		addrs, _ := net.LookupIP(host)
-		var myIp = ""
+		var myIP = ""
 		for _, addr := range addrs {
 			if ipv4 := addr.To4(); ipv4 != nil {
-				if myIp == "" {
-					myIp = ipv4.String()
+				if myIP == "" {
+					myIP = ipv4.String()
 				}
 			}
 		}
-		rootShop = rootShop + myIp
+		rootShop = rootShop + myIP
 	} else {
 		rootShop = rootShop + host.(string)
 	}

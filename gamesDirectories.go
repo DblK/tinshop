@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/dblk/tinshop/utils"
 )
 
 var directories []string
@@ -15,7 +17,6 @@ func loadGamesDirectories(singleSource bool) {
 		err := loadGamesDirectory(directory)
 
 		if err != nil {
-
 			if len(directories) == 1 && err.Error() == "lstat ./games: no such file or directory" && singleSource {
 				log.Fatal("You must create a folder 'games' and put your games inside or use config.yml to add sources!")
 			} else {
@@ -36,11 +37,11 @@ func loadGamesDirectory(directory string) error {
 			}
 			if !info.IsDir() {
 				newFile := FileDesc{size: info.Size(), path: path}
-				names := ExtractGameId(path)
+				names := utils.ExtractGameId(path)
 
-				if names.ShortId != "" {
-					newFile.gameId = names.ShortId
-					newFile.gameInfo = names.FullId
+				if names.ShortId() != "" {
+					newFile.gameID = names.ShortId()
+					newFile.gameInfo = names.FullId()
 					newFile.hostType = LocalFile
 					newGameFiles = append(newGameFiles, newFile)
 				} else {

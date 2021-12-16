@@ -1,37 +1,14 @@
-package main
+package utils
 
 import (
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"regexp"
 	"strings"
 
 	"github.com/dustin/go-humanize"
 )
-
-// Extract from fileName the id of game and version
-func ExtractGameId(fileName string) GameId {
-	ext := strings.Split(fileName, ".")
-	re := regexp.MustCompile(`\[(\w{16})\]\[(v\d+)\]`)
-	matches := re.FindStringSubmatch(fileName)
-
-	if len(matches) != 3 {
-		return GameId{}
-	}
-
-	return GameId{ShortId: strings.ToUpper(matches[1]), FullId: "[" + strings.ToUpper(matches[1]) + "][" + matches[2] + "]." + ext[len(ext)-1], Extension: ext[len(ext)-1]}
-}
-
-func Search(length int, f func(index int) bool) int {
-	for index := 0; index < length; index++ {
-		if f(index) {
-			return index
-		}
-	}
-	return -1
-}
 
 type WriteCounter struct {
 	Total uint64
