@@ -6,12 +6,6 @@ import (
 	"net/http"
 )
 
-var shopTemplateData ShopTemplate
-
-type ShopTemplate struct {
-	ShopTitle string
-}
-
 // Middleware to ensure not forged query and real tinfoil client
 func tinfoilMiddleware(next http.Handler) http.Handler {
 	shopTemplate, _ := template.ParseFS(assetData, "assets/shop.tmpl")
@@ -24,14 +18,14 @@ func tinfoilMiddleware(next http.Handler) http.Handler {
 			// No User-Agent for tinfoil app
 			if headers["User-Agent"] != nil {
 				log.Println("[Security] User-Agent detected...")
-				_ = shopTemplate.Execute(w, shopTemplateData)
+				_ = shopTemplate.Execute(w, configServer.ShopTemplateData())
 				return
 			}
 
 			// Be sure all tinfoil headers are present
 			if headers["Theme"] == nil || headers["Uid"] == nil || headers["Version"] == nil || headers["Language"] == nil || headers["Hauth"] == nil || headers["Uauth"] == nil {
 				log.Println("[Security] Missing some expected headers...")
-				_ = shopTemplate.Execute(w, shopTemplateData)
+				_ = shopTemplate.Execute(w, configServer.ShopTemplateData())
 				return
 			}
 

@@ -12,3 +12,16 @@ type GameID interface {
 	ShortID() string
 	Extension() string
 }
+
+type Config interface {
+	RootShop() string
+	DebugNfs() bool
+	Directories() []string
+	NfsShares() []string
+	ShopTitle() string
+	ShopTemplateData() ShopTemplate
+}
+
+type ShopTemplate struct {
+	ShopTitle string
+}

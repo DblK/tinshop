@@ -14,17 +14,14 @@ import (
 	"github.com/vmware/go-nfs-client/nfs/util"
 )
 
-var nfsShares []string
-var debugNfs bool
-
 func loadGamesNfsShares() {
-	for _, share := range nfsShares {
+	for _, share := range configServer.NfsShares() {
 		loadGamesNfs(share)
 	}
 }
 
 func loadGamesNfs(share string) {
-	if debugNfs {
+	if configServer.DebugNfs() {
 		util.DefaultLogger.SetDebug(true)
 	}
 
@@ -118,7 +115,7 @@ func lookIntoNfsDirectory(v *nfs.Target, share, path string) []FileDesc {
 }
 
 func downloadNfsFile(w http.ResponseWriter, r *http.Request, share string) {
-	if debugNfs {
+	if configServer.DebugNfs() {
 		util.DefaultLogger.SetDebug(true)
 	}
 

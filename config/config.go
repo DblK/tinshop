@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"fmt"
@@ -7,11 +7,21 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/dblk/tinshop/repository"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
-func loadConfig() {
+type config struct {
+	rootShop         string
+	debugNfs         bool
+	directories      []string
+	nfsShares        []string
+	shopTitle        string
+	shopTemplateData repository.ShopTemplate
+}
+
+func LoadConfig() repository.Config {
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.SetConfigType("yaml")   // REQUIRED if the config file does not have the extension in the name
 	viper.AddConfigPath(".")      // optionally look for config in the working directory
@@ -31,6 +41,8 @@ func loadConfig() {
 	})
 	viper.WatchConfig()
 
+	serverConfig := &config{}
+
 	// ----------------------------------------------------------
 	// General config
 	// ----------------------------------------------------------
@@ -38,6 +50,7 @@ func loadConfig() {
 	protocol := viper.Get("protocol")
 	port := viper.Get("port")
 
+	var rootShop string
 	if protocol == nil {
 		rootShop = "http"
 	} else {
@@ -65,11 +78,12 @@ func loadConfig() {
 	} else {
 		rootShop += ":" + strconv.Itoa(port.(int))
 	}
+	serverConfig.rootShop = rootShop
 
 	// ----------------------------------------------------------
 	// Debug
 	// ----------------------------------------------------------
-	debugNfs = viper.GetBool("debug.nfs")
+	serverConfig.debugNfs = viper.GetBool("debug.nfs")
 
 	// ----------------------------------------------------------
 	// Sources
@@ -78,26 +92,47 @@ func loadConfig() {
 	cfgDirectories := viper.GetStringSlice("sources.directories")
 	if cfgDirectories == nil {
 		// Default search
-		directories = make([]string, 0)
-		directories = append(directories, "./games")
+		serverConfig.directories = make([]string, 0)
+		serverConfig.directories = append(serverConfig.directories, "./games")
 	} else {
-		directories = cfgDirectories
+		serverConfig.directories = cfgDirectories
 	}
 
 	// NFS
 	cfgNfs := viper.GetStringSlice("sources.nfs")
 	if cfgNfs != nil {
-		nfsShares = cfgNfs
+		serverConfig.nfsShares = cfgNfs
 	}
 
 	// ----------------------------------------------------------
 	// Shop Template
 	// ----------------------------------------------------------
-	shopTitle := viper.GetString("name")
-	if shopTitle == "" {
-		shopTitle = "TinShop"
+	serverConfig.shopTitle = viper.GetString("name")
+	if serverConfig.shopTitle == "" {
+		serverConfig.shopTitle = "TinShop"
 	}
-	shopTemplateData = ShopTemplate{
-		ShopTitle: shopTitle,
+	serverConfig.shopTemplateData = repository.ShopTemplate{
+		ShopTitle: serverConfig.shopTitle,
 	}
+
+	return serverConfig
+}
+
+func (cfg *config) RootShop() string {
+	return cfg.rootShop
+}
+func (cfg *config) DebugNfs() bool {
+	return cfg.debugNfs
+}
+func (cfg *config) Directories() []string {
+	return cfg.directories
+}
+func (cfg *config) NfsShares() []string {
+	return cfg.nfsShares
+}
+func (cfg *config) ShopTemplateData() repository.ShopTemplate {
+	return cfg.shopTemplateData
+}
+func (cfg *config) ShopTitle() string {
+	return cfg.shopTitle
 }
