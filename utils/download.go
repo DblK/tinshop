@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"io"
 	"log"
 	"net/http"
@@ -25,7 +26,7 @@ func (wc *WriteCounter) Write(p []byte) (int, error) {
 func (wc WriteCounter) PrintProgress() {
 	// Clear the line by using a character return to go back to the start and remove
 	// the remaining characters by filling it with spaces
-	log.Printf("\r%s", strings.Repeat(" ", 50))
+	log.Printf("\r%s", strings.Repeat(" ", 50)) //nolint:gomnd
 
 	// Return again and print current status of download
 	// We use the humanize package to print the bytes in a meaningful way (e.g. 10 MB)
@@ -36,8 +37,7 @@ func (wc WriteCounter) PrintProgress() {
 // It writes to the destination file as it downloads it, without
 // loading the entire file into memory.
 // We pass an io.TeeReader into Copy() to report progress on the download.
-func DownloadFile(url string, filepath string) error {
-
+func DownloadFile(url, filepath string) error {
 	// Create the file with .tmp extension, so that we won't overwrite a
 	// file until it's downloaded fully
 	out, err := os.Create(filepath + ".tmp")
@@ -47,7 +47,12 @@ func DownloadFile(url string, filepath string) error {
 	defer out.Close()
 
 	// Get the data
-	resp, err := http.Get(url)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
+	if err != nil {
+		return err
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
 		return err
 	}

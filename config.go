@@ -21,7 +21,7 @@ func loadConfig() {
 			log.Println("Config not found!")
 		} else {
 			// Config file was found but another error was produced
-			panic(fmt.Errorf("Fatal error config file: %w \n", err))
+			panic(fmt.Errorf("fatal error config file: %w", err))
 		}
 	}
 
@@ -43,7 +43,7 @@ func loadConfig() {
 	} else {
 		rootShop = protocol.(string)
 	}
-	rootShop = rootShop + "://"
+	rootShop += "://"
 	if host == nil {
 		// Retrieve current IP
 		host, _ := os.Hostname()
@@ -56,14 +56,14 @@ func loadConfig() {
 				}
 			}
 		}
-		rootShop = rootShop + myIP
+		rootShop += myIP
 	} else {
-		rootShop = rootShop + host.(string)
+		rootShop += host.(string)
 	}
 	if port == nil {
-		rootShop = rootShop + ":3000"
+		rootShop += ":3000"
 	} else {
-		rootShop = rootShop + ":" + strconv.Itoa(port.(int))
+		rootShop += ":" + strconv.Itoa(port.(int))
 	}
 
 	// ----------------------------------------------------------

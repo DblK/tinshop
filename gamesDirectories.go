@@ -37,11 +37,11 @@ func loadGamesDirectory(directory string) error {
 			}
 			if !info.IsDir() {
 				newFile := FileDesc{size: info.Size(), path: path}
-				names := utils.ExtractGameId(path)
+				names := utils.ExtractGameID(path)
 
-				if names.ShortId() != "" {
-					newFile.gameID = names.ShortId()
-					newFile.gameInfo = names.FullId()
+				if names.ShortID() != "" {
+					newFile.gameID = names.ShortID()
+					newFile.gameInfo = names.FullID()
 					newFile.hostType = LocalFile
 					newGameFiles = append(newGameFiles, newFile)
 				} else {
@@ -63,7 +63,7 @@ func loadGamesDirectory(directory string) error {
 	return nil
 }
 
-func downloadLocalFile(w http.ResponseWriter, r *http.Request, game string, path string) {
+func downloadLocalFile(w http.ResponseWriter, r *http.Request, game, path string) {
 	f, err := os.Open(path)
 	if err != nil {
 		http.NotFound(w, r)

@@ -55,7 +55,7 @@ func loadGamesNfs(share string) {
 	}
 }
 
-func nfsConnect(host string, target string) (*nfs.Mount, *nfs.Target) {
+func nfsConnect(host, target string) (*nfs.Mount, *nfs.Target) {
 	mount, err := nfs.DialMount(host)
 	if err != nil {
 		log.Fatalf("unable to dial MOUNT service: %v", err)
@@ -70,7 +70,7 @@ func nfsConnect(host string, target string) (*nfs.Mount, *nfs.Target) {
 	return mount, v
 }
 
-func lookIntoNfsDirectory(v *nfs.Target, share string, path string) []FileDesc {
+func lookIntoNfsDirectory(v *nfs.Target, share, path string) []FileDesc {
 	// Retrieve all directories
 	log.Printf("Retrieving all files in directory ('%s')...\n", path)
 
@@ -96,15 +96,15 @@ func lookIntoNfsDirectory(v *nfs.Target, share string, path string) []FileDesc {
 			} else {
 				nfsRootPath := share
 				if path != "." {
-					nfsRootPath = nfsRootPath + path
+					nfsRootPath += path
 				}
 
 				newFile := FileDesc{size: dir.Size(), path: nfsRootPath + "/" + dir.FileName}
-				names := utils.ExtractGameId(dir.FileName)
+				names := utils.ExtractGameID(dir.FileName)
 
-				if names.ShortId() != "" {
-					newFile.gameID = names.ShortId()
-					newFile.gameInfo = names.FullId()
+				if names.ShortID() != "" {
+					newFile.gameID = names.ShortID()
+					newFile.gameInfo = names.FullID()
 					newFile.hostType = NFSShare
 					newGameFiles = append(newGameFiles, newFile)
 				} else {
@@ -148,7 +148,7 @@ func downloadNfsFile(w http.ResponseWriter, r *http.Request, share string) {
 	// Stats file
 	fsInfo, _, err := v.Lookup(name)
 	if err != nil {
-		log.Fatalf("lookup error: %s", err.Error())
+		log.Fatalf("lookup error: %s", err.Error()) //nolint:gocritic
 	}
 
 	byteRange := strings.Split(strings.Replace(strings.Join(r.Header["Range"], ""), "bytes=", "", -1), "-")

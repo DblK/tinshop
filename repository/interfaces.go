@@ -7,8 +7,8 @@ type GamesSource interface {
 	download(w http.ResponseWriter, r *http.Request, game string, path string)
 }
 
-type GameId interface {
-	FullId() string
-	ShortId() string
+type GameID interface {
+	FullID() string
+	ShortID() string
 	Extension() string
 }

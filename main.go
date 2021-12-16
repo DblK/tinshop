@@ -84,7 +84,7 @@ func main() {
 	<-c
 
 	// Create a deadline to wait for.
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15) //nolint:gomnd
 	defer cancel()
 	// Doesn't block if no connections, but will otherwise wait
 	// until the timeout deadline.
@@ -93,7 +93,7 @@ func main() {
 	// <-ctx.Done() if your application should wait for other services
 	// to finalize based on context cancellation.
 	log.Println("shutting down")
-	os.Exit(0)
+	os.Exit(0) //nolint:gocritic
 }
 
 func initServer() {
@@ -150,7 +150,7 @@ func loadTitlesLibrary() {
 
 	byteValue, _ := io.ReadAll(jsonFile)
 
-	err = json.Unmarshal([]byte(byteValue), &library)
+	err = json.Unmarshal(byteValue, &library)
 	if err != nil {
 		log.Println("Error while loading titles library", err)
 	} else {
