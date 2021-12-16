@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"strings"
 )
 
 func AddNewGames(newGames []FileDesc) {
@@ -10,17 +9,16 @@ func AddNewGames(newGames []FileDesc) {
 	var gameList = make([]interface{}, 0)
 	for _, file := range newGames {
 		game := make(map[string]interface{})
-		game["url"] = rootShop + "/games/" + file.url + "#" + file.gameInfo
+		game["url"] = rootShop + "/games/" + file.gameId + "#" + file.gameInfo
 		game["size"] = file.size
 		gameList = append(gameList, game)
 
-		gameID := strings.ToUpper(file.url)
-		if library[gameID] != nil {
+		if library[file.gameId] != nil {
 			// Verify already present and not update nor dlc
-			if Games["titledb"].(map[string]interface{})[gameID] != nil && library[gameID].(map[string]interface{})["iconUrl"] != nil {
-				log.Println("Already added id!", gameID, file.path)
+			if Games["titledb"].(map[string]interface{})[file.gameId] != nil && library[file.gameId].(map[string]interface{})["iconUrl"] != nil {
+				log.Println("Already added id!", file.gameId, file.path)
 			} else {
-				Games["titledb"].(map[string]interface{})[gameID] = library[gameID]
+				Games["titledb"].(map[string]interface{})[file.gameId] = library[file.gameId]
 			}
 		} else {
 			log.Println("Game not found in database!", file.gameInfo, file.path)

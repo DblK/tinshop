@@ -30,7 +30,7 @@ const (
 )
 
 type FileDesc struct {
-	url      string
+	gameId   string
 	size     int64
 	gameInfo string
 	path     string
@@ -192,7 +192,7 @@ func GamesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Requesting game", vars["game"])
 
 	idx := Search(len(gameFiles), func(index int) bool {
-		return gameFiles[index].url == vars["game"]
+		return gameFiles[index].gameId == vars["game"]
 	})
 
 	if idx == -1 {

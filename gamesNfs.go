@@ -102,7 +102,7 @@ func lookIntoNfsDirectory(v *nfs.Target, share string, path string) []FileDesc {
 				names := ExtractGameId(dir.FileName)
 
 				if names.ShortId != "" {
-					newFile.url = names.ShortId
+					newFile.gameId = names.ShortId
 					newFile.gameInfo = names.FullId
 					newFile.hostType = NFSShare
 					newGameFiles = append(newGameFiles, newFile)

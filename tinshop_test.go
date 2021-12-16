@@ -33,6 +33,13 @@ var _ = Describe("Tinshop", func() {
 				Expect(game.ShortId).To(Equal("01001F201121E800"))
 				Expect(game.FullId).To(Equal("[01001F201121E800][v131072].nsz"))
 			})
+			It("Make upper of Game Id", func() {
+				game := tin.ExtractGameId("Game [01001f201121e800][v131072] (1.58 GB).nsz")
+
+				Expect(game.Extension).To(Equal("nsz"))
+				Expect(game.ShortId).To(Equal("01001F201121E800"))
+				Expect(game.FullId).To(Equal("[01001F201121E800][v131072].nsz"))
+			})
 			It("Group tied with parenthesis group", func() {
 				game := tin.ExtractGameId("Paw Patrol Mighty Pups Save Adventure Bay [01001F201121E800][v131072](1.58 GB).nsz")
 

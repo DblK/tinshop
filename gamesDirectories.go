@@ -39,7 +39,7 @@ func loadGamesDirectory(directory string) error {
 				names := ExtractGameId(path)
 
 				if names.ShortId != "" {
-					newFile.url = names.ShortId
+					newFile.gameId = names.ShortId
 					newFile.gameInfo = names.FullId
 					newFile.hostType = LocalFile
 					newGameFiles = append(newGameFiles, newFile)

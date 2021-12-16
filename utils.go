@@ -21,7 +21,7 @@ func ExtractGameId(fileName string) GameId {
 		return GameId{}
 	}
 
-	return GameId{ShortId: matches[1], FullId: "[" + matches[1] + "][" + matches[2] + "]." + ext[len(ext)-1], Extension: ext[len(ext)-1]}
+	return GameId{ShortId: strings.ToUpper(matches[1]), FullId: "[" + strings.ToUpper(matches[1]) + "][" + matches[2] + "]." + ext[len(ext)-1], Extension: ext[len(ext)-1]}
 }
 
 func Search(length int, f func(index int) bool) int {
