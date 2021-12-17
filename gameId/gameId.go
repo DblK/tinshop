@@ -10,6 +10,7 @@ type gameID struct {
 	extension string
 }
 
+// New create a new GameID
 func New(shortID, fullID, extension string) repository.GameID {
 	return &gameID{
 		fullID:    fullID,

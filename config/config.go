@@ -34,6 +34,7 @@ type config struct {
 
 var serverConfig config
 
+// LoadConfig handles viper under the hood
 func LoadConfig() {
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.SetConfigType("yaml")   // REQUIRED if the config file does not have the extension in the name
@@ -59,6 +60,7 @@ func LoadConfig() {
 	serverConfig = loadAndCompute()
 }
 
+// GetConfig returns the current configuration
 func GetConfig() repository.Config {
 	return &serverConfig
 }

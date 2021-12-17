@@ -2,17 +2,20 @@ package repository
 
 import "net/http"
 
+// GamesSource interface
 type GamesSource interface {
 	load(sources []string)
 	download(w http.ResponseWriter, r *http.Request, game string, path string)
 }
 
+// GameID interface
 type GameID interface {
 	FullID() string
 	ShortID() string
 	Extension() string
 }
 
+// Config interface
 type Config interface {
 	RootShop() string
 	SetRootShop(string)
@@ -28,6 +31,7 @@ type Config interface {
 	SetShopTemplateData(ShopTemplate)
 }
 
+// ShopTemplate contains all variables used for shop template
 type ShopTemplate struct {
 	ShopTitle string
 }

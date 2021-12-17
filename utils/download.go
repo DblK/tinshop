@@ -11,11 +11,11 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-type WriteCounter struct {
+type writeCounter struct {
 	Total uint64
 }
 
-func (wc *WriteCounter) Write(p []byte) (int, error) {
+func (wc *writeCounter) Write(p []byte) (int, error) {
 	n := len(p)
 	wc.Total += uint64(n)
 	wc.PrintProgress()
@@ -23,7 +23,7 @@ func (wc *WriteCounter) Write(p []byte) (int, error) {
 }
 
 // PrintProgress prints the progress of a file write
-func (wc WriteCounter) PrintProgress() {
+func (wc writeCounter) PrintProgress() {
 	// Clear the line by using a character return to go back to the start and remove
 	// the remaining characters by filling it with spaces
 	log.Printf("\r%s", strings.Repeat(" ", 50)) //nolint:gomnd
@@ -59,7 +59,7 @@ func DownloadFile(url, filepath string) error {
 	defer resp.Body.Close()
 
 	// Create our bytes counter and pass it to be used alongside our writer
-	counter := &WriteCounter{}
+	counter := &writeCounter{}
 	_, err = io.Copy(out, io.TeeReader(resp.Body, counter))
 	if err != nil {
 		return err

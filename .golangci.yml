@@ -133,6 +133,8 @@ issues:
       text: "SA1019: lsc.Errcheck.Exclude is deprecated: use ExcludeFunctions instead"
     - path: pkg/commands/run.go
       text: "SA1019: e.cfg.Run.Deadline is deprecated: Deadline exists for historical compatibility and should not be used."
+  include:
+    - EXC0002
 
 run:
   timeout: 5m

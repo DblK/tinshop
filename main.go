@@ -166,7 +166,7 @@ func initGamesCollection() {
 	Games["files"] = make([]interface{}, 0)
 }
 
-// Handle list of games
+// HomeHandler handles list of games
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	jsonResponse, jsonError := json.Marshal(Games)
 
@@ -180,7 +180,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(jsonResponse)
 }
 
-// Handle downloading games
+// GamesHandler handles downloading games
 func GamesHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	log.Println("Requesting game", vars["game"])

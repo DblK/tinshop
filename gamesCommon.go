@@ -6,6 +6,7 @@ import (
 	"github.com/dblk/tinshop/config"
 )
 
+// AddNewGames increase the games available in the shop
 func AddNewGames(newGames []FileDesc) {
 	log.Printf("\n\nAdd new games...\n")
 	var gameList = make([]interface{}, 0)

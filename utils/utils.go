@@ -21,6 +21,7 @@ func ExtractGameID(fileName string) repository.GameID {
 	return gameid.New(strings.ToUpper(matches[1]), "["+strings.ToUpper(matches[1])+"]["+matches[2]+"]."+ext[len(ext)-1], ext[len(ext)-1])
 }
 
+// Search returns the index in an object
 func Search(length int, f func(index int) bool) int {
 	for index := 0; index < length; index++ {
 		if f(index) {
