@@ -34,7 +34,7 @@ type config struct {
 
 var serverConfig config
 
-func LoadConfig() repository.Config {
+func LoadConfig() {
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.SetConfigType("yaml")   // REQUIRED if the config file does not have the extension in the name
 	viper.AddConfigPath(".")      // optionally look for config in the working directory
@@ -51,22 +51,23 @@ func LoadConfig() repository.Config {
 	}
 
 	viper.OnConfigChange(func(e fsnotify.Event) {
-		fmt.Println("Config file changed:", e.Name)
+		log.Println("Config file changed, update new configuration...")
 		serverConfig = loadAndCompute()
 	})
 	viper.WatchConfig()
 
-	serverConfig := loadAndCompute()
+	serverConfig = loadAndCompute()
+}
 
+func GetConfig() repository.Config {
 	return &serverConfig
 }
 
 func loadAndCompute() config {
+	err := viper.Unmarshal(&serverConfig)
 
-	eee := viper.Unmarshal(&serverConfig)
-
-	if eee != nil {
-		fmt.Println(eee)
+	if err != nil {
+		log.Fatalln(err)
 	}
 	computeDefaultValues(&serverConfig)
 
@@ -106,10 +107,6 @@ func computeDefaultValues(config repository.Config) repository.Config {
 		rootShop += ":" + strconv.Itoa(config.Port())
 	}
 	config.SetRootShop(rootShop)
-
-	fmt.Println(config.Directories())
-	fmt.Println(config.NfsShares())
-	fmt.Println(len(config.NfsShares()))
 
 	config.SetShopTemplateData(repository.ShopTemplate{
 		ShopTitle: config.ShopTitle(),

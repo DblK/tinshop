@@ -1,23 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
 
+	"github.com/dblk/tinshop/config"
 	"github.com/dblk/tinshop/utils"
 )
 
 func loadGamesDirectories(singleSource bool) {
-	for _, directory := range configServer.Directories() {
+	for _, directory := range config.GetConfig().Directories() {
 		err := loadGamesDirectory(directory)
 
 		if err != nil {
-			fmt.Println(err.Error())
-			if len(configServer.Directories()) == 1 && err.Error() == "lstat ./games: no such file or directory" && singleSource {
+			if len(config.GetConfig().Directories()) == 1 && err.Error() == "lstat ./games: no such file or directory" && singleSource {
 				log.Fatal("You must create a folder 'games' and put your games inside or use config.yml to add sources!")
 			} else {
 				log.Println(err)

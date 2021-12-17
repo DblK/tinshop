@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+
+	"github.com/dblk/tinshop/config"
 )
 
 func AddNewGames(newGames []FileDesc) {
@@ -9,7 +11,7 @@ func AddNewGames(newGames []FileDesc) {
 	var gameList = make([]interface{}, 0)
 	for _, file := range newGames {
 		game := make(map[string]interface{})
-		game["url"] = configServer.RootShop() + "/games/" + file.gameID + "#" + file.gameInfo
+		game["url"] = config.GetConfig().RootShop() + "/games/" + file.gameID + "#" + file.gameInfo
 		game["size"] = file.size
 		gameList = append(gameList, game)
 

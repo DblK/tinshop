@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/dblk/tinshop/config"
-	"github.com/dblk/tinshop/repository"
 	"github.com/dblk/tinshop/utils"
 	"github.com/gorilla/mux"
 )
@@ -38,8 +37,6 @@ type FileDesc struct {
 	path     string
 	hostType HostType
 }
-
-var configServer repository.Config
 
 func main() {
 	initServer()
@@ -76,7 +73,7 @@ func main() {
 		}
 	}
 	log.Printf("Total of %d unique games in your library\n", uniqueGames)
-	log.Printf("Tinshop available at %s !\n", configServer.RootShop())
+	log.Printf("Tinshop available at %s !\n", config.GetConfig().RootShop())
 
 	c := make(chan os.Signal, 1)
 	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
@@ -101,7 +98,7 @@ func main() {
 
 func initServer() {
 	// Loading config
-	configServer = config.LoadConfig()
+	config.LoadConfig()
 
 	// Load JSON library
 	loadTitlesLibrary()
@@ -109,7 +106,7 @@ func initServer() {
 	// Load Games
 	gameFiles = make([]FileDesc, 0)
 	initGamesCollection()
-	loadGamesDirectories(len(configServer.NfsShares()) == 0)
+	loadGamesDirectories(len(config.GetConfig().NfsShares()) == 0)
 	loadGamesNfsShares()
 }
 

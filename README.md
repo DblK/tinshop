@@ -40,6 +40,7 @@ Here is the list of all main features so far:
 - [X] Serve from several mounted directories
 - [X] Serve from several network directories (Using NFS)
 - [X] Display a webpage for forbidden devices
+- [X] Auto-refresh configuration on file change
 
 # Dev or build from source
 
