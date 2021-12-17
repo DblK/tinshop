@@ -23,6 +23,13 @@ var _ = Describe("ExtractGameId", func() {
 			Expect(game.ShortID()).To(Equal("01001F201121E800"))
 			Expect(game.FullID()).To(Equal("[01001F201121E800][v131072].nsz"))
 		})
+		It("Should only take interesting part", func() {
+			game := utils.ExtractGameID("Luigi’s Mansion 3 [Luigi’s Mansion 3 Multiplayer Pack 1][0100DCA0064A7001][US][v131072].nsp")
+
+			Expect(game.Extension()).To(Equal("nsp"))
+			Expect(game.ShortID()).To(Equal("0100DCA0064A7001"))
+			Expect(game.FullID()).To(Equal("[0100DCA0064A7001][v131072].nsp"))
+		})
 		It("Group tied with parenthesis group", func() {
 			game := utils.ExtractGameID("Paw Patrol Mighty Pups Save Adventure Bay [01001F201121E800][v131072](1.58 GB).nsz")
 

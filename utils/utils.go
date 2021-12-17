@@ -11,7 +11,7 @@ import (
 // ExtractGameID from fileName the id of game and version
 func ExtractGameID(fileName string) repository.GameID {
 	ext := strings.Split(fileName, ".")
-	re := regexp.MustCompile(`\[(\w{16})\]\[(v\d+)\]`)
+	re := regexp.MustCompile(`\[(\w{16})\].*\[(v\d+)\]`)
 	matches := re.FindStringSubmatch(fileName)
 
 	if len(matches) != 3 {
