@@ -15,11 +15,17 @@ type GameID interface {
 
 type Config interface {
 	RootShop() string
+	SetRootShop(string)
+	Host() string
+	Protocol() string
+	Port() int
+
 	DebugNfs() bool
 	Directories() []string
 	NfsShares() []string
 	ShopTitle() string
 	ShopTemplateData() ShopTemplate
+	SetShopTemplateData(ShopTemplate)
 }
 
 type ShopTemplate struct {

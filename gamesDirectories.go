@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -15,6 +16,7 @@ func loadGamesDirectories(singleSource bool) {
 		err := loadGamesDirectory(directory)
 
 		if err != nil {
+			fmt.Println(err.Error())
 			if len(configServer.Directories()) == 1 && err.Error() == "lstat ./games: no such file or directory" && singleSource {
 				log.Fatal("You must create a folder 'games' and put your games inside or use config.yml to add sources!")
 			} else {

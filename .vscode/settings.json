@@ -34,6 +34,7 @@
         "interfacer",
         "logrus",
         "logutils",
+        "mitchellh",
         "nakedret",
         "nestif",
         "noctx",

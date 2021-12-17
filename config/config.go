@@ -12,19 +12,34 @@ import (
 	"github.com/spf13/viper"
 )
 
+type sources struct {
+	Directories []string
+	Nfs         []string
+}
+
+type debug struct {
+	Nfs bool
+}
+
 type config struct {
 	rootShop         string
-	debugNfs         bool
-	directories      []string
-	nfsShares        []string
-	shopTitle        string
+	ShopHost         string  `mapstructure:"host"`
+	ShopProtocol     string  `mapstructure:"protocol"`
+	ShopPort         int     `mapstructure:"port"`
+	Debug            debug   `mapstructure:"debug"`
+	Sources          sources `mapstructure:"sources"`
+	Name             string  `mapstructure:"name"`
 	shopTemplateData repository.ShopTemplate
 }
+
+var serverConfig config
 
 func LoadConfig() repository.Config {
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.SetConfigType("yaml")   // REQUIRED if the config file does not have the extension in the name
 	viper.AddConfigPath(".")      // optionally look for config in the working directory
+	viper.SetDefault("sources.directories", "./games")
+
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			// Config file not found; ignore error if desired
@@ -37,27 +52,39 @@ func LoadConfig() repository.Config {
 
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		fmt.Println("Config file changed:", e.Name)
-		// TODO: Reload config on change
+		serverConfig = loadAndCompute()
 	})
 	viper.WatchConfig()
 
-	serverConfig := &config{}
+	serverConfig := loadAndCompute()
 
-	// ----------------------------------------------------------
-	// General config
-	// ----------------------------------------------------------
-	host := viper.Get("host")
-	protocol := viper.Get("protocol")
-	port := viper.Get("port")
+	return &serverConfig
+}
 
+func loadAndCompute() config {
+
+	eee := viper.Unmarshal(&serverConfig)
+
+	if eee != nil {
+		fmt.Println(eee)
+	}
+	computeDefaultValues(&serverConfig)
+
+	return serverConfig
+}
+
+func computeDefaultValues(config repository.Config) repository.Config {
+	// ----------------------------------------------------------
+	// Compute rootShop url
+	// ----------------------------------------------------------
 	var rootShop string
-	if protocol == nil {
+	if config.Protocol() == "" {
 		rootShop = "http"
 	} else {
-		rootShop = protocol.(string)
+		rootShop = config.Protocol()
 	}
 	rootShop += "://"
-	if host == nil {
+	if config.Host() == "" {
 		// Retrieve current IP
 		host, _ := os.Hostname()
 		addrs, _ := net.LookupIP(host)
@@ -71,68 +98,57 @@ func LoadConfig() repository.Config {
 		}
 		rootShop += myIP
 	} else {
-		rootShop += host.(string)
+		rootShop += config.Host()
 	}
-	if port == nil {
+	if config.Port() == 0 {
 		rootShop += ":3000"
 	} else {
-		rootShop += ":" + strconv.Itoa(port.(int))
+		rootShop += ":" + strconv.Itoa(config.Port())
 	}
-	serverConfig.rootShop = rootShop
+	config.SetRootShop(rootShop)
 
-	// ----------------------------------------------------------
-	// Debug
-	// ----------------------------------------------------------
-	serverConfig.debugNfs = viper.GetBool("debug.nfs")
+	fmt.Println(config.Directories())
+	fmt.Println(config.NfsShares())
+	fmt.Println(len(config.NfsShares()))
 
-	// ----------------------------------------------------------
-	// Sources
-	// ----------------------------------------------------------
-	// Directories
-	cfgDirectories := viper.GetStringSlice("sources.directories")
-	if cfgDirectories == nil {
-		// Default search
-		serverConfig.directories = make([]string, 0)
-		serverConfig.directories = append(serverConfig.directories, "./games")
-	} else {
-		serverConfig.directories = cfgDirectories
-	}
+	config.SetShopTemplateData(repository.ShopTemplate{
+		ShopTitle: config.ShopTitle(),
+	})
 
-	// NFS
-	cfgNfs := viper.GetStringSlice("sources.nfs")
-	if cfgNfs != nil {
-		serverConfig.nfsShares = cfgNfs
-	}
+	return config
+}
 
-	// ----------------------------------------------------------
-	// Shop Template
-	// ----------------------------------------------------------
-	serverConfig.shopTitle = viper.GetString("name")
-	if serverConfig.shopTitle == "" {
-		serverConfig.shopTitle = "TinShop"
-	}
-	serverConfig.shopTemplateData = repository.ShopTemplate{
-		ShopTitle: serverConfig.shopTitle,
-	}
-
-	return serverConfig
+func (cfg *config) SetRootShop(root string) {
+	cfg.rootShop = root
 }
 
 func (cfg *config) RootShop() string {
 	return cfg.rootShop
 }
+func (cfg *config) Protocol() string {
+	return cfg.ShopProtocol
+}
+func (cfg *config) Host() string {
+	return cfg.ShopHost
+}
+func (cfg *config) Port() int {
+	return cfg.ShopPort
+}
 func (cfg *config) DebugNfs() bool {
-	return cfg.debugNfs
+	return cfg.Debug.Nfs
 }
 func (cfg *config) Directories() []string {
-	return cfg.directories
+	return cfg.Sources.Directories
 }
 func (cfg *config) NfsShares() []string {
-	return cfg.nfsShares
+	return cfg.Sources.Nfs
 }
 func (cfg *config) ShopTemplateData() repository.ShopTemplate {
 	return cfg.shopTemplateData
 }
+func (cfg *config) SetShopTemplateData(data repository.ShopTemplate) {
+	cfg.shopTemplateData = data
+}
 func (cfg *config) ShopTitle() string {
-	return cfg.shopTitle
+	return cfg.Name
 }
