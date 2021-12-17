@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/dblk/tinshop/config"
+	collection "github.com/dblk/tinshop/gamescollection"
+	"github.com/dblk/tinshop/repository"
 	"github.com/dblk/tinshop/utils"
 )
 
@@ -27,7 +29,7 @@ func loadGamesDirectories(singleSource bool) {
 
 func loadGamesDirectory(directory string) error {
 	log.Printf("Loading games from directory '%s'...\n", directory)
-	var newGameFiles []FileDesc
+	var newGameFiles []repository.FileDesc
 	// Walk through games directory
 	err := filepath.Walk(directory,
 		func(path string, info os.FileInfo, err error) error {
@@ -35,13 +37,13 @@ func loadGamesDirectory(directory string) error {
 				return err
 			}
 			if !info.IsDir() {
-				newFile := FileDesc{size: info.Size(), path: path}
+				newFile := repository.FileDesc{Size: info.Size(), Path: path}
 				names := utils.ExtractGameID(path)
 
 				if names.ShortID() != "" {
-					newFile.gameID = names.ShortID()
-					newFile.gameInfo = names.FullID()
-					newFile.hostType = LocalFile
+					newFile.GameID = names.ShortID()
+					newFile.GameInfo = names.FullID()
+					newFile.HostType = repository.LocalFile
 					newGameFiles = append(newGameFiles, newFile)
 				} else {
 					log.Println("Ignoring file because parsing failed", path)
@@ -56,7 +58,7 @@ func loadGamesDirectory(directory string) error {
 
 	// Add all files
 	if len(newGameFiles) > 0 {
-		AddNewGames(newGameFiles)
+		collection.AddNewGames(newGameFiles)
 	}
 
 	return nil

@@ -35,3 +35,27 @@ type Config interface {
 type ShopTemplate struct {
 	ShopTitle string
 }
+
+// HostType new typed string
+type HostType string
+
+const (
+	LocalFile HostType = "localFile"
+	NFSShare  HostType = "NFS"
+)
+
+// FileDesc structure
+type FileDesc struct {
+	GameID   string
+	Size     int64
+	GameInfo string
+	Path     string
+	HostType HostType
+}
+
+// GameType structure
+type GameType struct {
+	Success string                            `json:"success"`
+	Titledb map[string]map[string]interface{} `json:"titledb"`
+	Files   []interface{}                     `json:"files"`
+}

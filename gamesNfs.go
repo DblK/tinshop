@@ -9,6 +9,8 @@ import (
 	"strings"
 
 	"github.com/dblk/tinshop/config"
+	collection "github.com/dblk/tinshop/gamescollection"
+	"github.com/dblk/tinshop/repository"
 	"github.com/dblk/tinshop/utils"
 	"github.com/vmware/go-nfs-client/nfs"
 	"github.com/vmware/go-nfs-client/nfs/rpc"
@@ -49,7 +51,7 @@ func loadGamesNfs(share string) {
 
 	// Add all files
 	if len(nfsGames) > 0 {
-		AddNewGames(nfsGames)
+		collection.AddNewGames(nfsGames)
 	}
 }
 
@@ -68,7 +70,7 @@ func nfsConnect(host, target string) (*nfs.Mount, *nfs.Target) {
 	return mount, v
 }
 
-func lookIntoNfsDirectory(v *nfs.Target, share, path string) []FileDesc {
+func lookIntoNfsDirectory(v *nfs.Target, share, path string) []repository.FileDesc {
 	// Retrieve all directories
 	log.Printf("Retrieving all files in directory ('%s')...\n", path)
 
@@ -78,7 +80,7 @@ func lookIntoNfsDirectory(v *nfs.Target, share, path string) []FileDesc {
 		return nil
 	}
 
-	var newGameFiles []FileDesc
+	var newGameFiles []repository.FileDesc
 
 	for _, dir := range dirs {
 		if dir.FileName != "." && dir.FileName != ".." {
@@ -97,13 +99,13 @@ func lookIntoNfsDirectory(v *nfs.Target, share, path string) []FileDesc {
 					nfsRootPath += path
 				}
 
-				newFile := FileDesc{size: dir.Size(), path: nfsRootPath + "/" + dir.FileName}
+				newFile := repository.FileDesc{Size: dir.Size(), Path: nfsRootPath + "/" + dir.FileName}
 				names := utils.ExtractGameID(dir.FileName)
 
 				if names.ShortID() != "" {
-					newFile.gameID = names.ShortID()
-					newFile.gameInfo = names.FullID()
-					newFile.hostType = NFSShare
+					newFile.GameID = names.ShortID()
+					newFile.GameInfo = names.FullID()
+					newFile.HostType = repository.NFSShare
 					newGameFiles = append(newGameFiles, newFile)
 				} else {
 					log.Println("Ignoring file because parsing failed", dir.FileName)
