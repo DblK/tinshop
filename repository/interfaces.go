@@ -24,6 +24,7 @@ type Config interface {
 	Port() int
 
 	DebugNfs() bool
+	DebugNoSecurity() bool
 	Directories() []string
 	NfsShares() []string
 	ShopTitle() string
@@ -40,8 +41,10 @@ type ShopTemplate struct {
 type HostType string
 
 const (
+	// LocalFile Describe local directory file
 	LocalFile HostType = "localFile"
-	NFSShare  HostType = "NFS"
+	// NFSShare Describe nfs directory file
+	NFSShare HostType = "NFS"
 )
 
 // FileDesc structure

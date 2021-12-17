@@ -18,7 +18,8 @@ type sources struct {
 }
 
 type debug struct {
-	Nfs bool
+	Nfs        bool
+	NoSecurity bool
 }
 
 type config struct {
@@ -135,6 +136,9 @@ func (cfg *config) Port() int {
 }
 func (cfg *config) DebugNfs() bool {
 	return cfg.Debug.Nfs
+}
+func (cfg *config) DebugNoSecurity() bool {
+	return cfg.Debug.NoSecurity
 }
 func (cfg *config) Directories() []string {
 	return cfg.Sources.Directories

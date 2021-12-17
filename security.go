@@ -16,6 +16,11 @@ func tinfoilMiddleware(next http.Handler) http.Handler {
 		// Verify all headers
 		headers := r.Header
 
+		if config.GetConfig().DebugNoSecurity() {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		if r.RequestURI == "/" {
 			// No User-Agent for tinfoil app
 			if headers["User-Agent"] != nil {
