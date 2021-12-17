@@ -1,4 +1,4 @@
-package main
+package sources
 
 import (
 	"fmt"
@@ -17,8 +17,8 @@ import (
 	"github.com/vmware/go-nfs-client/nfs/util"
 )
 
-func loadGamesNfsShares() {
-	for _, share := range config.GetConfig().NfsShares() {
+func loadGamesNfsShares(shares []string) {
+	for _, share := range shares {
 		loadGamesNfs(share)
 	}
 }

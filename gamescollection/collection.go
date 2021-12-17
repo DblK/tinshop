@@ -95,7 +95,7 @@ func CountGames() int {
 
 // AddNewGames increase the games available in the shop
 func AddNewGames(newGames []repository.FileDesc) {
-	log.Printf("\n\nAdd new games...\n")
+	log.Println("Add new games...")
 	var gameList = make([]interface{}, 0)
 
 	for _, file := range newGames {

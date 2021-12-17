@@ -12,11 +12,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-type sources struct {
-	Directories []string
-	Nfs         []string
-}
-
 type debug struct {
 	Nfs        bool
 	NoSecurity bool
@@ -24,12 +19,12 @@ type debug struct {
 
 type config struct {
 	rootShop         string
-	ShopHost         string  `mapstructure:"host"`
-	ShopProtocol     string  `mapstructure:"protocol"`
-	ShopPort         int     `mapstructure:"port"`
-	Debug            debug   `mapstructure:"debug"`
-	Sources          sources `mapstructure:"sources"`
-	Name             string  `mapstructure:"name"`
+	ShopHost         string             `mapstructure:"host"`
+	ShopProtocol     string             `mapstructure:"protocol"`
+	ShopPort         int                `mapstructure:"port"`
+	Debug            debug              `mapstructure:"debug"`
+	AllSources       repository.Sources `mapstructure:"sources"`
+	Name             string             `mapstructure:"name"`
 	shopTemplateData repository.ShopTemplate
 }
 
@@ -141,10 +136,13 @@ func (cfg *config) DebugNoSecurity() bool {
 	return cfg.Debug.NoSecurity
 }
 func (cfg *config) Directories() []string {
-	return cfg.Sources.Directories
+	return cfg.AllSources.Directories
 }
 func (cfg *config) NfsShares() []string {
-	return cfg.Sources.Nfs
+	return cfg.AllSources.Nfs
+}
+func (cfg *config) Sources() repository.Sources {
+	return cfg.AllSources
 }
 func (cfg *config) ShopTemplateData() repository.ShopTemplate {
 	return cfg.shopTemplateData

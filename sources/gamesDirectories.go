@@ -1,4 +1,4 @@
-package main
+package sources
 
 import (
 	"log"
@@ -7,18 +7,17 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/dblk/tinshop/config"
 	collection "github.com/dblk/tinshop/gamescollection"
 	"github.com/dblk/tinshop/repository"
 	"github.com/dblk/tinshop/utils"
 )
 
-func loadGamesDirectories(singleSource bool) {
-	for _, directory := range config.GetConfig().Directories() {
+func loadGamesDirectories(directories []string, singleSource bool) {
+	for _, directory := range directories {
 		err := loadGamesDirectory(directory)
 
 		if err != nil {
-			if len(config.GetConfig().Directories()) == 1 && err.Error() == "lstat ./games: no such file or directory" && singleSource {
+			if len(directories) == 1 && err.Error() == "lstat ./games: no such file or directory" && singleSource {
 				log.Fatal("You must create a folder 'games' and put your games inside or use config.yml to add sources!")
 			} else {
 				log.Println(err)

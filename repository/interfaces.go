@@ -1,18 +1,16 @@
 package repository
 
-import "net/http"
-
-// GamesSource interface
-type GamesSource interface {
-	load(sources []string)
-	download(w http.ResponseWriter, r *http.Request, game string, path string)
-}
-
 // GameID interface
 type GameID interface {
 	FullID() string
 	ShortID() string
 	Extension() string
+}
+
+// Sources describe all sources type handled
+type Sources struct {
+	Directories []string
+	Nfs         []string
 }
 
 // Config interface
@@ -25,6 +23,7 @@ type Config interface {
 
 	DebugNfs() bool
 	DebugNoSecurity() bool
+	Sources() Sources
 	Directories() []string
 	NfsShares() []string
 	ShopTitle() string

@@ -12,12 +12,9 @@ import (
 
 	"github.com/dblk/tinshop/config"
 	collection "github.com/dblk/tinshop/gamescollection"
-	"github.com/dblk/tinshop/repository"
-	"github.com/dblk/tinshop/utils"
+	"github.com/dblk/tinshop/sources"
 	"github.com/gorilla/mux"
 )
-
-var gameFiles []repository.FileDesc
 
 //go:embed assets/*
 var assetData embed.FS
@@ -82,10 +79,8 @@ func initServer() {
 	// Load collection
 	collection.Load()
 
-	// Load Games
-	gameFiles = make([]repository.FileDesc, 0)
-	loadGamesDirectories(len(config.GetConfig().NfsShares()) == 0)
-	loadGamesNfsShares()
+	// Load Games from sources
+	sources.Load(config.GetConfig().Sources())
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
@@ -121,24 +116,5 @@ func GamesHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	log.Println("Requesting game", vars["game"])
 
-	idx := utils.Search(len(gameFiles), func(index int) bool {
-		return gameFiles[index].GameID == vars["game"]
-	})
-
-	if idx == -1 {
-		w.WriteHeader(http.StatusNotFound)
-		log.Printf("Game '%s' not found!", vars["game"])
-		return
-	}
-	log.Println(gameFiles[idx].Path)
-	switch gameFiles[idx].HostType {
-	case repository.LocalFile:
-		downloadLocalFile(w, r, vars["game"], gameFiles[idx].Path)
-	case repository.NFSShare:
-		downloadNfsFile(w, r, gameFiles[idx].Path)
-
-	default:
-		w.WriteHeader(http.StatusNotImplemented)
-		log.Printf("The type '%s' is not implemented to download game", gameFiles[idx].HostType)
-	}
+	sources.DownloadGame(vars["game"], w, r)
 }
