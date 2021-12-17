@@ -47,7 +47,7 @@ func DownloadFile(url, filepath string) error {
 	defer out.Close()
 
 	// Get the data
-	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, http.NoBody)
 	if err != nil {
 		return err
 	}
