@@ -58,6 +58,10 @@ Here is the command `goreleaser release --snapshot --skip-publish --rm-dist`.
 
 Dead simple, thanks to Golang!
 
+## Changing the structure of an interface?
+
+If you change an interface (or add a new one), do not forget to execute `./update_mocks.sh` to generate up-to-date mocks for tests.
+
 # Roadmap
 
 You can see the [roadmap here](https://github.com/DblK/tinshop/projects/1).

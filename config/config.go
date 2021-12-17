@@ -83,12 +83,13 @@ func loadAndCompute() config {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	computeDefaultValues(&serverConfig)
+	ComputeDefaultValues(&serverConfig)
 
 	return serverConfig
 }
 
-func computeDefaultValues(config repository.Config) repository.Config {
+// ComputeDefaultValues change the value taken from the config file
+func ComputeDefaultValues(config repository.Config) repository.Config {
 	// ----------------------------------------------------------
 	// Compute rootShop url
 	// ----------------------------------------------------------
@@ -117,7 +118,7 @@ func computeDefaultValues(config repository.Config) repository.Config {
 	}
 	if config.Port() == 0 {
 		rootShop += ":3000"
-	} else {
+	} else if !(config.Port() == 443 && config.Protocol() == "https") && !(config.Port() == 80 && config.Protocol() == "http") {
 		rootShop += ":" + strconv.Itoa(config.Port())
 	}
 	config.SetRootShop(rootShop)
