@@ -73,14 +73,13 @@ func main() {
 }
 
 func initServer() {
-	// Loading config
-	config.LoadConfig()
-
 	// Load collection
 	collection.Load()
 
-	// Load Games from sources
-	sources.Load(config.GetConfig().Sources())
+	// Loading config
+	config.HookOnSource(collection.Reset)
+	config.HookOnSource(sources.Load)
+	config.LoadConfig()
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {

@@ -9,8 +9,8 @@ type GameID interface {
 
 // Sources describe all sources type handled
 type Sources struct {
-	Directories []string
-	Nfs         []string
+	Directories []string `mapstructure:"directories"`
+	Nfs         []string `mapstructure:"nfs"`
 }
 
 // Config interface

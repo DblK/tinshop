@@ -62,6 +62,11 @@ func initGamesCollection() {
 	games.Files = make([]interface{}, 0)
 }
 
+// Reset the collection of files
+func Reset(src repository.Sources) {
+	initGamesCollection()
+}
+
 // Library returns the titledb library
 func Library() map[string]map[string]interface{} {
 	return library

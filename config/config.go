@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"reflect"
 	"strconv"
 
 	"github.com/dblk/tinshop/repository"
@@ -29,6 +30,7 @@ type config struct {
 }
 
 var serverConfig config
+var allHooks []func(repository.Sources)
 
 // LoadConfig handles viper under the hood
 func LoadConfig() {
@@ -36,6 +38,7 @@ func LoadConfig() {
 	viper.SetConfigType("yaml")   // REQUIRED if the config file does not have the extension in the name
 	viper.AddConfigPath(".")      // optionally look for config in the working directory
 	viper.SetDefault("sources.directories", "./games")
+	viper.SetDefault("sources.nfs", "") // FIXME: Hack for issue viper
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
@@ -49,11 +52,24 @@ func LoadConfig() {
 
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		log.Println("Config file changed, update new configuration...")
-		serverConfig = loadAndCompute()
+		configChange()
 	})
 	viper.WatchConfig()
 
+	configChange()
+}
+
+func configChange() {
 	serverConfig = loadAndCompute()
+	// FIXME: Hack if nfs array become empty
+	if reflect.TypeOf(viper.AllSettings()["sources"].(map[string]interface{})["nfs"]).String() == "string" {
+		serverConfig.AllSources.Nfs = make([]string, 0)
+	}
+
+	// Call all hooks
+	for _, hook := range allHooks {
+		hook(serverConfig.AllSources)
+	}
 }
 
 // GetConfig returns the current configuration
@@ -111,6 +127,11 @@ func computeDefaultValues(config repository.Config) repository.Config {
 	})
 
 	return config
+}
+
+// HookOnSource Add hook function on change sources
+func HookOnSource(f func(repository.Sources)) {
+	allHooks = append(allHooks, f)
 }
 
 func (cfg *config) SetRootShop(root string) {
