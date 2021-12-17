@@ -53,7 +53,7 @@ func loadGamesDirectory(directory string) error {
 	if err != nil {
 		return err
 	}
-	gameFiles = append(gameFiles, newGameFiles...)
+	AddFiles(newGameFiles)
 
 	// Add all files
 	if len(newGameFiles) > 0 {

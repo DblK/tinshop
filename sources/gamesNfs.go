@@ -47,7 +47,7 @@ func loadGamesNfs(share string) {
 	nfsGames := lookIntoNfsDirectory(v, share, ".")
 
 	mount.Close()
-	gameFiles = append(gameFiles, nfsGames...)
+	AddFiles(nfsGames)
 
 	// Add all files
 	if len(nfsGames) > 0 {

@@ -22,6 +22,11 @@ func GetFiles() []repository.FileDesc {
 	return gameFiles
 }
 
+// AddFiles add files to global sources
+func AddFiles(files []repository.FileDesc) {
+	gameFiles = append(gameFiles, files...)
+}
+
 // DownloadGame method provide the file based on the source storage
 func DownloadGame(gameID string, w http.ResponseWriter, r *http.Request) {
 	idx := utils.Search(len(GetFiles()), func(index int) bool {
