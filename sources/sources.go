@@ -39,7 +39,7 @@ func DownloadGame(gameID string, w http.ResponseWriter, r *http.Request) {
 		log.Printf("Game '%s' not found!", gameID)
 		return
 	}
-	log.Println(GetFiles()[idx].Path)
+	log.Println("Retrieving from location '" + GetFiles()[idx].Path + "'")
 	switch GetFiles()[idx].HostType {
 	case repository.LocalFile:
 		downloadLocalFile(w, r, gameID, GetFiles()[idx].Path)
