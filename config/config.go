@@ -138,6 +138,7 @@ func HookOnSource(f func(repository.Sources)) {
 	allHooks = append(allHooks, f)
 }
 
+// SetRootShop allow to change the root url of the shop
 func (cfg *File) SetRootShop(root string) {
 	cfg.rootShop = root
 }
@@ -177,7 +178,7 @@ func (cfg *File) Directories() []string {
 	return cfg.AllSources.Directories
 }
 
-// DebugNfs returns the list of nfs sources
+// NfsShares returns the list of nfs sources
 func (cfg *File) NfsShares() []string {
 	return cfg.AllSources.Nfs
 }
