@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"path/filepath"
+	"sync"
 
 	"github.com/dblk/tinshop/repository"
 	"github.com/dblk/tinshop/utils"
@@ -69,53 +69,50 @@ func DownloadGame(gameID string, w http.ResponseWriter, r *http.Request) {
 
 func watchDirectory(directory string) {
 	fmt.Println("Watching directory", directory)
-	test := filepath.Clean(directory)
-	fmt.Println(test)
 
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer watcher.Close()
-
+	initWG := sync.WaitGroup{}
+	initWG.Add(1)
 	go func() {
-		for {
-			select {
-			case event, ok := <-watcher.Events:
-				if !ok {
-					// fmt.Println("Channel is closed!")
+		watcher, err := fsnotify.NewWatcher()
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer watcher.Close()
+
+		eventsWG := sync.WaitGroup{}
+		eventsWG.Add(1)
+		go func() {
+			for {
+				select {
+				case event, ok := <-watcher.Events:
+					if !ok { // 'Events' channel is closed
+						eventsWG.Done()
+						return
+					}
+					const writeOrCreateMask = fsnotify.Write | fsnotify.Create
+					if event.Op&writeOrCreateMask != 0 {
+						fmt.Println("Changes", event)
+					} else if event.Op&fsnotify.Remove != 0 {
+						fmt.Println("Remove file")
+						eventsWG.Done()
+						return
+					} else if event.Op&fsnotify.Rename == fsnotify.Rename {
+						log.Printf("Rename: %s: %s", event.Op, event.Name)
+					}
+
+				case err, ok := <-watcher.Errors:
+					if ok { // 'Errors' channel is not closed
+						log.Printf("watcher error: %v\n", err)
+					}
+					eventsWG.Done()
 					return
 				}
-				fmt.Println("New event!")
-				if event.Name != "" {
-					fmt.Println(event.Name)
-				}
-				if event.Op.String() != "" {
-					fmt.Println(event.Op.String())
-				}
-				switch {
-				case event.Op&fsnotify.Write == fsnotify.Write:
-					log.Printf("Write:  %s: %s", event.Op, event.Name)
-				case event.Op&fsnotify.Create == fsnotify.Create:
-					log.Printf("Create: %s: %s", event.Op, event.Name)
-				case event.Op&fsnotify.Remove == fsnotify.Remove:
-					log.Printf("Remove: %s: %s", event.Op, event.Name)
-				case event.Op&fsnotify.Rename == fsnotify.Rename:
-					log.Printf("Rename: %s: %s", event.Op, event.Name)
-				case event.Op&fsnotify.Chmod == fsnotify.Chmod:
-					log.Printf("Chmod:  %s: %s", event.Op, event.Name)
-				}
-			case err := <-watcher.Errors:
-				if err != nil {
-					log.Println("watcher error:", err)
-				}
 			}
-		}
+		}()
+		watcher.Add(directory)
+		initWG.Done()   // done initializing the watch in this go routine, so the parent routine can move on...
+		eventsWG.Wait() // now, wait for event loop to end in this go-routine...
 	}()
-
-	err = watcher.Add(directory + "/")
-	if err != nil {
-		log.Fatal(err)
-	}
+	initWG.Wait() // make sure that the go routine above fully ended before returning
 	fmt.Println("end of watch function")
 }
