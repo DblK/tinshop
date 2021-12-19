@@ -137,7 +137,7 @@ issues:
     - EXC0002
 
 run:
-  timeout: 5m
+  timeout: 10m
   skip-dirs:
     - test/testdata_etc
     - internal/cache
