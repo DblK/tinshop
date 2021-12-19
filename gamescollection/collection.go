@@ -12,6 +12,7 @@ import (
 	"github.com/dblk/tinshop/repository"
 	"github.com/dblk/tinshop/utils"
 )
+
 var library map[string]map[string]interface{}
 var mergedLibrary map[string]interface{}
 var games repository.GameType

@@ -71,10 +71,10 @@ type GameType struct {
 // CustomDBEntry describe the various fields for entries
 type CustomDBEntry struct {
 	ID          string `mapstructure:"id" json:"id"`
-	Name        string`mapstructure:"name" json:"name"`
-	Region      string`mapstructure:"region" json:"region"`
-	Size        int`mapstructure:"size" json:"size"`
-	ReleaseDate int `mapstructure:"releaseDate" json:"releaseDate"`
-	Description string`mapstructure:"description" json:"description"`
+	Name        string `mapstructure:"name" json:"name"`
+	Region      string `mapstructure:"region" json:"region"`
+	Size        int    `mapstructure:"size" json:"size"`
+	ReleaseDate int    `mapstructure:"releaseDate" json:"releaseDate"`
+	Description string `mapstructure:"description" json:"description"`
 	IconURL     string `mapstructure:"iconUrl" json:"iconUrl"`
 }
