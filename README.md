@@ -6,7 +6,7 @@
     Your own personal shop right into tinfoil!
 </p>
 
-[![Actions Status](https://github.com/dblk/tinshop/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/dblk/tinshop/actions)
+[![golangci-lint](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml/badge.svg?event=release)](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml)
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/dblk/tinshop.svg)](https://github.com/dblk/tinshop)
 [![GoDoc reference example](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/dblk/tinshop/v0.0.1)
 [![GoReportCard example](https://goreportcard.com/badge/github.com/dblk/tinshop)](https://goreportcard.com/report/github.com/dblk/tinshop)
