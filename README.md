@@ -8,7 +8,7 @@
 
 [![golangci-lint](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml/badge.svg?event=release)](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml)
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/dblk/tinshop.svg)](https://github.com/dblk/tinshop)
-[![GoDoc reference example](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/dblk/tinshop/v0.0.3)
+[![GoDoc reference example](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/dblk/tinshop/v0.0.4)
 [![GoReportCard example](https://goreportcard.com/badge/github.com/dblk/tinshop)](https://goreportcard.com/report/github.com/dblk/tinshop)
 [![GitHub release](https://img.shields.io/github/release/dblk/tinshop.svg)](https://GitHub.com/dblk/tinshop/releases/)
 
@@ -44,6 +44,7 @@ Here is the list of all main features so far:
 - [X] Add the possibility to whitelist or blacklist a switch
 - [X] Add the possibility to ban theme
 - [X] You can specify custom titledb to be merged with official one
+- [X] Auto-watch for mounted directories
 
 # Dev or build from source
 
@@ -105,9 +106,7 @@ For other type of protection, you can whitelist your own switch and this will do
 ## I have tons of missing title displayed in `tinfoil`, what should I do?
 
 First, download and replace the latest [`titles.US.en.json`](https://github.com/AdamK2003/titledb/releases/download/latest/titles.US.en.json) available (or delete it, it will be automatically downloaded at startup).  
-If this does not solve your issue, then you should use custom titledb entry (__*__) to describe those which are missing.
-
-__*__ Feature not yet implemented!
+If this does not solve your issue, then you should use custom titledb entry to describe those which are missing.
 
 # Credits
 
