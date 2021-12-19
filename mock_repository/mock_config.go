@@ -34,6 +34,20 @@ func (m *MockConfig) EXPECT() *MockConfigMockRecorder {
 	return m.recorder
 }
 
+// CustomDB mocks base method.
+func (m *MockConfig) CustomDB() map[string]repository.CustomDBEntry {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CustomDB")
+	ret0, _ := ret[0].(map[string]repository.CustomDBEntry)
+	return ret0
+}
+
+// CustomDB indicates an expected call of CustomDB.
+func (mr *MockConfigMockRecorder) CustomDB() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CustomDB", reflect.TypeOf((*MockConfig)(nil).CustomDB))
+}
+
 // DebugNfs mocks base method.
 func (m *MockConfig) DebugNfs() bool {
 	m.ctrl.T.Helper()
