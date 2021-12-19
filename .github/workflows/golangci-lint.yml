@@ -30,6 +30,7 @@ jobs:
 
           # Optional: golangci-lint command line arguments.
           # args: --issues-exit-code=0
+          args: ./... # According to https://github.com/golangci/golangci-lint/issues/825#issuecomment-629696537
 
           # Optional: show only new issues if it's a pull request. The default value is `false`.
           # only-new-issues: true
