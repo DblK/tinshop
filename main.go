@@ -79,6 +79,7 @@ func initServer() {
 	// Loading config
 	config.AddHook(collection.OnConfigUpdate)
 	config.AddHook(sources.OnConfigUpdate)
+	config.AddBeforeHook(sources.BeforeConfigUpdate)
 	config.LoadConfig()
 }
 
