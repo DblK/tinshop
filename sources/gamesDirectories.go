@@ -36,16 +36,19 @@ func loadGamesDirectory(directory string) error {
 				return err
 			}
 			if !info.IsDir() {
-				newFile := repository.FileDesc{Size: info.Size(), Path: path}
-				names := utils.ExtractGameID(path)
+				extension := filepath.Ext(info.Name())
+				if extension == ".nsp" || extension == ".nsz" {
+					newFile := repository.FileDesc{Size: info.Size(), Path: path}
+					names := utils.ExtractGameID(path)
 
-				if names.ShortID() != "" {
-					newFile.GameID = names.ShortID()
-					newFile.GameInfo = names.FullID()
-					newFile.HostType = repository.LocalFile
-					newGameFiles = append(newGameFiles, newFile)
-				} else {
-					log.Println("Ignoring file because parsing failed", path)
+					if names.ShortID() != "" {
+						newFile.GameID = names.ShortID()
+						newFile.GameInfo = names.FullID()
+						newFile.HostType = repository.LocalFile
+						newGameFiles = append(newGameFiles, newFile)
+					} else {
+						log.Println("Ignoring file because parsing failed", path)
+					}
 				}
 			}
 			return nil
