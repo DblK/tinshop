@@ -63,6 +63,7 @@ func initGamesCollection() {
 	games.Success = "Welcome to your own shop!"
 	games.Titledb = make(map[string]interface{})
 	games.Files = make([]interface{}, 0)
+	games.ThemeBlackList = nil
 }
 
 // OnConfigUpdate the collection of files
@@ -87,6 +88,13 @@ func OnConfigUpdate(cfg repository.Config) {
 		} else {
 			mergedLibrary[gameID] = entry
 		}
+	}
+
+	// Check if blacklist entries
+	if len(config.GetConfig().BannedTheme()) != 0 {
+		games.ThemeBlackList = config.GetConfig().BannedTheme()
+	} else {
+		games.ThemeBlackList = nil
 	}
 }
 

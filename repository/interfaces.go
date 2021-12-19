@@ -33,6 +33,7 @@ type Config interface {
 	IsBlacklisted(string) bool
 	IsWhitelisted(string) bool
 	IsBannedTheme(string) bool
+	BannedTheme() []string
 
 	CustomDB() map[string]CustomDBEntry
 }
@@ -63,9 +64,10 @@ type FileDesc struct {
 
 // GameType structure
 type GameType struct {
-	Success string                 `json:"success"`
-	Titledb map[string]interface{} `json:"titledb"`
-	Files   []interface{}          `json:"files"`
+	Success        string                 `json:"success"`
+	Titledb        map[string]interface{} `json:"titledb"`
+	Files          []interface{}          `json:"files"`
+	ThemeBlackList []string               `json:"themeBlackList,omitempty"`
 }
 
 // CustomDBEntry describe the various fields for entries

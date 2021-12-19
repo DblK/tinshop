@@ -246,3 +246,8 @@ func (cfg *File) IsBannedTheme(theme string) bool {
 	})
 	return idxBannedTheme != -1
 }
+
+// BannedTheme returns all banned theme
+func (cfg *File) BannedTheme() []string {
+	return cfg.Security.BannedTheme
+}

@@ -34,6 +34,20 @@ func (m *MockConfig) EXPECT() *MockConfigMockRecorder {
 	return m.recorder
 }
 
+// BannedTheme mocks base method.
+func (m *MockConfig) BannedTheme() []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BannedTheme")
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// BannedTheme indicates an expected call of BannedTheme.
+func (mr *MockConfigMockRecorder) BannedTheme() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BannedTheme", reflect.TypeOf((*MockConfig)(nil).BannedTheme))
+}
+
 // CustomDB mocks base method.
 func (m *MockConfig) CustomDB() map[string]repository.CustomDBEntry {
 	m.ctrl.T.Helper()
