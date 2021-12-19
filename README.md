@@ -41,6 +41,7 @@ Here is the list of all main features so far:
 - [X] Serve from several network directories (Using NFS)
 - [X] Display a webpage for forbidden devices
 - [X] Auto-refresh configuration on file change
+- [X] Add the possibility to whitelist or blacklist a switch
 
 # Dev or build from source
 
@@ -97,9 +98,7 @@ Use a reverse proxy (like [traefik](https://github.com/traefik/traefik), [caddy]
 TinShop **does not** implement basic auth by itself.  
 You should configure it inside your reverse proxy.
 
-For other type of protection, you can whitelist (__*__) your own switch and this will do the trick.
-
-__*__ Feature not yet implemented!
+For other type of protection, you can whitelist your own switch and this will do the trick.
 
 ## I have tons of missing title displayed in `tinfoil`, what should I do?
 
