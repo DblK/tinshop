@@ -28,6 +28,7 @@ To proper use this software, here is the checklist:
     - [ ] Copy/Paste [`config.example.yaml`](https://github.com/DblK/tinshop/blob/master/config.example.yaml) to `config.yaml`
     - [ ] Comment/Uncomment parts in the config according to your needs
 - [ ] Games should have in their name `[ID][v0]` to be recognized
+- [ ] Games extension should be `nsp` or `nsz`
 - [ ] Retrieve binary from [latest release](https://github.com/DblK/tinshop/releases) or build from source (See `Dev` section below)
 
 Now simply run it and add a shop inside tinfoil with the address setup in `config` (or `http://localIp:3000` if not specified).
