@@ -21,7 +21,7 @@ var games repository.GameType
 func Load() {
 	loadTitlesLibrary()
 
-	initGamesCollection()
+	ResetGamesCollection()
 }
 
 func loadTitlesLibrary() {
@@ -58,7 +58,8 @@ func loadTitlesLibrary() {
 	}
 }
 
-func initGamesCollection() {
+// ResetGamesCollection reset the game collection
+func ResetGamesCollection() {
 	// Build games object
 	games.Success = "Welcome to your own shop!"
 	games.Titledb = make(map[string]interface{})
@@ -68,7 +69,7 @@ func initGamesCollection() {
 
 // OnConfigUpdate the collection of files
 func OnConfigUpdate(cfg repository.Config) {
-	initGamesCollection()
+	ResetGamesCollection()
 
 	// Create merged library
 	mergedLibrary = make(map[string]interface{})
