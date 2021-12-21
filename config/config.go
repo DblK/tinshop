@@ -1,3 +1,8 @@
+// @title tinshop Config
+
+// @BasePath /config/
+
+// Package config provides everything related to configuration
 package config
 
 import (

@@ -1,3 +1,8 @@
+// @title tinshop Utils
+
+// @BasePath /utils/
+
+// Package utils provides some cross used information
 package utils
 
 import (

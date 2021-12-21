@@ -1,3 +1,8 @@
+// @title tinshop Games Collection
+
+// @BasePath /gamescollection/
+
+// Package gamescollection provides and stores all information about collection
 package gamescollection
 
 import (

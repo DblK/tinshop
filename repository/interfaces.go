@@ -1,3 +1,8 @@
+// @title tinshop Utils
+
+// @BasePath /repository/
+
+// Package repository holds all interfaces and shared struct
 package repository
 
 // GameID interface

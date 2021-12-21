@@ -1,3 +1,8 @@
+// @title tinshop Game ID
+
+// @BasePath /gameid/
+
+// Package gameid provides a way to store individual game information
 package gameid
 
 import (
