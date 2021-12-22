@@ -5,7 +5,6 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -143,13 +142,11 @@ func isValidFilter(filter string) bool {
 func FilteringHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	filter := strings.ToUpper(vars["filter"])
-	fmt.Println(filter)
-	fmt.Println(utils.Contains(languageFilter, filter))
 
 	if !isValidFilter(filter) {
 		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
 
-	// serveCollection(w, collection.Filter(filter))
+	serveCollection(w, collection.Filter(filter))
 }

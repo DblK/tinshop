@@ -124,6 +124,11 @@ func Games() repository.GameType {
 	return games
 }
 
+// Filter returns the games inside the library after filtering
+func Filter(filter string) repository.GameType {
+	return games
+}
+
 // RemoveGame remove ID from the collection
 func RemoveGame(ID string) {
 	gameID := strings.ToUpper(ID)
