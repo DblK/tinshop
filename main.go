@@ -22,6 +22,8 @@ import (
 //go:embed assets/*
 var assetData embed.FS
 
+// All languages available
+// To update this list run: `jq '[.[].regions] | del(..|nulls) | flatten | unique' titles.US.en.json`
 var languageFilter = []string{
 	"AR", "AT", "AU", "BE", "CA", "CL", "CN", "CO", "CZ", "DE",
 	"DK", "ES", "FI", "FR", "GB", "GR", "HK", "HU", "IT", "JP",
