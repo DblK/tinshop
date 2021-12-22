@@ -15,6 +15,8 @@ import (
 	"gopkg.in/fsnotify.v1"
 )
 
+var watchedDirectories map[string]repository.WatcherDirectory
+
 func loadGamesDirectories(directories []string, singleSource bool) {
 	for _, directory := range directories {
 		err := loadGamesDirectory(directory)
@@ -26,6 +28,14 @@ func loadGamesDirectories(directories []string, singleSource bool) {
 				log.Println(err)
 			}
 		}
+	}
+}
+
+func removeGamesWatcherDirectories() {
+	log.Println("Removing watcher from all directories")
+	fmt.Println(len(watchedDirectories))
+	for path, watcher := range watchedDirectories {
+		_ = watcher.Watcher.Remove(path)
 	}
 }
 
@@ -133,6 +143,9 @@ func watchDirectory(directory string) {
 				}
 			}
 		}()
+		watchedDirectories[directory] = repository.WatcherDirectory{
+			Watcher: watcher,
+		}
 		errWatcher := watcher.Add(directory)
 		initWG.Done()   // done initializing the watch in this go routine, so the parent routine can move on...
 		eventsWG.Wait() // now, wait for event loop to end in this go-routine...
@@ -141,5 +154,6 @@ func watchDirectory(directory string) {
 		}
 	}()
 	initWG.Wait() // make sure that the go routine above fully ended before returning
+	fmt.Println(len(watchedDirectories))
 	fmt.Println("end of watch function")
 }

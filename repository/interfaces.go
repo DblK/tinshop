@@ -5,6 +5,10 @@
 // Package repository holds all interfaces and shared struct
 package repository
 
+import (
+	"gopkg.in/fsnotify.v1"
+)
+
 // GameID interface
 type GameID interface {
 	FullID() string
@@ -84,4 +88,8 @@ type CustomDBEntry struct {
 	ReleaseDate int    `mapstructure:"releaseDate" json:"releaseDate"`
 	Description string `mapstructure:"description" json:"description"`
 	IconURL     string `mapstructure:"iconUrl" json:"iconUrl"`
+}
+
+type WatcherDirectory struct {
+	Watcher *fsnotify.Watcher
 }

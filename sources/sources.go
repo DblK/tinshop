@@ -6,7 +6,6 @@
 package sources
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -20,14 +19,14 @@ var gameFiles []repository.FileDesc
 func OnConfigUpdate(cfg repository.Config) {
 	log.Println("Sources loading...")
 	gameFiles = make([]repository.FileDesc, 0)
+	watchedDirectories = make(map[string]repository.WatcherDirectory)
 	loadGamesDirectories(cfg.Directories(), len(cfg.NfsShares()) == 0)
 	loadGamesNfsShares(cfg.NfsShares())
 }
 
 // BeforeConfigUpdate from all sources
 func BeforeConfigUpdate(cfg repository.Config) {
-	// TODO: Stop watching previous directories
-	fmt.Println("Code this!")
+	removeGamesWatcherDirectories()
 }
 
 // GetFiles returns all games files in various sources
