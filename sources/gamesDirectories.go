@@ -84,8 +84,7 @@ func loadGamesDirectory(directory string) error {
 					}
 				}
 			} else if info.IsDir() && path != directory {
-				// TODO: Add watcher for the sub-directory
-				fmt.Println("Need to watch sub directory", path)
+				watchDirectory(path)
 			}
 			return nil
 		})
