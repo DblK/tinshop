@@ -1,7 +1,6 @@
 package sources
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -60,7 +59,6 @@ func removeEntriesFromDirectory(directory string) {
 func AddDirectoryGame(gameFiles []repository.FileDesc, extension string, size int64, path string) []repository.FileDesc {
 	var newGameFiles []repository.FileDesc
 	newGameFiles = append(newGameFiles, gameFiles...)
-	fmt.Println("AddDirectoryGame", extension, size, path)
 
 	if extension == ".nsp" || extension == ".nsz" {
 		newFile := repository.FileDesc{Size: size, Path: path}
@@ -140,8 +138,6 @@ func newWatcher() *fsnotify.Watcher {
 }
 
 func watchDirectory(directory string) {
-	fmt.Println("Watching directory", directory)
-
 	initWG := sync.WaitGroup{}
 	initWG.Add(1)
 	go func() {
