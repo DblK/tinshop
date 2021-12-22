@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,7 +16,7 @@ import (
 	"gopkg.in/fsnotify.v1"
 )
 
-var watchedDirectories map[string]repository.WatcherDirectory
+var watcherDirectories *fsnotify.Watcher
 
 func loadGamesDirectories(directories []string, singleSource bool) {
 	for _, directory := range directories {
@@ -33,10 +34,33 @@ func loadGamesDirectories(directories []string, singleSource bool) {
 
 func removeGamesWatcherDirectories() {
 	log.Println("Removing watcher from all directories")
-	fmt.Println(len(watchedDirectories))
-	for path, watcher := range watchedDirectories {
-		_ = watcher.Watcher.Remove(path)
+	if watcherDirectories != nil {
+		watcherDirectories.Close()
 	}
+}
+
+func removeWatcherFromDirectory(directory string) error {
+	fmt.Println("removeWatcherFromDirectory", directory)
+	/*
+		- remove directory
+		- search into game with this directory
+		- remove any sub directory
+		- Call collection.removeEntry(XXX) to remove from output json
+	*/
+	for index, game := range gameFiles {
+		if game.HostType == repository.LocalFile && strings.Contains(game.Path, directory) {
+			// Need to remove game
+			gameFiles = utils.RemoveFileDesc(gameFiles, index)
+
+			// Stop watching of directories
+			_ = watcherDirectories.Remove(filepath.Dir(game.Path))
+
+			// Remove entry from collection
+			collection.RemoveGame(game.GameID)
+		}
+	}
+
+	return nil
 }
 
 func loadGamesDirectory(directory string) error {
@@ -103,24 +127,29 @@ func downloadLocalFile(w http.ResponseWriter, r *http.Request, game, path string
 	}
 }
 
+func newWatcher() *fsnotify.Watcher {
+	watcherDirectories, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return watcherDirectories
+}
+
 func watchDirectory(directory string) {
 	fmt.Println("Watching directory", directory)
 
 	initWG := sync.WaitGroup{}
 	initWG.Add(1)
 	go func() {
-		watcher, err := fsnotify.NewWatcher()
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer watcher.Close()
+		defer watcherDirectories.Close()
 
 		eventsWG := sync.WaitGroup{}
 		eventsWG.Add(1)
 		go func() {
 			for {
 				select {
-				case event, ok := <-watcher.Events:
+				case event, ok := <-watcherDirectories.Events:
 					if !ok { // 'Events' channel is closed
 						eventsWG.Done()
 						return
@@ -130,11 +159,12 @@ func watchDirectory(directory string) {
 						fmt.Println("Changes", event)
 					} else if event.Op&fsnotify.Remove != 0 {
 						fmt.Println("Remove file", event)
+						_ = removeWatcherFromDirectory(event.Name)
 					} else if event.Op&fsnotify.Rename == fsnotify.Rename {
 						log.Printf("Rename: %s: %s", event.Op, event.Name)
 					}
 
-				case err, ok := <-watcher.Errors:
+				case err, ok := <-watcherDirectories.Errors:
 					if ok { // 'Errors' channel is not closed
 						log.Printf("watcher error: %v\n", err)
 					}
@@ -143,10 +173,7 @@ func watchDirectory(directory string) {
 				}
 			}
 		}()
-		watchedDirectories[directory] = repository.WatcherDirectory{
-			Watcher: watcher,
-		}
-		errWatcher := watcher.Add(directory)
+		errWatcher := watcherDirectories.Add(directory)
 		initWG.Done()   // done initializing the watch in this go routine, so the parent routine can move on...
 		eventsWG.Wait() // now, wait for event loop to end in this go-routine...
 		if errWatcher != nil {
@@ -154,6 +181,4 @@ func watchDirectory(directory string) {
 		}
 	}()
 	initWG.Wait() // make sure that the go routine above fully ended before returning
-	fmt.Println(len(watchedDirectories))
-	fmt.Println("end of watch function")
 }

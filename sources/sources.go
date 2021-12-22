@@ -19,7 +19,7 @@ var gameFiles []repository.FileDesc
 func OnConfigUpdate(cfg repository.Config) {
 	log.Println("Sources loading...")
 	gameFiles = make([]repository.FileDesc, 0)
-	watchedDirectories = make(map[string]repository.WatcherDirectory)
+	watcherDirectories = newWatcher()
 	loadGamesDirectories(cfg.Directories(), len(cfg.NfsShares()) == 0)
 	loadGamesNfsShares(cfg.NfsShares())
 }

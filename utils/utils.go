@@ -35,3 +35,15 @@ func Search(length int, f func(index int) bool) int {
 	}
 	return -1
 }
+
+func RemoveFileDesc(s []repository.FileDesc, index int) []repository.FileDesc {
+	ret := make([]repository.FileDesc, 0)
+	ret = append(ret, s[:index]...)
+	return append(ret, s[index+1:]...)
+}
+
+func RemoveGameFile(s []repository.GameFileType, index int) []repository.GameFileType {
+	ret := make([]repository.GameFileType, 0)
+	ret = append(ret, s[:index]...)
+	return append(ret, s[index+1:]...)
+}
