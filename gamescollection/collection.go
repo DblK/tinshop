@@ -87,7 +87,7 @@ func OnConfigUpdate(cfg repository.Config) {
 	}
 
 	// Copy CustomDB
-	for key, entry := range config.GetConfig().CustomDB() {
+	for key, entry := range cfg.CustomDB() {
 		gameID := strings.ToUpper(key)
 		if mergedLibrary[gameID] != nil {
 			log.Println("Duplicate customDB entry from official titledb (consider removing from configuration)", gameID)
@@ -97,8 +97,8 @@ func OnConfigUpdate(cfg repository.Config) {
 	}
 
 	// Check if blacklist entries
-	if len(config.GetConfig().BannedTheme()) != 0 {
-		games.ThemeBlackList = config.GetConfig().BannedTheme()
+	if len(cfg.BannedTheme()) != 0 {
+		games.ThemeBlackList = cfg.BannedTheme()
 	} else {
 		games.ThemeBlackList = nil
 	}
