@@ -10,7 +10,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"reflect"
 	"strings"
 
 	"github.com/DblK/tinshop/config"
@@ -126,7 +125,47 @@ func Games() repository.GameType {
 
 // Filter returns the games inside the library after filtering
 func Filter(filter string) repository.GameType {
-	return games
+	var filteredGames repository.GameType
+	filteredGames.Success = games.Success
+	filteredGames.ThemeBlackList = games.ThemeBlackList
+
+	newTitleDB := make(map[string]interface{})
+	newFiles := make([]repository.GameFileType, 0)
+	for ID, entry := range games.Titledb {
+		entryFiltered := false
+		if filter == "WORLD" {
+			newTitleDB[ID] = entry
+			entryFiltered = true
+		} else if filter == "MULTI" {
+			var numberPlayers int
+			if utils.IsCustomDBEntry(entry) {
+				numberPlayers = entry.(repository.CustomDBEntry).NumberOfPlayers
+			} else {
+				if entry.(map[string]interface{})["numberOfPlayers"] != nil {
+					numberPlayers = int(entry.(map[string]interface{})["numberOfPlayers"].(float64))
+				} else {
+					numberPlayers = 0
+				}
+			}
+			if numberPlayers > 1 {
+				newTitleDB[ID] = entry
+				entryFiltered = true
+			}
+		}
+		if entryFiltered {
+			idx := utils.Search(len(games.Files), func(index int) bool {
+				return strings.Contains(games.Files[index].URL, ID)
+			})
+
+			if idx != -1 {
+				newFiles = append(newFiles, games.Files[idx])
+			}
+		}
+	}
+	filteredGames.Titledb = newTitleDB
+	filteredGames.Files = newFiles
+
+	return filteredGames
 }
 
 // RemoveGame remove ID from the collection
@@ -151,7 +190,7 @@ func RemoveGame(ID string) {
 func CountGames() int {
 	var uniqueGames int
 	for _, entry := range games.Titledb {
-		if reflect.TypeOf(entry).String() == "repository.CustomDBEntry" {
+		if utils.IsCustomDBEntry(entry) {
 			if entry.(repository.CustomDBEntry).IconURL != "" {
 				uniqueGames++
 			}
