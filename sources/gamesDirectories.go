@@ -47,12 +47,36 @@ func removeEntriesFromDirectory(directory string) {
 			gameFiles = utils.RemoveFileDesc(gameFiles, index)
 
 			// Stop watching of directories
-			_ = watcherDirectories.Remove(filepath.Dir(game.Path))
+			if directory == filepath.Dir(directory) {
+				_ = watcherDirectories.Remove(filepath.Dir(game.Path))
+			}
 
 			// Remove entry from collection
 			collection.RemoveGame(game.GameID)
 		}
 	}
+}
+
+func AddDirectoryGame(gameFiles []repository.FileDesc, extension string, size int64, path string) []repository.FileDesc {
+	var newGameFiles []repository.FileDesc
+	newGameFiles = append(newGameFiles, gameFiles...)
+	fmt.Println("AddDirectoryGame", extension, size, path)
+
+	if extension == ".nsp" || extension == ".nsz" {
+		newFile := repository.FileDesc{Size: size, Path: path}
+		names := utils.ExtractGameID(path)
+
+		if names.ShortID() != "" {
+			newFile.GameID = names.ShortID()
+			newFile.GameInfo = names.FullID()
+			newFile.HostType = repository.LocalFile
+			newGameFiles = append(newGameFiles, newFile)
+		} else {
+			log.Println("Ignoring file because parsing failed", path)
+		}
+	}
+
+	return newGameFiles
 }
 
 func loadGamesDirectory(directory string) error {
@@ -70,19 +94,7 @@ func loadGamesDirectory(directory string) error {
 			}
 			if !info.IsDir() {
 				extension := filepath.Ext(info.Name())
-				if extension == ".nsp" || extension == ".nsz" {
-					newFile := repository.FileDesc{Size: info.Size(), Path: path}
-					names := utils.ExtractGameID(path)
-
-					if names.ShortID() != "" {
-						newFile.GameID = names.ShortID()
-						newFile.GameInfo = names.FullID()
-						newFile.HostType = repository.LocalFile
-						newGameFiles = append(newGameFiles, newFile)
-					} else {
-						log.Println("Ignoring file because parsing failed", path)
-					}
-				}
+				newGameFiles = AddDirectoryGame(newGameFiles, extension, info.Size(), path)
 			} else if info.IsDir() && path != directory {
 				watchDirectory(path)
 			}
@@ -145,13 +157,15 @@ func watchDirectory(directory string) {
 						eventsWG.Done()
 						return
 					}
-					const writeOrCreateMask = fsnotify.Write | fsnotify.Create
-					if event.Op&writeOrCreateMask != 0 {
-						fmt.Println("Changes", event)
+
+					if event.Op&fsnotify.Create != 0 {
+						newGames := AddDirectoryGame(make([]repository.FileDesc, 0), filepath.Ext(event.Name), 0, event.Name)
+						AddFiles(newGames)
+						collection.AddNewGames(newGames)
 					} else if event.Op&fsnotify.Remove != 0 {
 						removeEntriesFromDirectory(event.Name)
 					} else if event.Op&fsnotify.Rename == fsnotify.Rename {
-						log.Printf("Rename: %s: %s", event.Op, event.Name)
+						removeEntriesFromDirectory(event.Name)
 					}
 
 				case err, ok := <-watcherDirectories.Errors:
