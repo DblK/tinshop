@@ -5,20 +5,30 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
 	"github.com/DblK/tinshop/config"
 	collection "github.com/DblK/tinshop/gamescollection"
 	"github.com/DblK/tinshop/sources"
+	"github.com/DblK/tinshop/utils"
 	"github.com/gorilla/mux"
 )
 
 //go:embed assets/*
 var assetData embed.FS
+
+var languageFilter = []string{
+	"AR", "AT", "AU", "BE", "CA", "CL", "CN", "CO", "CZ", "DE",
+	"DK", "ES", "FI", "FR", "GB", "GR", "HK", "HU", "IT", "JP",
+	"KR", "MX", "NL", "NO", "NZ", "PE", "PL", "PT", "RU", "SE",
+	"US", "ZA",
+}
 
 func main() {
 	initServer()
@@ -26,6 +36,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", HomeHandler)
 	r.HandleFunc("/games/{game}", GamesHandler)
+	r.HandleFunc("/{filter}", FilteringHandler)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	r.MethodNotAllowedHandler = http.HandlerFunc(notAllowed)
 	r.Use(tinfoilMiddleware)
@@ -98,9 +109,8 @@ func notAllowed(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusMethodNotAllowed)
 }
 
-// HomeHandler handles list of games
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	jsonResponse, jsonError := json.Marshal(collection.Games())
+func serveCollection(w http.ResponseWriter, tinfoilCollection interface{}) {
+	jsonResponse, jsonError := json.Marshal(tinfoilCollection)
 
 	if jsonError != nil {
 		log.Println("Unable to encode JSON")
@@ -112,10 +122,34 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(jsonResponse)
 }
 
+// HomeHandler handles list of games
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	serveCollection(w, collection.Games())
+}
+
 // GamesHandler handles downloading games
 func GamesHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	log.Println("Requesting game", vars["game"])
 
 	sources.DownloadGame(vars["game"], w, r)
+}
+
+func isValidFilter(filter string) bool {
+	return filter == "multi" || filter == "world" || utils.Contains(languageFilter, filter)
+}
+
+// FilteringHandler handles filtering games collection
+func FilteringHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	filter := strings.ToUpper(vars["filter"])
+	fmt.Println(filter)
+	fmt.Println(utils.Contains(languageFilter, filter))
+
+	if !isValidFilter(filter) {
+		w.WriteHeader(http.StatusNotAcceptable)
+		return
+	}
+
+	// serveCollection(w, collection.Filter(filter))
 }
