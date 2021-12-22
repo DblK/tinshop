@@ -22,7 +22,7 @@ func tinfoilMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		if r.RequestURI == "/" || isValidFilter(strings.ToUpper(r.RequestURI[1:])) {
+		if r.RequestURI == "/" || isValidFilter(r.RequestURI[1:]) {
 			// Check for blacklist/whitelist
 			var uid = strings.Join(headers["Uid"], "")
 			if config.GetConfig().IsBlacklisted(uid) {

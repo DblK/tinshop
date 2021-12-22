@@ -135,7 +135,8 @@ func GamesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func isValidFilter(filter string) bool {
-	return filter == "multi" || filter == "world" || utils.Contains(languageFilter, filter)
+	upperFilter := strings.ToUpper(filter)
+	return upperFilter == "MULTI" || upperFilter == "WORLD" || utils.Contains(languageFilter, upperFilter)
 }
 
 // FilteringHandler handles filtering games collection
