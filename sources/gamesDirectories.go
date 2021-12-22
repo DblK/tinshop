@@ -39,14 +39,8 @@ func removeGamesWatcherDirectories() {
 	}
 }
 
-func removeWatcherFromDirectory(directory string) error {
-	fmt.Println("removeWatcherFromDirectory", directory)
-	/*
-		- remove directory
-		- search into game with this directory
-		- remove any sub directory
-		- Call collection.removeEntry(XXX) to remove from output json
-	*/
+func removeEntriesFromDirectory(directory string) {
+	log.Println("removeEntriesFromDirectory", directory)
 	for index, game := range gameFiles {
 		if game.HostType == repository.LocalFile && strings.Contains(game.Path, directory) {
 			// Need to remove game
@@ -59,8 +53,6 @@ func removeWatcherFromDirectory(directory string) error {
 			collection.RemoveGame(game.GameID)
 		}
 	}
-
-	return nil
 }
 
 func loadGamesDirectory(directory string) error {
@@ -158,8 +150,7 @@ func watchDirectory(directory string) {
 					if event.Op&writeOrCreateMask != 0 {
 						fmt.Println("Changes", event)
 					} else if event.Op&fsnotify.Remove != 0 {
-						fmt.Println("Remove file", event)
-						_ = removeWatcherFromDirectory(event.Name)
+						removeEntriesFromDirectory(event.Name)
 					} else if event.Op&fsnotify.Rename == fsnotify.Rename {
 						log.Printf("Rename: %s: %s", event.Op, event.Name)
 					}
