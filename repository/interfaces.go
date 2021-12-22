@@ -86,13 +86,15 @@ type GameFileType struct {
 
 // CustomDBEntry describe the various fields for entries
 type CustomDBEntry struct {
-	ID          string `mapstructure:"id" json:"id"`
-	Name        string `mapstructure:"name" json:"name"`
-	Region      string `mapstructure:"region" json:"region"`
-	Size        int    `mapstructure:"size" json:"size"`
-	ReleaseDate int    `mapstructure:"releaseDate" json:"releaseDate"`
-	Description string `mapstructure:"description" json:"description"`
-	IconURL     string `mapstructure:"iconUrl" json:"iconUrl"`
+	ID              string   `mapstructure:"id" json:"id"`
+	Name            string   `mapstructure:"name" json:"name,omitempty"`
+	Region          string   `mapstructure:"region" json:"region,omitempty"`
+	Size            int      `mapstructure:"size" json:"size,omitempty"`
+	ReleaseDate     int      `mapstructure:"releaseDate" json:"releaseDate,omitempty"`
+	Description     string   `mapstructure:"description" json:"description,omitempty"`
+	IconURL         string   `mapstructure:"iconUrl" json:"iconUrl,omitempty"`
+	Languages       []string `mapstructure:"language" json:"language,omitempty"`
+	NumberOfPlayers int      `mapstructure:"numberOfPlayers" json:"numberOfPlayers,omitempty"`
 }
 
 type WatcherDirectory struct {
