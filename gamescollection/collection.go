@@ -13,9 +13,9 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/dblk/tinshop/config"
-	"github.com/dblk/tinshop/repository"
-	"github.com/dblk/tinshop/utils"
+	"github.com/DblK/tinshop/config"
+	"github.com/DblK/tinshop/repository"
+	"github.com/DblK/tinshop/utils"
 )
 
 var library map[string]map[string]interface{}

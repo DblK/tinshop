@@ -7,10 +7,10 @@
 </p>
 
 [![golangci-lint](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml/badge.svg?event=release)](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml)
-[![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/dblk/tinshop.svg)](https://github.com/dblk/tinshop)
-[![GoDoc reference example](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/dblk/tinshop)
-[![GoReportCard](https://goreportcard.com/badge/github.com/dblk/tinshop)](https://goreportcard.com/report/github.com/dblk/tinshop)
-[![GitHub release](https://img.shields.io/github/release/dblk/tinshop.svg)](https://GitHub.com/dblk/tinshop/releases/)
+[![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/DblK/tinshop.svg)](https://github.com/DblK/tinshop)
+[![GoDoc reference example](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/DblK/tinshop)
+[![GoReportCard](https://goreportcard.com/badge/github.com/DblK/tinshop)](https://goreportcard.com/report/github.com/DblK/tinshop)
+[![GitHub release](https://img.shields.io/github/release/DblK/tinshop.svg)](https://GitHub.com/DblK/tinshop/releases/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 # Disclaimer

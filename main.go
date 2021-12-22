@@ -10,9 +10,9 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/dblk/tinshop/config"
-	collection "github.com/dblk/tinshop/gamescollection"
-	"github.com/dblk/tinshop/sources"
+	"github.com/DblK/tinshop/config"
+	collection "github.com/DblK/tinshop/gamescollection"
+	"github.com/DblK/tinshop/sources"
 	"github.com/gorilla/mux"
 )
 

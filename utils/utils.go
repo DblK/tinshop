@@ -9,8 +9,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/dblk/tinshop/gameid"
-	"github.com/dblk/tinshop/repository"
+	"github.com/DblK/tinshop/gameid"
+	"github.com/DblK/tinshop/repository"
 )
 
 // ExtractGameID from fileName the id of game and version

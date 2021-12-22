@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
-	collection "github.com/dblk/tinshop/gamescollection"
-	"github.com/dblk/tinshop/repository"
-	"github.com/dblk/tinshop/utils"
+	collection "github.com/DblK/tinshop/gamescollection"
+	"github.com/DblK/tinshop/repository"
+	"github.com/DblK/tinshop/utils"
 	"gopkg.in/fsnotify.v1"
 )
 

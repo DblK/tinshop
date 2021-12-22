@@ -1,4 +1,4 @@
-module github.com/dblk/tinshop
+module github.com/DblK/tinshop
 
 go 1.17
 

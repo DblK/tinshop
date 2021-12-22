@@ -10,8 +10,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dblk/tinshop/repository"
-	"github.com/dblk/tinshop/utils"
+	"github.com/DblK/tinshop/repository"
+	"github.com/DblK/tinshop/utils"
 )
 
 var gameFiles []repository.FileDesc

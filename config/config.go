@@ -12,8 +12,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/dblk/tinshop/repository"
-	"github.com/dblk/tinshop/utils"
+	"github.com/DblK/tinshop/repository"
+	"github.com/DblK/tinshop/utils"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
