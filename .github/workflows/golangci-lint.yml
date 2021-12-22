@@ -1,6 +1,6 @@
 name: golangci-lint
 on:
-  push:
+  # push:
   pull_request:
 permissions:
   contents: read
@@ -14,3 +14,5 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.43.0
+          skip-pkg-cache: true
+          skip-build-cache: true
