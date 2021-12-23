@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"time"
 
 	"github.com/DblK/tinshop/config"
@@ -130,12 +129,11 @@ func GamesHandler(w http.ResponseWriter, r *http.Request) {
 // FilteringHandler handles filtering games collection
 func FilteringHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	filter := strings.ToUpper(vars["filter"])
 
-	if !utils.IsValidFilter(filter) {
+	if !utils.IsValidFilter(vars["filter"]) {
 		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
 
-	serveCollection(w, collection.Filter(filter))
+	serveCollection(w, collection.Filter(vars["filter"]))
 }

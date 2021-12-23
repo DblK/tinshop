@@ -129,23 +129,24 @@ func Filter(filter string) repository.GameType {
 	var filteredGames repository.GameType
 	filteredGames.Success = games.Success
 	filteredGames.ThemeBlackList = games.ThemeBlackList
+	upperFilter := strings.ToUpper(filter)
 
 	newTitleDB := make(map[string]repository.TitleDBEntry)
 	newFiles := make([]repository.GameFileType, 0)
 	for ID, entry := range games.Titledb {
 		entryFiltered := false
-		if filter == "WORLD" {
+		if upperFilter == "WORLD" {
 			entryFiltered = true
-		} else if filter == "MULTI" {
+		} else if upperFilter == "MULTI" {
 			numberPlayers := entry.NumberOfPlayers
 
 			if numberPlayers > 1 {
 				entryFiltered = true
 			}
-		} else if utils.IsValidFilter(filter) {
+		} else if utils.IsValidFilter(upperFilter) {
 			languages := entry.Languages
 
-			if utils.Contains(languages, filter) || utils.Contains(languages, strings.ToLower(filter)) {
+			if utils.Contains(languages, upperFilter) || utils.Contains(languages, strings.ToLower(upperFilter)) {
 				entryFiltered = true
 			}
 		}
