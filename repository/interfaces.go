@@ -6,6 +6,8 @@
 package repository
 
 import (
+	"net/http"
+
 	"gopkg.in/fsnotify.v1"
 )
 
@@ -113,4 +115,12 @@ type TitleDBEntry struct {
 
 type WatcherDirectory struct {
 	Watcher *fsnotify.Watcher
+}
+
+type Source interface {
+	Load([]string, bool)
+	Download(http.ResponseWriter, *http.Request, string, string)
+	UnWatchAll()
+	Reset()
+	GetFiles() []FileDesc
 }

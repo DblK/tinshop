@@ -1,4 +1,4 @@
-package sources
+package directory
 
 import (
 	"log"
@@ -15,14 +15,40 @@ import (
 	"gopkg.in/fsnotify.v1"
 )
 
+var gameFiles []repository.FileDesc
 var watcherDirectories *fsnotify.Watcher
 
-func loadGamesDirectories(directories []string, singleSource bool) {
+type directorySource struct {
+}
+
+func New() repository.Source {
+	gameFiles = make([]repository.FileDesc, 0)
+	return &directorySource{}
+}
+
+func (src *directorySource) Download(w http.ResponseWriter, r *http.Request, game, path string) {
+	f, err := os.Open(path)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	defer f.Close()
+
+	fi, err := f.Stat()
+
+	if err == nil {
+		http.ServeContent(w, r, game, fi.ModTime(), f)
+	} else {
+		http.ServeContent(w, r, game, time.Time{}, f)
+	}
+}
+
+func (src *directorySource) Load(directories []string, unique bool) {
 	for _, directory := range directories {
 		err := loadGamesDirectory(directory)
 
 		if err != nil {
-			if len(directories) == 1 && err.Error() == "lstat ./games: no such file or directory" && singleSource {
+			if len(directories) == 1 && err.Error() == "lstat ./games: no such file or directory" && unique {
 				log.Fatal("You must create a folder 'games' and put your games inside or use config.yml to add sources!")
 			} else {
 				log.Println(err)
@@ -30,6 +56,21 @@ func loadGamesDirectories(directories []string, singleSource bool) {
 		}
 	}
 }
+
+func (src *directorySource) Reset() {
+	watcherDirectories = newWatcher()
+	gameFiles = make([]repository.FileDesc, 0)
+}
+
+func (src *directorySource) UnWatchAll() {
+	removeGamesWatcherDirectories()
+}
+
+func (src *directorySource) GetFiles() []repository.FileDesc {
+	return gameFiles
+}
+
+// -----------------------------------------------------------------------------
 
 func removeGamesWatcherDirectories() {
 	log.Println("Removing watcher from all directories")
@@ -56,7 +97,7 @@ func removeEntriesFromDirectory(directory string) {
 	}
 }
 
-func AddDirectoryGame(gameFiles []repository.FileDesc, extension string, size int64, path string) []repository.FileDesc {
+func addDirectoryGame(gameFiles []repository.FileDesc, extension string, size int64, path string) []repository.FileDesc {
 	var newGameFiles []repository.FileDesc
 	newGameFiles = append(newGameFiles, gameFiles...)
 
@@ -92,7 +133,7 @@ func loadGamesDirectory(directory string) error {
 			}
 			if !info.IsDir() {
 				extension := filepath.Ext(info.Name())
-				newGameFiles = AddDirectoryGame(newGameFiles, extension, info.Size(), path)
+				newGameFiles = addDirectoryGame(newGameFiles, extension, info.Size(), path)
 			} else if info.IsDir() && path != directory {
 				watchDirectory(path)
 			}
@@ -101,7 +142,7 @@ func loadGamesDirectory(directory string) error {
 	if err != nil {
 		return err
 	}
-	AddFiles(newGameFiles)
+	gameFiles = append(gameFiles, newGameFiles...)
 
 	// Add all files
 	if len(newGameFiles) > 0 {
@@ -109,23 +150,6 @@ func loadGamesDirectory(directory string) error {
 	}
 
 	return nil
-}
-
-func downloadLocalFile(w http.ResponseWriter, r *http.Request, game, path string) {
-	f, err := os.Open(path)
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
-	defer f.Close()
-
-	fi, err := f.Stat()
-
-	if err == nil {
-		http.ServeContent(w, r, game, fi.ModTime(), f)
-	} else {
-		http.ServeContent(w, r, game, time.Time{}, f)
-	}
 }
 
 func newWatcher() *fsnotify.Watcher {
@@ -155,8 +179,8 @@ func watchDirectory(directory string) {
 					}
 
 					if event.Op&fsnotify.Create != 0 {
-						newGames := AddDirectoryGame(make([]repository.FileDesc, 0), filepath.Ext(event.Name), 0, event.Name)
-						AddFiles(newGames)
+						newGames := addDirectoryGame(make([]repository.FileDesc, 0), filepath.Ext(event.Name), 0, event.Name)
+						gameFiles = append(gameFiles, newGames...)
 						collection.AddNewGames(newGames)
 					} else if event.Op&fsnotify.Remove != 0 {
 						removeEntriesFromDirectory(event.Name)
