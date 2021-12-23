@@ -15,6 +15,7 @@ import (
 	"github.com/DblK/tinshop/utils"
 )
 
+// SourceProvider stores all sources available
 type SourceProvider struct {
 	Directory repository.Source
 	NFS       repository.Source

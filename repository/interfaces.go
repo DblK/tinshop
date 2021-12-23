@@ -7,8 +7,6 @@ package repository
 
 import (
 	"net/http"
-
-	"gopkg.in/fsnotify.v1"
 )
 
 // GameID interface
@@ -82,6 +80,7 @@ type GameType struct {
 	ThemeBlackList []string                `json:"themeBlackList,omitempty"`
 }
 
+// GameFileType stores the fields needed for game files
 type GameFileType struct {
 	Size int64  `json:"size"`
 	URL  string `json:"url"`
@@ -113,10 +112,7 @@ type TitleDBEntry struct {
 	Rank            int      `mapstructure:"rank" json:"rank,omitempty"`
 }
 
-type WatcherDirectory struct {
-	Watcher *fsnotify.Watcher
-}
-
+// Source describes the common functions for Sources
 type Source interface {
 	Load([]string, bool)
 	Download(http.ResponseWriter, *http.Request, string, string)

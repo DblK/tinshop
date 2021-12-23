@@ -8,6 +8,7 @@
         "dupl",
         "errcheck",
         "Errorf",
+        "errorlint",
         "exportloopref",
         "Fatalf",
         "fsnotify",

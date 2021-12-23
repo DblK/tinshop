@@ -39,6 +39,7 @@ linters:
     - whitespace
     # - wsl
     - exportloopref
+    - golint
   disable:
     - noctx
     - scopelint
@@ -58,3 +59,5 @@ issues:
       linters:
         - gochecknoglobals
         - dupl
+  include:
+    - EXC0002

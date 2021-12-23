@@ -18,6 +18,7 @@ var gameFiles []repository.FileDesc
 type nfsSource struct {
 }
 
+// New create a nfs source
 func New() repository.Source {
 	gameFiles = make([]repository.FileDesc, 0)
 	return &nfsSource{}

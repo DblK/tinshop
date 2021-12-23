@@ -14,6 +14,7 @@ var gameFiles []repository.FileDesc
 type directorySource struct {
 }
 
+// New create a directory source
 func New() repository.Source {
 	gameFiles = make([]repository.FileDesc, 0)
 	return &directorySource{}
