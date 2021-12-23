@@ -22,15 +22,6 @@ import (
 //go:embed assets/*
 var assetData embed.FS
 
-// All languages available
-// To update this list run: `jq '[.[].regions] | del(..|nulls) | flatten | unique' titles.US.en.json`
-var languageFilter = []string{
-	"AR", "AT", "AU", "BE", "CA", "CL", "CN", "CO", "CZ", "DE",
-	"DK", "ES", "FI", "FR", "GB", "GR", "HK", "HU", "IT", "JP",
-	"KR", "MX", "NL", "NO", "NZ", "PE", "PL", "PT", "RU", "SE",
-	"US", "ZA",
-}
-
 func main() {
 	initServer()
 
@@ -136,17 +127,12 @@ func GamesHandler(w http.ResponseWriter, r *http.Request) {
 	sources.DownloadGame(vars["game"], w, r)
 }
 
-func isValidFilter(filter string) bool {
-	upperFilter := strings.ToUpper(filter)
-	return upperFilter == "MULTI" || upperFilter == "WORLD" || utils.Contains(languageFilter, upperFilter)
-}
-
 // FilteringHandler handles filtering games collection
 func FilteringHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	filter := strings.ToUpper(vars["filter"])
 
-	if !isValidFilter(filter) {
+	if !utils.IsValidFilter(filter) {
 		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}

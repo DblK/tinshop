@@ -80,7 +80,7 @@ var _ = Describe("Collection", func() {
 			Expect(collection.Games().Files).To(HaveLen(1))
 		})
 	})
-	FDescribe("Filter", func() {
+	Describe("Filter", func() {
 		var (
 			myMockConfig *mock_repository.MockConfig
 			ctrl         *gomock.Controller
@@ -146,12 +146,17 @@ var _ = Describe("Collection", func() {
 			Expect(filteredGames.Titledb["0000000000000002"]).To(Not(BeNil()))
 			Expect(len(filteredGames.Files)).To(Equal(2))
 		})
-		FIt("Filtering US", func() {
+		It("Filtering US", func() {
 			filteredGames := collection.Filter("US")
 			Expect(len(filteredGames.Titledb)).To(Equal(1))
 			Expect(filteredGames.Titledb["0000000000000001"]).To(Not(BeNil()))
 			Expect(filteredGames.Titledb["0000000000000002"]).To(BeNil())
 			Expect(len(filteredGames.Files)).To(Equal(1))
+		})
+		It("Filtering non existing language entry (HK)", func() {
+			filteredGames := collection.Filter("HK")
+			Expect(len(filteredGames.Titledb)).To(Equal(0))
+			Expect(len(filteredGames.Files)).To(Equal(0))
 		})
 		It("Filtering multi", func() {
 			filteredGames := collection.Filter("MULTI")

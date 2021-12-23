@@ -134,7 +134,6 @@ func Filter(filter string) repository.GameType {
 	for ID, entry := range games.Titledb {
 		entryFiltered := false
 		if filter == "WORLD" {
-			newTitleDB[ID] = entry
 			entryFiltered = true
 		} else if filter == "MULTI" {
 			var numberPlayers int
@@ -148,11 +147,28 @@ func Filter(filter string) repository.GameType {
 				}
 			}
 			if numberPlayers > 1 {
-				newTitleDB[ID] = entry
+				entryFiltered = true
+			}
+		} else if utils.IsValidFilter(filter) {
+			var languages []string
+			if utils.IsCustomDBEntry(entry) {
+				languages = entry.(repository.CustomDBEntry).Languages
+			} else {
+				if entry.(map[string]interface{})["languages"] != nil {
+					// languages = entry.(map[string]interface{})["languages"].([]interface{})
+					languages = make([]string, 0)
+				} else {
+					languages = make([]string, 0)
+				}
+			}
+
+			if utils.Contains(languages, filter) {
 				entryFiltered = true
 			}
 		}
+
 		if entryFiltered {
+			newTitleDB[ID] = entry
 			idx := utils.Search(len(games.Files), func(index int) bool {
 				return strings.Contains(games.Files[index].URL, ID)
 			})
