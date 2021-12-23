@@ -86,7 +86,3 @@ func Contains(list interface{}, elem interface{}) bool {
 	}
 	return false
 }
-
-func IsCustomDBEntry(obj interface{}) bool {
-	return reflect.TypeOf(obj).String() == "repository.CustomDBEntry"
-}

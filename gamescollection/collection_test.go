@@ -150,7 +150,8 @@ var _ = Describe("Collection", func() {
 			filteredGames := collection.Filter("US")
 			Expect(len(filteredGames.Titledb)).To(Equal(1))
 			Expect(filteredGames.Titledb["0000000000000001"]).To(Not(BeNil()))
-			Expect(filteredGames.Titledb["0000000000000002"]).To(BeNil())
+			_, ok := filteredGames.Titledb["0000000000000002"]
+			Expect(ok).To(BeFalse())
 			Expect(len(filteredGames.Files)).To(Equal(1))
 		})
 		It("Filtering non existing language entry (HK)", func() {
@@ -161,7 +162,8 @@ var _ = Describe("Collection", func() {
 		It("Filtering multi", func() {
 			filteredGames := collection.Filter("MULTI")
 			Expect(len(filteredGames.Titledb)).To(Equal(1))
-			Expect(filteredGames.Titledb["0000000000000001"]).To(BeNil())
+			_, ok := filteredGames.Titledb["0000000000000001"]
+			Expect(ok).To(BeFalse())
 			Expect(filteredGames.Titledb["0000000000000002"]).To(Not(BeNil()))
 			Expect(len(filteredGames.Files)).To(Equal(1))
 		})

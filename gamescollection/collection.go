@@ -17,8 +17,8 @@ import (
 	"github.com/DblK/tinshop/utils"
 )
 
-var library map[string]map[string]interface{}
-var mergedLibrary map[string]interface{}
+var library map[string]repository.CustomDBEntry
+var mergedLibrary map[string]repository.CustomDBEntry
 var games repository.GameType
 
 // Load ensure that necessary data is loaded
@@ -66,7 +66,7 @@ func loadTitlesLibrary() {
 func ResetGamesCollection() {
 	// Build games object
 	games.Success = "Welcome to your own shop!"
-	games.Titledb = make(map[string]interface{})
+	games.Titledb = make(map[string]repository.CustomDBEntry)
 	games.Files = make([]repository.GameFileType, 0)
 	games.ThemeBlackList = nil
 }
@@ -76,7 +76,7 @@ func OnConfigUpdate(cfg repository.Config) {
 	ResetGamesCollection()
 
 	// Create merged library
-	mergedLibrary = make(map[string]interface{})
+	mergedLibrary = make(map[string]repository.CustomDBEntry)
 
 	// Copy library
 	for key, entry := range library {
@@ -88,7 +88,7 @@ func OnConfigUpdate(cfg repository.Config) {
 	// Copy CustomDB
 	for key, entry := range cfg.CustomDB() {
 		gameID := strings.ToUpper(key)
-		if mergedLibrary[gameID] != nil {
+		if _, ok := mergedLibrary[gameID]; ok {
 			log.Println("Duplicate customDB entry from official titledb (consider removing from configuration)", gameID)
 		} else {
 			mergedLibrary[gameID] = entry
@@ -104,18 +104,19 @@ func OnConfigUpdate(cfg repository.Config) {
 }
 
 // Library returns the titledb library
-func Library() map[string]interface{} {
+func Library() map[string]repository.CustomDBEntry {
 	return mergedLibrary
 }
 
 // HasGameIDInLibrary tells if we have gameID information in library
 func HasGameIDInLibrary(gameID string) bool {
-	return Library()[gameID] != nil
+	_, ok := Library()[gameID]
+	return ok
 }
 
 // IsBaseGame tells if the gameID is a base game or not
 func IsBaseGame(gameID string) bool {
-	return Library()[gameID].(map[string]interface{})["iconUrl"] != nil
+	return Library()[gameID].IconURL != ""
 }
 
 // Games returns the games inside the library
@@ -129,40 +130,22 @@ func Filter(filter string) repository.GameType {
 	filteredGames.Success = games.Success
 	filteredGames.ThemeBlackList = games.ThemeBlackList
 
-	newTitleDB := make(map[string]interface{})
+	newTitleDB := make(map[string]repository.CustomDBEntry)
 	newFiles := make([]repository.GameFileType, 0)
 	for ID, entry := range games.Titledb {
 		entryFiltered := false
 		if filter == "WORLD" {
 			entryFiltered = true
 		} else if filter == "MULTI" {
-			var numberPlayers int
-			if utils.IsCustomDBEntry(entry) {
-				numberPlayers = entry.(repository.CustomDBEntry).NumberOfPlayers
-			} else {
-				if entry.(map[string]interface{})["numberOfPlayers"] != nil {
-					numberPlayers = int(entry.(map[string]interface{})["numberOfPlayers"].(float64))
-				} else {
-					numberPlayers = 0
-				}
-			}
+			numberPlayers := entry.NumberOfPlayers
+
 			if numberPlayers > 1 {
 				entryFiltered = true
 			}
 		} else if utils.IsValidFilter(filter) {
-			var languages []string
-			if utils.IsCustomDBEntry(entry) {
-				languages = entry.(repository.CustomDBEntry).Languages
-			} else {
-				if entry.(map[string]interface{})["languages"] != nil {
-					// languages = entry.(map[string]interface{})["languages"].([]interface{})
-					languages = make([]string, 0)
-				} else {
-					languages = make([]string, 0)
-				}
-			}
+			languages := entry.Languages
 
-			if utils.Contains(languages, filter) {
+			if utils.Contains(languages, filter) || utils.Contains(languages, strings.ToLower(filter)) {
 				entryFiltered = true
 			}
 		}
@@ -206,14 +189,8 @@ func RemoveGame(ID string) {
 func CountGames() int {
 	var uniqueGames int
 	for _, entry := range games.Titledb {
-		if utils.IsCustomDBEntry(entry) {
-			if entry.(repository.CustomDBEntry).IconURL != "" {
-				uniqueGames++
-			}
-		} else {
-			if entry.(map[string]interface{})["iconUrl"] != nil {
-				uniqueGames++
-			}
+		if entry.IconURL != "" {
+			uniqueGames++
 		}
 	}
 	return uniqueGames
@@ -233,7 +210,7 @@ func AddNewGames(newGames []repository.FileDesc) {
 
 		if HasGameIDInLibrary(file.GameID) {
 			// Verify already present and not update nor dlc
-			if games.Titledb[file.GameID] != nil && IsBaseGame(file.GameID) {
+			if _, ok := games.Titledb[file.GameID]; ok && IsBaseGame(file.GameID) {
 				log.Println("Already added id!", file.GameID, file.Path)
 			} else {
 				games.Titledb[file.GameID] = Library()[file.GameID]
