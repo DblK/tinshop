@@ -1,11 +1,13 @@
 package directory
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/DblK/tinshop/config"
 	collection "github.com/DblK/tinshop/gamescollection"
 	"github.com/DblK/tinshop/repository"
 	"github.com/DblK/tinshop/utils"
@@ -49,6 +51,10 @@ func addDirectoryGame(gameFiles []repository.FileDesc, extension string, size in
 			newFile.GameInfo = names.FullID()
 			newFile.HostType = repository.LocalFile
 			newGameFiles = append(newGameFiles, newFile)
+
+			if config.GetConfig().VerifyNSP() {
+				fmt.Println("VerifyNSP: Directory", newFile.Path)
+			}
 		} else {
 			log.Println("Ignoring file because parsing failed", path)
 		}

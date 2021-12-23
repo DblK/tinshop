@@ -7,7 +7,6 @@ package gamescollection
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -219,10 +218,6 @@ func AddNewGames(newGames []repository.FileDesc) {
 			}
 		} else {
 			log.Println("Game not found in database!", file.GameInfo, file.Path)
-		}
-
-		if config.GetConfig().VerifyNSP() {
-			fmt.Println("Need to verify NSP", file.Path)
 		}
 	}
 	games.Files = append(games.Files, gameList...)

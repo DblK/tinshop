@@ -98,6 +98,10 @@ func lookIntoNfsDirectory(v *nfs.Target, share, path string) []repository.FileDe
 					newFile.GameInfo = names.FullID()
 					newFile.HostType = repository.NFSShare
 					newGameFiles = append(newGameFiles, newFile)
+
+					if config.GetConfig().VerifyNSP() {
+						fmt.Println("VerifyNSP: NFS", newFile.Path)
+					}
 				} else {
 					log.Println("Ignoring file because parsing failed", dir.FileName)
 				}
