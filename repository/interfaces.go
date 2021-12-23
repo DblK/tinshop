@@ -44,7 +44,7 @@ type Config interface {
 	IsBannedTheme(string) bool
 	BannedTheme() []string
 
-	CustomDB() map[string]CustomDBEntry
+	CustomDB() map[string]TitleDBEntry
 }
 
 // ShopTemplate contains all variables used for shop template
@@ -73,10 +73,10 @@ type FileDesc struct {
 
 // GameType structure
 type GameType struct {
-	Success        string                   `json:"success"`
-	Titledb        map[string]CustomDBEntry `json:"titledb"`
-	Files          []GameFileType           `json:"files"`
-	ThemeBlackList []string                 `json:"themeBlackList,omitempty"`
+	Success        string                  `json:"success"`
+	Titledb        map[string]TitleDBEntry `json:"titledb"`
+	Files          []GameFileType          `json:"files"`
+	ThemeBlackList []string                `json:"themeBlackList,omitempty"`
 }
 
 type GameFileType struct {
@@ -84,8 +84,8 @@ type GameFileType struct {
 	URL  string `json:"url"`
 }
 
-// CustomDBEntry describe the various fields for entries
-type CustomDBEntry struct {
+// TitleDBEntry describe the various fields for entries
+type TitleDBEntry struct {
 	ID              string   `mapstructure:"id" json:"id"`
 	RightsID        string   `mapstructure:"rightsId" json:"rightsId,omitempty"`
 	Name            string   `mapstructure:"name" json:"name,omitempty"`

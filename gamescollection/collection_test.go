@@ -90,14 +90,14 @@ var _ = Describe("Collection", func() {
 		})
 		JustBeforeEach(func() {
 			myMockConfig = mock_repository.NewMockConfig(ctrl)
-			customDB := make(map[string]repository.CustomDBEntry)
-			custom1 := repository.CustomDBEntry{
+			customDB := make(map[string]repository.TitleDBEntry)
+			custom1 := repository.TitleDBEntry{
 				ID:              "0000000000000001",
 				Languages:       []string{"FR", "EN", "US"},
 				NumberOfPlayers: 1,
 			}
 			customDB["0000000000000001"] = custom1
-			custom2 := repository.CustomDBEntry{
+			custom2 := repository.TitleDBEntry{
 				ID:              "0000000000000002",
 				Languages:       []string{"JP"},
 				NumberOfPlayers: 2,

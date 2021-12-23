@@ -17,8 +17,8 @@ import (
 	"github.com/DblK/tinshop/utils"
 )
 
-var library map[string]repository.CustomDBEntry
-var mergedLibrary map[string]repository.CustomDBEntry
+var library map[string]repository.TitleDBEntry
+var mergedLibrary map[string]repository.TitleDBEntry
 var games repository.GameType
 
 // Load ensure that necessary data is loaded
@@ -66,7 +66,7 @@ func loadTitlesLibrary() {
 func ResetGamesCollection() {
 	// Build games object
 	games.Success = "Welcome to your own shop!"
-	games.Titledb = make(map[string]repository.CustomDBEntry)
+	games.Titledb = make(map[string]repository.TitleDBEntry)
 	games.Files = make([]repository.GameFileType, 0)
 	games.ThemeBlackList = nil
 }
@@ -76,7 +76,7 @@ func OnConfigUpdate(cfg repository.Config) {
 	ResetGamesCollection()
 
 	// Create merged library
-	mergedLibrary = make(map[string]repository.CustomDBEntry)
+	mergedLibrary = make(map[string]repository.TitleDBEntry)
 
 	// Copy library
 	for key, entry := range library {
@@ -104,7 +104,7 @@ func OnConfigUpdate(cfg repository.Config) {
 }
 
 // Library returns the titledb library
-func Library() map[string]repository.CustomDBEntry {
+func Library() map[string]repository.TitleDBEntry {
 	return mergedLibrary
 }
 
@@ -130,7 +130,7 @@ func Filter(filter string) repository.GameType {
 	filteredGames.Success = games.Success
 	filteredGames.ThemeBlackList = games.ThemeBlackList
 
-	newTitleDB := make(map[string]repository.CustomDBEntry)
+	newTitleDB := make(map[string]repository.TitleDBEntry)
 	newFiles := make([]repository.GameFileType, 0)
 	for ID, entry := range games.Titledb {
 		entryFiltered := false
