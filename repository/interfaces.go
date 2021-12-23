@@ -45,6 +45,7 @@ type Config interface {
 	BannedTheme() []string
 
 	CustomDB() map[string]TitleDBEntry
+	VerifyNSP() bool
 }
 
 // ShopTemplate contains all variables used for shop template

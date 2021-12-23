@@ -48,6 +48,7 @@ Here is the list of all main features so far:
 - [X] You can specify custom titledb to be merged with official one
 - [X] Auto-watch for mounted directories
 - [X] Add filters path for shop
+- [X] Check NSP if verified or not
 
 ## Filtering
 

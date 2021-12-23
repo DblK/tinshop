@@ -281,3 +281,17 @@ func (mr *MockConfigMockRecorder) Sources() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Sources", reflect.TypeOf((*MockConfig)(nil).Sources))
 }
+
+// VerifyNSP mocks base method.
+func (m *MockConfig) VerifyNSP() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VerifyNSP")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// VerifyNSP indicates an expected call of VerifyNSP.
+func (mr *MockConfigMockRecorder) VerifyNSP() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyNSP", reflect.TypeOf((*MockConfig)(nil).VerifyNSP))
+}

@@ -270,6 +270,16 @@ var _ = Describe("Config", func() {
 			Expect(myConfig.DebugNfs()).To(BeTrue())
 		})
 	})
+	Describe("VerifyNSP", func() {
+		var myConfig = config.File{}
+		It("Test with empty object", func() {
+			Expect(myConfig.VerifyNSP()).To(BeFalse())
+		})
+		It("Test with a value", func() {
+			myConfig.NSP.CheckVerified = true
+			Expect(myConfig.VerifyNSP()).To(BeTrue())
+		})
+	})
 	Describe("DebugNoSecurity", func() {
 		var myConfig = config.File{}
 		It("Test with empty object", func() {
