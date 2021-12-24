@@ -76,13 +76,7 @@ func lookIntoNfsDirectory(v *nfs.Target, share, path string) []repository.FileDe
 	for _, dir := range dirs {
 		if dir.FileName != "." && dir.FileName != ".." {
 			if dir.IsDir() {
-				var newPath string
-				if path == "." {
-					newPath = "/" + dir.FileName
-				} else {
-					newPath = path + "/" + dir.FileName
-				}
-				subDirGameFiles := lookIntoNfsDirectory(v, share, newPath)
+				subDirGameFiles := lookIntoNfsDirectory(v, share, computePath(path, dir))
 				newGameFiles = append(newGameFiles, subDirGameFiles...)
 			} else {
 				nfsRootPath := share
@@ -110,4 +104,14 @@ func lookIntoNfsDirectory(v *nfs.Target, share, path string) []repository.FileDe
 	}
 
 	return newGameFiles
+}
+
+func computePath(path string, dir *nfs.EntryPlus) string {
+	var newPath string
+	if path == "." {
+		newPath = "/" + dir.FileName
+	} else {
+		newPath = path + "/" + dir.FileName
+	}
+	return newPath
 }
