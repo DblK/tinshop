@@ -85,6 +85,10 @@ func openNSP(file string) error {
 	_, _ = f.Read(nspStrTable)
 	// fmt.Println(nspStrTable)
 	// fmt.Println(nspHeader.Str_table_size)
+
+	var tikOffset uint64
+	var tikSize uint64
+
 	for i := 0; i < int(nspHeader.File_cnt); i++ {
 		start := newNSP.FileEntry[i].Filename_offset
 		if i != int(nspHeader.File_cnt)-1 {
@@ -95,8 +99,17 @@ func openNSP(file string) error {
 			// fmt.Println(string(nspStrTable[start:]))
 			newNSP.FileName = append(newNSP.FileName, string(nspStrTable[start:]))
 		}
+
+		// Compute Ticket information
+		if newNSP.FileName[i][len(newNSP.FileName[i])-4:] == ".tik" {
+			fmt.Println("Found ticket!")
+			tikOffset = (uint64(unsafe.Sizeof(nspHeader)) + (uint64(unsafe.Sizeof(newNSP.FileEntry[i])) * uint64(len(newNSP.FileEntry))) + uint64(len(nspStrTable)) + newNSP.FileEntry[i].File_offset)
+			tikSize = newNSP.FileEntry[i].File_size
+		}
 	}
+	// Display Ticket
 	fmt.Println(newNSP.FileName)
+	fmt.Println(tikOffset, tikSize)
 
 	return nil
 }
