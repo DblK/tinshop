@@ -15,6 +15,7 @@ import (
 type nsp_file struct {
 	Header    pfs0_header
 	FileEntry []pfs0_file_entry
+	FileName  []string
 }
 
 type pfs0_header struct {
@@ -74,9 +75,28 @@ func openNSP(file string) error {
 		buffer := bytes.NewBuffer(data)
 		_ = binary.Read(buffer, binary.LittleEndian, &nspEntry)
 		newNSP.FileEntry = append(newNSP.FileEntry, nspEntry)
+		// fmt.Println(nspEntry)
 	}
-	fmt.Println(len(newNSP.FileEntry))
-	fmt.Println(newNSP.FileEntry)
+	// fmt.Println(len(newNSP.FileEntry))
+	// fmt.Println(newNSP.FileEntry)
+
+	// Read nspStrTable + Display file_name
+	nspStrTable := make([]byte, nspHeader.Str_table_size)
+	_, _ = f.Read(nspStrTable)
+	// fmt.Println(nspStrTable)
+	// fmt.Println(nspHeader.Str_table_size)
+	for i := 0; i < int(nspHeader.File_cnt); i++ {
+		start := newNSP.FileEntry[i].Filename_offset
+		if i != int(nspHeader.File_cnt)-1 {
+			end := newNSP.FileEntry[i+1].Filename_offset - 1
+			// fmt.Println(string(nspStrTable[start:end]))
+			newNSP.FileName = append(newNSP.FileName, string(nspStrTable[start:end]))
+		} else {
+			// fmt.Println(string(nspStrTable[start:]))
+			newNSP.FileName = append(newNSP.FileName, string(nspStrTable[start:]))
+		}
+	}
+	fmt.Println(newNSP.FileName)
 
 	return nil
 }
