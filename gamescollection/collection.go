@@ -223,3 +223,8 @@ func AddNewGames(newGames []repository.FileDesc) {
 	games.Files = append(games.Files, gameList...)
 	log.Printf("Added %d games in your library\n", len(gameList))
 }
+
+// GetKey return the key from the titledb
+func GetKey(gameID string) string {
+	return Library()[gameID].Key
+}

@@ -54,6 +54,8 @@ func addDirectoryGame(gameFiles []repository.FileDesc, extension string, size in
 
 			if config.GetConfig().VerifyNSP() {
 				fmt.Println("VerifyNSP: Directory", newFile.Path)
+				// nsp.CheckNCAKey()
+				nspCheck(newFile)
 			}
 		} else {
 			log.Println("Ignoring file because parsing failed", path)

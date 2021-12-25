@@ -91,7 +91,7 @@ type TitleDBEntry struct {
 	ID              string   `mapstructure:"id" json:"id"`
 	RightsID        string   `mapstructure:"rightsId" json:"rightsId,omitempty"`
 	Name            string   `mapstructure:"name" json:"name,omitempty"`
-	Version         uint     `mapstructure:"version" json:"version,omitempty"`
+	Version         string   `mapstructure:"version" json:"version,omitempty"`
 	Key             string   `mapstructure:"key" json:"key,omitempty"`
 	IsDemo          bool     `mapstructure:"isDemo" json:"isDemo,omitempty"`
 	Region          string   `mapstructure:"region" json:"region,omitempty"`
