@@ -125,3 +125,4 @@ I would like to give back thanks to the people who helped me with or without kno
 - [Bogdan Rosu Creative](https://www.iconfinder.com/icons/353439/basket_purse_shopping_cart_ecommerce_shop_buy_online_icon) for his shop icon.
 - [Dono](https://github.com/Donorhan) for his support and tests.
 - [AdamK2003](https://github.com/AdamK2003/titledb) for his up-to-date [`titles.US.en.json`](https://github.com/AdamK2003/titledb/releases/download/latest/titles.US.en.json) and his answers on discord.
+- [nxdumptool](https://github.com/DarkMatterCore/nxdumptool) for the information taken of NSP format
