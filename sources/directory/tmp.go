@@ -3,9 +3,11 @@ package directory
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"unsafe"
 
 	collection "github.com/DblK/tinshop/gamescollection"
@@ -57,13 +59,13 @@ func nspCheck(file repository.FileDesc) {
 	fmt.Println("Key:", key)
 	fmt.Println()
 
-	err := openNSP(file.Path)
+	err := openNSP(file.Path, key)
 	if err != nil {
 		fmt.Println("Error while opening NSP", err)
 	}
 }
 
-func openNSP(file string) error {
+func openNSP(file string, titleDBKey string) error {
 	f, err := os.Open(file)
 	if err != nil {
 		fmt.Println(err)
@@ -142,9 +144,27 @@ func openNSP(file string) error {
 	}
 
 	fmt.Println(string(ticket.Sig_issuer[:]))
-	fmt.Println(ticket.Titlekey_block)
+	fmt.Println("Titlekey_block", ticket.Titlekey_block)
+	// fmt.Println("Titlekey_block", strconv.Itoa(int(ticket.Titlekey_block[0])))
+	var titleKey []byte
+	for i := 0; i < 16; i++ {
+		titleKey = append(titleKey, ticket.Titlekey_block[i])
+	}
+	fmt.Println(strings.ToUpper(hex.EncodeToString(titleKey)))
+	fmt.Println(len(hex.EncodeToString(titleKey)))
+
+	fmt.Println("Titlekey_type", ticket.Titlekey_type)
+	fmt.Println("Master_key_rev", ticket.Master_key_rev)
+	fmt.Println("Ticket_id", ticket.Ticket_id)
+	fmt.Println("Device_id", ticket.Device_id)
+	fmt.Println("Rights_id", ticket.Rights_id)
+	fmt.Println("Account_id", ticket.Account_id)
 	// fmt.Println(data)
 	// fmt.Println(hex.Dump(data))
+
+	if strings.ToUpper(hex.EncodeToString(titleKey)) == titleDBKey {
+		fmt.Println("Good!!!")
+	}
 
 	return nil
 }
