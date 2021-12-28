@@ -41,6 +41,7 @@
         "nestif",
         "noctx",
         "nolintlint",
+        "nxdumptool",
         "prealloc",
         "renameio",
         "robustio",

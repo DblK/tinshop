@@ -48,7 +48,7 @@ Here is the list of all main features so far:
 - [X] You can specify custom titledb to be merged with official one
 - [X] Auto-watch for mounted directories
 - [X] Add filters path for shop
-- [X] Check NSP if verified or not
+- [X] Simple ticket check in NSP/NSZ
 
 ## Filtering
 
@@ -118,6 +118,11 @@ For other type of protection, you can whitelist your own switch and this will do
 
 First, download and replace the latest [`titles.US.en.json`](https://github.com/AdamK2003/titledb/releases/download/latest/titles.US.en.json) available (or delete it, it will be automatically downloaded at startup).  
 If this does not solve your issue, then you should use custom titledb entry to describe those which are missing.
+
+## Why I still get `NCA fail` error in `tinfoil` and nothing in `tinshop`?
+
+The current implementation to verify the NSP/NSZ are basic and based on the Ticket information.  
+Maybe later, this feature will be enhanced to add additional checks on game files.
 
 # Credits
 
