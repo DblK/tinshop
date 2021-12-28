@@ -107,9 +107,10 @@ func lookIntoNfsDirectory(v *nfs.Target, share, path string) []repository.FileDe
 
 					if config.GetConfig().VerifyNSP() {
 						valid, errTicket := nspCheck(newFile)
-						// fmt.Println(newFile.Path, valid, errTicket)
 						if valid || (errTicket != nil && errTicket.Error() == "TitleDBKey for game "+newFile.GameID+" is not found") {
 							newGameFiles = append(newGameFiles, newFile)
+						} else {
+							log.Println(errTicket)
 						}
 					} else {
 						newGameFiles = append(newGameFiles, newFile)
@@ -135,7 +136,6 @@ func computePath(path string, dir *nfs.EntryPlus) string {
 }
 
 func nspCheck(file repository.FileDesc) (bool, error) {
-
 	key, err := collection.GetKey(file.GameID)
 	if err != nil {
 		return false, err
@@ -146,15 +146,11 @@ func nspCheck(file repository.FileDesc) (bool, error) {
 		return false, err
 	}
 
-	fmt.Println(host, target)
-
-	return true, nil
-
-	mount, v := nfsConnect(host, target)
+	mount, v := nfsConnect(host, filepath.Dir(target))
 	defer mount.Close()
 	defer v.Close()
 
-	f, err := v.Open(file.Path)
+	f, err := v.Open(filepath.Base(target))
 	if err != nil {
 		return false, err
 	}
