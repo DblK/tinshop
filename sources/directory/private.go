@@ -1,7 +1,7 @@
 package directory
 
 import (
-	"fmt"
+	"errors"
 	"log"
 	"os"
 	"path/filepath"
@@ -56,6 +56,8 @@ func addDirectoryGame(gameFiles []repository.FileDesc, extension string, size in
 				valid, errTicket := nspCheck(newFile)
 				if valid || (errTicket != nil && errTicket.Error() == "TitleDBKey for game "+newFile.GameID+" is not found") {
 					newGameFiles = append(newGameFiles, newFile)
+				} else {
+					log.Println(errTicket)
 				}
 			} else {
 				newGameFiles = append(newGameFiles, newFile)
@@ -110,17 +112,17 @@ func nspCheck(file repository.FileDesc) (bool, error) {
 
 	f, err := os.Open(file.Path)
 	if err != nil {
-		fmt.Println(err)
+		return false, err
 	}
 	defer f.Close()
 
 	log.Println("Verifying Ticket:", file.Path)
 	valid, err := nsp.IsTicketValid(f, key)
 	if err != nil {
-		fmt.Println("Error while opening NSP", err)
+		return false, err
 	}
 	if !valid {
-		fmt.Println("Your file", file.Path, "is not valid!")
+		return false, errors.New("Your file" + file.Path + "is not valid!")
 	}
 
 	return valid, err
