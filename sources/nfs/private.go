@@ -83,46 +83,53 @@ func lookIntoNfsDirectory(v *nfs.Target, share, path string) []repository.FileDe
 	var newGameFiles []repository.FileDesc
 
 	for _, dir := range dirs {
-		if dir.FileName != "." && dir.FileName != ".." {
-			if dir.IsDir() {
-				subDirGameFiles := lookIntoNfsDirectory(v, share, computePath(path, dir))
-				newGameFiles = append(newGameFiles, subDirGameFiles...)
-			} else {
-				nfsRootPath := share
-				if path != "." {
-					nfsRootPath += path
-				}
-				extension := filepath.Ext(dir.FileName)
-				if extension != ".nsp" && extension != ".nsz" {
-					continue
-				}
+		// Handle recursive directories
+		if dir.IsDir() && dir.FileName != "." && dir.FileName != ".." {
+			subDirGameFiles := lookIntoNfsDirectory(v, share, computePath(path, dir))
+			newGameFiles = append(newGameFiles, subDirGameFiles...)
+			continue
+		}
 
-				newFile := repository.FileDesc{Size: dir.Size(), Path: nfsRootPath + "/" + dir.FileName}
-				names := utils.ExtractGameID(dir.FileName)
+		// Handle only NSP and NSZ files
+		extension := filepath.Ext(dir.FileName)
+		if extension != ".nsp" && extension != ".nsz" {
+			continue
+		}
 
-				if names.ShortID() != "" {
-					newFile.GameID = names.ShortID()
-					newFile.GameInfo = names.FullID()
-					newFile.HostType = repository.NFSShare
+		nfsRootPath := computeFullPath(share, path)
+		newFile := repository.FileDesc{Size: dir.Size(), Path: nfsRootPath + "/" + dir.FileName}
+		names := utils.ExtractGameID(dir.FileName)
 
-					if config.GetConfig().VerifyNSP() {
-						valid, errTicket := nspCheck(newFile)
-						if valid || (errTicket != nil && errTicket.Error() == "TitleDBKey for game "+newFile.GameID+" is not found") {
-							newGameFiles = append(newGameFiles, newFile)
-						} else {
-							log.Println(errTicket)
-						}
-					} else {
-						newGameFiles = append(newGameFiles, newFile)
-					}
-				} else {
-					log.Println("Ignoring file because parsing failed", dir.FileName)
-				}
-			}
+		if names.ShortID() == "" {
+			// Useful to rename you file according to readme
+			log.Println("Ignoring file because parsing failed", dir.FileName)
+			continue
+		}
+		newFile.GameID = names.ShortID()
+		newFile.GameInfo = names.FullID()
+		newFile.HostType = repository.NFSShare
+
+		var valid = true
+		var errTicket error
+		if config.GetConfig().VerifyNSP() {
+			valid, errTicket = nspCheck(newFile)
+		}
+		if valid || (errTicket != nil && errTicket.Error() == "TitleDBKey for game "+newFile.GameID+" is not found") {
+			newGameFiles = append(newGameFiles, newFile)
+		} else {
+			log.Println(errTicket)
 		}
 	}
 
 	return newGameFiles
+}
+
+func computeFullPath(share, path string) string {
+	nfsRootPath := share
+	if path != "." {
+		nfsRootPath += path
+	}
+	return nfsRootPath
 }
 
 func computePath(path string, dir *nfs.EntryPlus) string {
