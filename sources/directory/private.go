@@ -73,9 +73,6 @@ func addDirectoryGame(gameFiles []repository.FileDesc, extension string, size in
 func loadGamesDirectory(directory string) error {
 	log.Printf("Loading games from directory '%s'...\n", directory)
 
-	// Add watcher for directories
-	watchDirectory(directory)
-
 	var newGameFiles []repository.FileDesc
 	// Walk through games directory
 	err := filepath.Walk(directory,
@@ -86,8 +83,12 @@ func loadGamesDirectory(directory string) error {
 			if !info.IsDir() {
 				extension := filepath.Ext(info.Name())
 				newGameFiles = addDirectoryGame(newGameFiles, extension, info.Size(), path)
-			} else if info.IsDir() && path != directory {
-				watchDirectory(path)
+			} else if info.IsDir() {
+				if path != directory {
+					watchDirectory(path)
+				} else {
+					watchDirectory(directory)
+				}
 			}
 			return nil
 		})
