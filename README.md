@@ -119,10 +119,12 @@ For other type of protection, you can whitelist your own switch and this will do
 First, download and replace the latest [`titles.US.en.json`](https://github.com/AdamK2003/titledb/releases/download/latest/titles.US.en.json) available (or delete it, it will be automatically downloaded at startup).  
 If this does not solve your issue, then you should use custom titledb entry to describe those which are missing.
 
-## Why I still get `NCA fail` error in `tinfoil` and nothing in `tinshop`?
+## Why I still get `NCA signature verification failed` error in `tinfoil` and nothing in `tinshop`?
 
 The current implementation to verify the NSP/NSZ are basic and based on the Ticket information.  
-Maybe later, this feature will be enhanced to add additional checks on game files.
+So you might still get some error about signature failed even with `checkVerified` enabled.
+
+Maybe later, this feature will be enhanced to add additional checks on game files (PR Welcome!).
 
 # Credits
 
