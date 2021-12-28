@@ -156,13 +156,12 @@ func nspCheck(file repository.FileDesc) (bool, error) {
 	}
 	defer f.Close()
 
-	log.Println("Verifying Ticket:", file.Path)
 	valid, err := nsp.IsTicketValid(f, key)
 	if err != nil {
 		return false, err
 	}
 	if !valid {
-		return false, errors.New("Your file" + file.Path + "is not valid!")
+		return false, errors.New("The ticket in '" + file.Path + "' is not valid!")
 	}
 
 	return valid, err
