@@ -43,6 +43,7 @@ func IsTicketValid(file io.ReadSeeker, titleDBKey string) (bool, error) {
 
 	var tikOffset int
 	var tikSize uint64
+	var ticketFound bool
 
 	for i := 0; i < int(nspHeader.FileCnt); i++ {
 		start := newNSP.FileEntry[i].FilenameOffset
@@ -55,6 +56,7 @@ func IsTicketValid(file io.ReadSeeker, titleDBKey string) (bool, error) {
 
 		// Compute Ticket information
 		if newNSP.FileName[i][len(newNSP.FileName[i])-4:] == ".tik" {
+			ticketFound = true
 			tikOffset = int(unsafe.Sizeof(nspHeader)) + (int(unsafe.Sizeof(newNSP.FileEntry[i])) * len(newNSP.FileEntry)) + len(nspStrTable) + int(newNSP.FileEntry[i].FileOffset)
 			tikSize = newNSP.FileEntry[i].FileSize
 
@@ -63,6 +65,11 @@ func IsTicketValid(file io.ReadSeeker, titleDBKey string) (bool, error) {
 				return false, errors.New(msg)
 			}
 		}
+	}
+
+	// If no ticket we handle it as valid
+	if !ticketFound {
+		return true, nil
 	}
 
 	// Retrieve Ticket content
