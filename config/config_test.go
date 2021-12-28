@@ -290,6 +290,16 @@ var _ = Describe("Config", func() {
 			Expect(myConfig.DebugNoSecurity()).To(BeTrue())
 		})
 	})
+	Describe("DebugTicket", func() {
+		var myConfig = config.File{}
+		It("Test with empty object", func() {
+			Expect(myConfig.DebugTicket()).To(BeFalse())
+		})
+		It("Test with a value", func() {
+			myConfig.Debug.Ticket = true
+			Expect(myConfig.DebugTicket()).To(BeTrue())
+		})
+	})
 	Describe("BannedTheme", func() {
 		var myConfig = config.File{}
 		It("Test with empty object", func() {
