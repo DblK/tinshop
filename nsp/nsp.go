@@ -7,8 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"strings"
 	"unsafe"
+
+	"github.com/DblK/tinshop/config"
 )
 
 // IsTicketValid return if ticket is valid or not
@@ -89,6 +92,12 @@ func IsTicketValid(file io.ReadSeeker, titleDBKey string) (bool, error) {
 		titleKey = append(titleKey, ticket.TitlekeyBlock[i])
 	}
 	var ticketKey = strings.ToUpper(hex.EncodeToString(titleKey))
+
+	if config.GetConfig().DebugTicket() {
+		if ticketKey == "00000000000000000000000000000000" {
+			log.Println("Missing Ticket Key")
+		}
+	}
 
 	if string(ticket.SigIssuer[:26]) != genericIssuer || ticketKey != titleDBKey || ticket.TicketID != 0 || ticket.DeviceID != 0 || ticket.AccountID != 0 || ticket.TitlekeyType != eTicketTitleKeyCommon {
 		return false, nil

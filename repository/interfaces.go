@@ -32,6 +32,8 @@ type Config interface {
 
 	DebugNfs() bool
 	DebugNoSecurity() bool
+	DebugTicket() bool
+
 	Sources() Sources
 	Directories() []string
 	NfsShares() []string

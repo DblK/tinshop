@@ -21,6 +21,7 @@ import (
 type debug struct {
 	Nfs        bool
 	NoSecurity bool
+	Ticket     bool
 }
 
 type security struct {
@@ -184,6 +185,11 @@ func (cfg *File) Host() string {
 // Port returns the port number for outside access
 func (cfg *File) Port() int {
 	return cfg.ShopPort
+}
+
+// DebugTicket tells if we should display additional log for ticket verification
+func (cfg *File) DebugTicket() bool {
+	return cfg.Debug.Ticket
 }
 
 // DebugNfs tells if we should display additional log for nfs

@@ -21,7 +21,9 @@ debug:
   nfs: false
   # Remove middleware security for retrieving index
   # DO NOT use in production (only for dev purpose)
-  noSecurity: true
+  noSecurity: false
+  # Display more information about ticket's verification
+  ticket: false
 
 # All actions related to NSP file will be stored here
 nsp:
