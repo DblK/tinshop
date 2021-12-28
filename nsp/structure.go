@@ -7,7 +7,6 @@ type nspFile struct {
 }
 
 type pfs0Header struct {
-	// magic uint32
 	Magic        [4]byte
 	FileCnt      uint32
 	StrTableSize uint32
