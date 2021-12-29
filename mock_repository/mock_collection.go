@@ -180,3 +180,15 @@ func (mr *MockCollectionMockRecorder) RemoveGame(arg0 interface{}) *gomock.Call 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveGame", reflect.TypeOf((*MockCollection)(nil).RemoveGame), arg0)
 }
+
+// ResetGamesCollection mocks base method.
+func (m *MockCollection) ResetGamesCollection() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "ResetGamesCollection")
+}
+
+// ResetGamesCollection indicates an expected call of ResetGamesCollection.
+func (mr *MockCollectionMockRecorder) ResetGamesCollection() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetGamesCollection", reflect.TypeOf((*MockCollection)(nil).ResetGamesCollection))
+}

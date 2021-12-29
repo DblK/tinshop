@@ -31,12 +31,12 @@ func New() repository.Collection {
 
 // Load ensure that necessary data is loaded
 func (c *collect) Load() {
-	loadTitlesLibrary(c.library)
+	c.loadTitlesLibrary()
 
-	ResetGamesCollection(c.games)
+	c.ResetGamesCollection()
 }
 
-func loadTitlesLibrary(library map[string]repository.TitleDBEntry) {
+func (c *collect) loadTitlesLibrary() {
 	// Open our jsonFile
 	jsonFile, err := os.Open("titles.US.en.json")
 
@@ -62,7 +62,7 @@ func loadTitlesLibrary(library map[string]repository.TitleDBEntry) {
 
 	byteValue, _ := io.ReadAll(jsonFile)
 
-	err = json.Unmarshal(byteValue, &library)
+	err = json.Unmarshal(byteValue, &c.library)
 	if err != nil {
 		log.Println("Error while loading titles library", err)
 	} else {
@@ -71,17 +71,17 @@ func loadTitlesLibrary(library map[string]repository.TitleDBEntry) {
 }
 
 // ResetGamesCollection reset the game collection
-func ResetGamesCollection(games repository.GameType) {
+func (c *collect) ResetGamesCollection() {
 	// Build games object
-	games.Success = "Welcome to your own shop!"
-	games.Titledb = make(map[string]repository.TitleDBEntry)
-	games.Files = make([]repository.GameFileType, 0)
-	games.ThemeBlackList = nil
+	c.games.Success = "Welcome to your own shop!"
+	c.games.Titledb = make(map[string]repository.TitleDBEntry)
+	c.games.Files = make([]repository.GameFileType, 0)
+	c.games.ThemeBlackList = nil
 }
 
 // OnConfigUpdate the collection of files
 func (c *collect) OnConfigUpdate(cfg repository.Config) {
-	ResetGamesCollection(c.games)
+	c.ResetGamesCollection()
 
 	// Create merged library
 	c.mergedLibrary = make(map[string]repository.TitleDBEntry)

@@ -175,4 +175,5 @@ type Collection interface {
 	IsBaseGame(string) bool
 	Games() GameType
 	GetKey(string) (string, error)
+	ResetGamesCollection()
 }
