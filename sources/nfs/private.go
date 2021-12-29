@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/DblK/tinshop/config"
-	collection "github.com/DblK/tinshop/gamescollection"
 	"github.com/DblK/tinshop/nsp"
 	"github.com/DblK/tinshop/repository"
 	"github.com/DblK/tinshop/utils"
@@ -26,7 +25,7 @@ func getHostTarget(share string) (string, string, error) {
 	return shareInfos[0], shareInfos[1], nil
 }
 
-func loadGamesNfs(share string) {
+func (src *nfsSource) loadGamesNfs(share string) {
 	if config.GetConfig().DebugNfs() {
 		util.DefaultLogger.SetDebug(true)
 	}
@@ -44,14 +43,14 @@ func loadGamesNfs(share string) {
 	defer mount.Close()
 	defer v.Close()
 
-	nfsGames := lookIntoNfsDirectory(v, share, ".")
+	nfsGames := src.lookIntoNfsDirectory(v, share, ".")
 
 	mount.Close()
-	gameFiles = append(gameFiles, nfsGames...)
+	src.gameFiles = append(src.gameFiles, nfsGames...)
 
 	// Add all files
 	if len(nfsGames) > 0 {
-		collection.AddNewGames(nfsGames)
+		src.collection.AddNewGames(nfsGames)
 	}
 }
 
@@ -70,7 +69,7 @@ func nfsConnect(host, target string) (*nfs.Mount, *nfs.Target) {
 	return mount, v
 }
 
-func lookIntoNfsDirectory(v *nfs.Target, share, path string) []repository.FileDesc {
+func (src *nfsSource) lookIntoNfsDirectory(v *nfs.Target, share, path string) []repository.FileDesc {
 	// Retrieve all directories
 	log.Printf("Retrieving all files in directory ('%s')...\n", path)
 
@@ -85,7 +84,7 @@ func lookIntoNfsDirectory(v *nfs.Target, share, path string) []repository.FileDe
 	for _, dir := range dirs {
 		// Handle recursive directories
 		if dir.IsDir() && dir.FileName != "." && dir.FileName != ".." {
-			subDirGameFiles := lookIntoNfsDirectory(v, share, computePath(path, dir))
+			subDirGameFiles := src.lookIntoNfsDirectory(v, share, computePath(path, dir))
 			newGameFiles = append(newGameFiles, subDirGameFiles...)
 			continue
 		}
@@ -112,7 +111,7 @@ func lookIntoNfsDirectory(v *nfs.Target, share, path string) []repository.FileDe
 		var valid = true
 		var errTicket error
 		if config.GetConfig().VerifyNSP() {
-			valid, errTicket = nspCheck(newFile)
+			valid, errTicket = src.nspCheck(newFile)
 		}
 		if valid || (errTicket != nil && errTicket.Error() == "TitleDBKey for game "+newFile.GameID+" is not found") {
 			newGameFiles = append(newGameFiles, newFile)
@@ -142,8 +141,8 @@ func computePath(path string, dir *nfs.EntryPlus) string {
 	return newPath
 }
 
-func nspCheck(file repository.FileDesc) (bool, error) {
-	key, err := collection.GetKey(file.GameID)
+func (src *nfsSource) nspCheck(file repository.FileDesc) (bool, error) {
+	key, err := src.collection.GetKey(file.GameID)
 	if err != nil {
 		if config.GetConfig().DebugTicket() && err.Error() == "TitleDBKey for game "+file.GameID+" is not found" {
 			log.Println(err)

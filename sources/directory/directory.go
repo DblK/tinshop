@@ -10,15 +10,17 @@ import (
 	"github.com/DblK/tinshop/repository"
 )
 
-var gameFiles []repository.FileDesc
-
 type directorySource struct {
+	gameFiles  []repository.FileDesc
+	collection repository.Collection
 }
 
 // New create a directory source
-func New() repository.Source {
-	gameFiles = make([]repository.FileDesc, 0)
-	return &directorySource{}
+func New(collection repository.Collection) repository.Source {
+	return &directorySource{
+		gameFiles:  make([]repository.FileDesc, 0),
+		collection: collection,
+	}
 }
 
 func (src *directorySource) Download(w http.ResponseWriter, r *http.Request, game, path string) {
@@ -40,7 +42,7 @@ func (src *directorySource) Download(w http.ResponseWriter, r *http.Request, gam
 
 func (src *directorySource) Load(directories []string, uniqueSource bool) {
 	for _, directory := range directories {
-		err := loadGamesDirectory(directory)
+		err := src.loadGamesDirectory(directory)
 
 		if err != nil {
 			if strings.Contains(err.Error(), "no such file or directory") {
@@ -56,7 +58,7 @@ func (src *directorySource) Load(directories []string, uniqueSource bool) {
 
 func (src *directorySource) Reset() {
 	watcherDirectories = newWatcher()
-	gameFiles = make([]repository.FileDesc, 0)
+	src.gameFiles = make([]repository.FileDesc, 0)
 }
 
 func (src *directorySource) UnWatchAll() {
@@ -64,5 +66,5 @@ func (src *directorySource) UnWatchAll() {
 }
 
 func (src *directorySource) GetFiles() []repository.FileDesc {
-	return gameFiles
+	return src.gameFiles
 }

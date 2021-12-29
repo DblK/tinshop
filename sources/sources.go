@@ -23,11 +23,14 @@ type SourceProvider struct {
 
 type allSources struct {
 	sourcesProvider SourceProvider
+	collection      repository.Collection
 }
 
 // New create a new collection
-func New() repository.Sources {
-	return &allSources{}
+func New(collection repository.Collection) repository.Sources {
+	return &allSources{
+		collection: collection,
+	}
 }
 
 // OnConfigUpdate from all sources
@@ -35,13 +38,13 @@ func (s *allSources) OnConfigUpdate(cfg repository.Config) {
 	log.Println("Sources loading...")
 
 	// Directories
-	srcDirectories := directory.New()
+	srcDirectories := directory.New(s.collection)
 	srcDirectories.Reset()
 	srcDirectories.Load(cfg.Directories(), len(cfg.NfsShares()) == 0)
 	s.sourcesProvider.Directory = srcDirectories
 
 	// NFS
-	srcNFS := nfs.New()
+	srcNFS := nfs.New(s.collection)
 	srcNFS.Reset()
 	srcNFS.Load(cfg.NfsShares(), false)
 	s.sourcesProvider.NFS = srcNFS

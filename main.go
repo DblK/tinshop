@@ -87,8 +87,8 @@ func initServer() {
 	// Load collection
 	shopData = shop{
 		collection: collection.New(),
-		sources:    sources.New(),
 	}
+	shopData.sources = sources.New(shopData.collection)
 	shopData.collection.Load()
 
 	// Loading config

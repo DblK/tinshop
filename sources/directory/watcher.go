@@ -5,7 +5,6 @@ import (
 	"path/filepath"
 	"sync"
 
-	collection "github.com/DblK/tinshop/gamescollection"
 	"github.com/DblK/tinshop/repository"
 	"gopkg.in/fsnotify.v1"
 )
@@ -21,7 +20,7 @@ func newWatcher() *fsnotify.Watcher {
 	return watcherDirectories
 }
 
-func watchDirectory(directory string) {
+func (src *directorySource) watchDirectory(directory string) {
 	initWG := sync.WaitGroup{}
 	initWG.Add(1)
 	go func() {
@@ -39,13 +38,13 @@ func watchDirectory(directory string) {
 					}
 
 					if event.Op&fsnotify.Create != 0 {
-						newGames := addDirectoryGame(make([]repository.FileDesc, 0), filepath.Ext(event.Name), 0, event.Name)
-						gameFiles = append(gameFiles, newGames...)
-						collection.AddNewGames(newGames)
+						newGames := src.addDirectoryGame(make([]repository.FileDesc, 0), filepath.Ext(event.Name), 0, event.Name)
+						src.gameFiles = append(src.gameFiles, newGames...)
+						src.collection.AddNewGames(newGames)
 					} else if event.Op&fsnotify.Remove != 0 {
-						removeEntriesFromDirectory(event.Name)
+						src.removeEntriesFromDirectory(event.Name)
 					} else if event.Op&fsnotify.Rename == fsnotify.Rename {
-						removeEntriesFromDirectory(event.Name)
+						src.removeEntriesFromDirectory(event.Name)
 					}
 
 				case err, ok := <-watcherDirectories.Errors:
