@@ -11,9 +11,23 @@ import (
 )
 
 var _ = Describe("Collection", func() {
-	var testCollection repository.Collection
+	var (
+		myMockConfig   *mock_repository.MockConfig
+		ctrl           *gomock.Controller
+		testCollection repository.Collection
+	)
 	BeforeEach(func() {
-		testCollection = collection.New()
+		ctrl = gomock.NewController(GinkgoT())
+	})
+	JustBeforeEach(func() {
+		myMockConfig = mock_repository.NewMockConfig(ctrl)
+
+		myMockConfig.EXPECT().
+			RootShop().
+			Return("http://tinshop.example.com").
+			AnyTimes()
+
+		testCollection = collection.New(myMockConfig)
 	})
 	It("Return list of games", func() {
 		games := testCollection.Games()
@@ -21,7 +35,7 @@ var _ = Describe("Collection", func() {
 		Expect(games.Files).To(HaveLen(0))
 	})
 	Describe("AddNewGames", func() {
-		BeforeEach(func() {
+		JustBeforeEach(func() {
 			testCollection.ResetGamesCollection()
 		})
 		It("Add an empty array", func() {
@@ -48,7 +62,7 @@ var _ = Describe("Collection", func() {
 		})
 	})
 	Describe("RemoveGame", func() {
-		BeforeEach(func() {
+		JustBeforeEach(func() {
 			testCollection.ResetGamesCollection()
 		})
 		It("Removing existing ID", func() {
@@ -121,6 +135,10 @@ var _ = Describe("Collection", func() {
 				BannedTheme().
 				Return(nil).
 				AnyTimes()
+			myMockConfig.EXPECT().
+				RootShop().
+				Return("http://tinshop.example.com").
+				AnyTimes()
 
 			testCollection.OnConfigUpdate(myMockConfig)
 
@@ -172,7 +190,7 @@ var _ = Describe("Collection", func() {
 			Expect(len(filteredGames.Files)).To(Equal(1))
 		})
 	})
-	FDescribe("CountGames", func() {
+	Describe("CountGames", func() {
 		It("Test with empty collection", func() {
 			Expect(testCollection.CountGames()).To(Equal(0))
 		})
@@ -185,6 +203,23 @@ var _ = Describe("Collection", func() {
 				GameInfo: "[0000000000000001][v0].nsp",
 				HostType: repository.LocalFile,
 			}
+			customDB := make(map[string]repository.TitleDBEntry)
+			newEntry := &repository.TitleDBEntry{
+				IconURL: "https://example.com",
+			}
+			customDB["0000000000000001"] = *newEntry
+
+			myMockConfig.EXPECT().
+				CustomDB().
+				Return(customDB).
+				AnyTimes()
+			myMockConfig.EXPECT().
+				BannedTheme().
+				Return(nil).
+				AnyTimes()
+
+			testCollection.OnConfigUpdate(myMockConfig)
+
 			newGames = append(newGames, newFile)
 			testCollection.AddNewGames(newGames)
 
