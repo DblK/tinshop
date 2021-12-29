@@ -26,8 +26,12 @@ var _ = Describe("Main", func() {
 				req = httptest.NewRequest(http.MethodGet, "/", nil)
 				writer = httptest.NewRecorder()
 			})
+			It("Verify response without data", func() {
+				handler.ServeHTTP(writer, req)
+				Expect(writer.Code).To(Equal(http.StatusNotFound))
+			})
 			It("Verify empty response", func() {
-				Expect(true).To(BeTrue())
+				tinshop.ResetTinshop()
 				handler.ServeHTTP(writer, req)
 				Expect(writer.Code).To(Equal(http.StatusOK))
 
@@ -46,10 +50,11 @@ var _ = Describe("Main", func() {
 				handler = http.HandlerFunc(tinshop.HomeHandler)
 				req = httptest.NewRequest(http.MethodGet, "/", nil)
 				writer = httptest.NewRecorder()
+				tinshop.ResetTinshop()
 				// Add mock collection
 			})
 			It("Verify status code", func() {
-				Expect(true).To(BeTrue())
+
 				handler.ServeHTTP(writer, req)
 				Expect(writer.Code).To(Equal(http.StatusOK))
 

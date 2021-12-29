@@ -84,12 +84,17 @@ func main() {
 	os.Exit(0) //nolint:gocritic
 }
 
-func initServer() {
+// ResetTinshop reset the storage for all information
+func ResetTinshop() {
 	// Init shop data
 	shopData = shop{}
 	shopData.config = config.New()
 	shopData.collection = collection.New(shopData.config)
 	shopData.sources = sources.New(shopData.collection)
+}
+
+func initServer() {
+	ResetTinshop()
 
 	// Load collection
 	shopData.collection.Load()
@@ -130,6 +135,10 @@ func serveCollection(w http.ResponseWriter, tinfoilCollection interface{}) {
 
 // HomeHandler handles list of games
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	if shopData.collection == nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 	serveCollection(w, shopData.collection.Games())
 }
 
