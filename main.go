@@ -13,6 +13,7 @@ import (
 
 	"github.com/DblK/tinshop/config"
 	collection "github.com/DblK/tinshop/gamescollection"
+	"github.com/DblK/tinshop/repository"
 	"github.com/DblK/tinshop/sources"
 	"github.com/DblK/tinshop/utils"
 	"github.com/gorilla/mux"
@@ -20,6 +21,11 @@ import (
 
 //go:embed assets/*
 var assetData embed.FS
+var shopData shop
+
+type shop struct {
+	collection repository.Collection
+}
 
 func main() {
 	initServer()
@@ -50,8 +56,8 @@ func main() {
 			log.Println(err)
 		}
 	}()
-	log.Printf("Total of %d files in your library (%d in titledb section)\n", len(collection.Games().Files), len(collection.Games().Titledb))
-	var uniqueGames = collection.CountGames()
+	log.Printf("Total of %d files in your library (%d in titledb section)\n", len(shopData.collection.Games().Files), len(shopData.collection.Games().Titledb))
+	var uniqueGames = shopData.collection.CountGames()
 	log.Printf("Total of %d unique games in your library\n", uniqueGames)
 	log.Printf("Tinshop available at %s !\n", config.GetConfig().RootShop())
 
@@ -78,10 +84,13 @@ func main() {
 
 func initServer() {
 	// Load collection
-	collection.Load()
+	shopData = shop{
+		collection: collection.New(),
+	}
+	shopData.collection.Load()
 
 	// Loading config
-	config.AddHook(collection.OnConfigUpdate)
+	config.AddHook(shopData.collection.OnConfigUpdate)
 	config.AddHook(sources.OnConfigUpdate)
 	config.AddBeforeHook(sources.BeforeConfigUpdate)
 	config.LoadConfig()
@@ -116,7 +125,7 @@ func serveCollection(w http.ResponseWriter, tinfoilCollection interface{}) {
 
 // HomeHandler handles list of games
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	serveCollection(w, collection.Games())
+	serveCollection(w, shopData.collection.Games())
 }
 
 // GamesHandler handles downloading games
@@ -136,5 +145,5 @@ func FilteringHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	serveCollection(w, collection.Filter(vars["filter"]))
+	serveCollection(w, shopData.collection.Filter(vars["filter"]))
 }

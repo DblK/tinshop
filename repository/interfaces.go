@@ -153,3 +153,18 @@ type Source interface {
 	Reset()
 	GetFiles() []FileDesc
 }
+
+// Collection describes all information about collection
+type Collection interface {
+	Load()
+	OnConfigUpdate(Config)
+	Filter(string) GameType
+	RemoveGame(string)
+	CountGames() int
+	AddNewGames([]FileDesc)
+	Library() map[string]TitleDBEntry
+	HasGameIDInLibrary(string) bool
+	IsBaseGame(string) bool
+	Games() GameType
+	GetKey(string) (string, error)
+}
