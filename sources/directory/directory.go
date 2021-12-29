@@ -1,6 +1,7 @@
 package directory
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -56,6 +57,7 @@ func (src *directorySource) Load(directories []string, uniqueSource bool) {
 			}
 		}
 	}
+	fmt.Println(src.gameFiles)
 }
 
 func (src *directorySource) Reset() {

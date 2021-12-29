@@ -13,7 +13,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/DblK/tinshop/config"
 	"github.com/DblK/tinshop/repository"
 	"github.com/DblK/tinshop/utils"
 )
@@ -22,11 +21,14 @@ type collect struct {
 	games         repository.GameType
 	library       map[string]repository.TitleDBEntry
 	mergedLibrary map[string]repository.TitleDBEntry
+	config        repository.Config
 }
 
 // New create a new collection
-func New() repository.Collection {
-	return &collect{}
+func New(config repository.Config) repository.Collection {
+	return &collect{
+		config: config,
+	}
 }
 
 // Load ensure that necessary data is loaded
@@ -81,6 +83,7 @@ func (c *collect) ResetGamesCollection() {
 
 // OnConfigUpdate the collection of files
 func (c *collect) OnConfigUpdate(cfg repository.Config) {
+	c.config = cfg
 	c.ResetGamesCollection()
 
 	// Create merged library
@@ -94,7 +97,7 @@ func (c *collect) OnConfigUpdate(cfg repository.Config) {
 	}
 
 	// Copy CustomDB
-	for key, entry := range cfg.CustomDB() {
+	for key, entry := range c.config.CustomDB() {
 		gameID := strings.ToUpper(key)
 		if _, ok := c.mergedLibrary[gameID]; ok {
 			log.Println("Duplicate customDB entry from official titledb (consider removing from configuration)", gameID)
@@ -104,8 +107,8 @@ func (c *collect) OnConfigUpdate(cfg repository.Config) {
 	}
 
 	// Check if blacklist entries
-	if len(cfg.BannedTheme()) != 0 {
-		c.games.ThemeBlackList = cfg.BannedTheme()
+	if len(c.config.BannedTheme()) != 0 {
+		c.games.ThemeBlackList = c.config.BannedTheme()
 	} else {
 		c.games.ThemeBlackList = nil
 	}
@@ -198,7 +201,7 @@ func (c *collect) RemoveGame(ID string) {
 func (c *collect) CountGames() int {
 	var uniqueGames int
 	for _, entry := range c.games.Titledb {
-		if entry.IconURL != "" {
+		if entry.IconURL != "" || entry.BannerURL != "" {
 			uniqueGames++
 		}
 	}
@@ -212,7 +215,7 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 
 	for _, file := range newGames {
 		game := repository.GameFileType{
-			URL:  config.GetConfig().RootShop() + "/games/" + file.GameID + "#" + file.GameInfo,
+			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + file.GameInfo,
 			Size: file.Size,
 		}
 		gameList = append(gameList, game)

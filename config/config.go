@@ -47,14 +47,20 @@ type File struct {
 	CustomTitleDB    map[string]repository.TitleDBEntry `mapstructure:"customTitledb"`
 	NSP              nsp                                `mapsstructure:"nsp"`
 	shopTemplateData repository.ShopTemplate
+
+	allHooks       []func(repository.Config)
+	beforeAllHooks []func(repository.Config)
 }
 
 var serverConfig File
-var allHooks []func(repository.Config)
-var beforeAllHooks []func(repository.Config)
+
+// New returns a new configuration
+func New() repository.Config {
+	return &serverConfig
+}
 
 // LoadConfig handles viper under the hood
-func LoadConfig() {
+func (cfg *File) LoadConfig() {
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.SetConfigType("yaml")   // REQUIRED if the config file does not have the extension in the name
 	viper.AddConfigPath(".")      // optionally look for config in the working directory
@@ -72,34 +78,28 @@ func LoadConfig() {
 
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		log.Println("Config file changed, update new configuration...")
-		configChange()
+		cfg.configChange()
 	})
 	viper.WatchConfig()
 
-	configChange()
+	cfg.configChange()
 }
 
-func configChange() {
+func (cfg *File) configChange() {
 	// Call all before hooks
-	for _, hook := range beforeAllHooks {
-		hook(&serverConfig)
+	for _, hook := range cfg.beforeAllHooks {
+		hook(cfg)
 	}
 
 	serverConfig = loadAndCompute()
 
 	// Call all hooks
-	for _, hook := range allHooks {
-		hook(&serverConfig)
+	for _, hook := range serverConfig.allHooks {
+		hook(cfg)
 	}
 }
 
-// GetConfig returns the current configuration
-func GetConfig() repository.Config {
-	return &serverConfig
-}
-
 func loadAndCompute() File {
-	serverConfig = File{}
 	err := viper.Unmarshal(&serverConfig)
 
 	if err != nil {
@@ -153,13 +153,13 @@ func ComputeDefaultValues(config repository.Config) repository.Config {
 }
 
 // AddHook Add hook function on change config
-func AddHook(f func(repository.Config)) {
-	allHooks = append(allHooks, f)
+func (cfg *File) AddHook(f func(repository.Config)) {
+	cfg.allHooks = append(cfg.allHooks, f)
 }
 
 // AddBeforeHook Add hook function before on change config
-func AddBeforeHook(f func(repository.Config)) {
-	beforeAllHooks = append(beforeAllHooks, f)
+func (cfg *File) AddBeforeHook(f func(repository.Config)) {
+	cfg.beforeAllHooks = append(cfg.beforeAllHooks, f)
 }
 
 // SetRootShop allow to change the root url of the shop

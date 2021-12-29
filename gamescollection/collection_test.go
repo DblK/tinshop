@@ -172,6 +172,25 @@ var _ = Describe("Collection", func() {
 			Expect(len(filteredGames.Files)).To(Equal(1))
 		})
 	})
+	FDescribe("CountGames", func() {
+		It("Test with empty collection", func() {
+			Expect(testCollection.CountGames()).To(Equal(0))
+		})
+		It("Test one game in collection", func() {
+			newGames := make([]repository.FileDesc, 0)
+			newFile := repository.FileDesc{
+				Size:     42,
+				Path:     "/here/is/my/game",
+				GameID:   "0000000000000001",
+				GameInfo: "[0000000000000001][v0].nsp",
+				HostType: repository.LocalFile,
+			}
+			newGames = append(newGames, newFile)
+			testCollection.AddNewGames(newGames)
+
+			Expect(testCollection.CountGames()).To(Equal(1))
+		})
+	})
 	Describe("GetKey", func() {
 		var (
 			myMockConfig *mock_repository.MockConfig

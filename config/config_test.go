@@ -7,14 +7,19 @@ import (
 
 	"github.com/DblK/tinshop/config"
 	"github.com/DblK/tinshop/mock_repository"
+	"github.com/DblK/tinshop/repository"
 )
 
 var _ = Describe("Config", func() {
-	It("Ensure to be able to set a RootShop", func() {
-		config.GetConfig().SetRootShop("http://tinshop.example.com")
-		cfg := config.GetConfig()
+	var testConfig repository.Config
+	BeforeEach(func() {
+		testConfig = config.New()
+	})
 
-		Expect(cfg.RootShop()).To(Equal("http://tinshop.example.com"))
+	It("Ensure to be able to set a RootShop", func() {
+		testConfig.SetRootShop("http://tinshop.example.com")
+
+		Expect(testConfig.RootShop()).To(Equal("http://tinshop.example.com"))
 	})
 	Context("ComputeDefaultValues", func() {
 		var (

@@ -51,6 +51,10 @@ type Config interface {
 
 	CustomDB() map[string]TitleDBEntry
 	VerifyNSP() bool
+
+	AddHook(f func(Config))
+	AddBeforeHook(f func(Config))
+	LoadConfig()
 }
 
 // ShopTemplate contains all variables used for shop template
@@ -134,9 +138,12 @@ type TitleDBEntry struct {
 	Category        []string `mapstructure:"category" json:"category,omitempty"`
 	RatingContent   []string `mapstructure:"ratingContent" json:"ratingContent,omitempty"`
 	NumberOfPlayers int      `mapstructure:"numberOfPlayers" json:"numberOfPlayers,omitempty"`
-	Publisher       string   `mapstructure:"publisher" json:"publisher,omitempty"`
 	Rating          int      `mapstructure:"rating" json:"rating,omitempty"`
+	Developer       string   `mapstructure:"developer" json:"developer,omitempty"`
+	Publisher       string   `mapstructure:"publisher" json:"publisher,omitempty"`
+	FrontBoxArt     string   `mapstructure:"frontBoxArt" json:"frontBoxArt,omitempty"`
 	IconURL         string   `mapstructure:"iconUrl" json:"iconUrl,omitempty"`
+	Screenshots     []string `mapstructure:"screenshots" json:"screenshots,omitempty"`
 	BannerURL       string   `mapstructure:"bannerUrl" json:"bannerUrl,omitempty"`
 	Intro           string   `mapstructure:"intro" json:"intro,omitempty"`
 	Description     string   `mapstructure:"description" json:"description,omitempty"`

@@ -118,7 +118,7 @@ func (src *directorySource) nspCheck(file repository.FileDesc) (bool, error) {
 	}
 	defer f.Close()
 
-	valid, err := nsp.IsTicketValid(f, key)
+	valid, err := nsp.IsTicketValid(f, key, src.config.DebugTicket())
 	if err != nil {
 		return false, err
 	}

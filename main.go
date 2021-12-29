@@ -26,6 +26,7 @@ var shopData shop
 type shop struct {
 	collection repository.Collection
 	sources    repository.Sources
+	config     repository.Config
 }
 
 func main() {
@@ -60,7 +61,7 @@ func main() {
 	log.Printf("Total of %d files in your library (%d in titledb section)\n", len(shopData.collection.Games().Files), len(shopData.collection.Games().Titledb))
 	var uniqueGames = shopData.collection.CountGames()
 	log.Printf("Total of %d unique games in your library\n", uniqueGames)
-	log.Printf("Tinshop available at %s !\n", config.GetConfig().RootShop())
+	log.Printf("Tinshop available at %s !\n", shopData.config.RootShop())
 
 	c := make(chan os.Signal, 1)
 	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
@@ -84,18 +85,20 @@ func main() {
 }
 
 func initServer() {
-	// Load collection
-	shopData = shop{
-		collection: collection.New(),
-	}
+	// Init shop data
+	shopData = shop{}
+	shopData.config = config.New()
+	shopData.collection = collection.New(shopData.config)
 	shopData.sources = sources.New(shopData.collection)
+
+	// Load collection
 	shopData.collection.Load()
 
 	// Loading config
-	config.AddHook(shopData.collection.OnConfigUpdate)
-	config.AddHook(shopData.sources.OnConfigUpdate)
-	config.AddBeforeHook(shopData.sources.BeforeConfigUpdate)
-	config.LoadConfig()
+	shopData.config.AddHook(shopData.collection.OnConfigUpdate)
+	shopData.config.AddHook(shopData.sources.OnConfigUpdate)
+	shopData.config.AddBeforeHook(shopData.sources.BeforeConfigUpdate)
+	shopData.config.LoadConfig()
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
