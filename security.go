@@ -17,7 +17,7 @@ func TinfoilMiddleware(next http.Handler) http.Handler {
 		// Verify all headers
 		headers := r.Header
 
-		if shopData.config.DebugNoSecurity() {
+		if shopData.Config.DebugNoSecurity() {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -25,31 +25,31 @@ func TinfoilMiddleware(next http.Handler) http.Handler {
 		if r.RequestURI == "/" || utils.IsValidFilter(cleanPath(r.RequestURI)) {
 			// Check for blacklist/whitelist
 			var uid = strings.Join(headers["Uid"], "")
-			if shopData.config.IsBlacklisted(uid) {
+			if shopData.Config.IsBlacklisted(uid) {
 				log.Println("[Security] Blacklisted switch detected...", uid)
-				_ = shopTemplate.Execute(w, shopData.config.ShopTemplateData())
+				_ = shopTemplate.Execute(w, shopData.Config.ShopTemplateData())
 				return
 			}
 
 			// Check for banned theme
 			var theme = strings.Join(headers["Theme"], "")
-			if shopData.config.IsBannedTheme(theme) {
+			if shopData.Config.IsBannedTheme(theme) {
 				log.Println("[Security] Banned theme detected...", uid, theme)
-				_ = shopTemplate.Execute(w, shopData.config.ShopTemplateData())
+				_ = shopTemplate.Execute(w, shopData.Config.ShopTemplateData())
 				return
 			}
 
 			// No User-Agent for tinfoil app
 			if headers["User-Agent"] != nil {
 				log.Println("[Security] User-Agent detected...")
-				_ = shopTemplate.Execute(w, shopData.config.ShopTemplateData())
+				_ = shopTemplate.Execute(w, shopData.Config.ShopTemplateData())
 				return
 			}
 
 			// Be sure all tinfoil headers are present
 			if headers["Theme"] == nil || headers["Uid"] == nil || headers["Version"] == nil || headers["Language"] == nil || headers["Hauth"] == nil || headers["Uauth"] == nil {
 				log.Println("[Security] Missing some expected headers...")
-				_ = shopTemplate.Execute(w, shopData.config.ShopTemplateData())
+				_ = shopTemplate.Execute(w, shopData.Config.ShopTemplateData())
 				return
 			}
 

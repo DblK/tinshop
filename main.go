@@ -21,13 +21,7 @@ import (
 
 //go:embed assets/*
 var assetData embed.FS
-var shopData shop
-
-type shop struct {
-	collection repository.Collection
-	sources    repository.Sources
-	config     repository.Config
-}
+var shopData repository.Shop
 
 func main() {
 	initServer()
@@ -58,10 +52,10 @@ func main() {
 			log.Println(err)
 		}
 	}()
-	log.Printf("Total of %d files in your library (%d in titledb section)\n", len(shopData.collection.Games().Files), len(shopData.collection.Games().Titledb))
-	var uniqueGames = shopData.collection.CountGames()
+	log.Printf("Total of %d files in your library (%d in titledb section)\n", len(shopData.Collection.Games().Files), len(shopData.Collection.Games().Titledb))
+	var uniqueGames = shopData.Collection.CountGames()
 	log.Printf("Total of %d unique games in your library\n", uniqueGames)
-	log.Printf("Tinshop available at %s !\n", shopData.config.RootShop())
+	log.Printf("Tinshop available at %s !\n", shopData.Config.RootShop())
 
 	c := make(chan os.Signal, 1)
 	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
@@ -85,25 +79,26 @@ func main() {
 }
 
 // ResetTinshop reset the storage for all information
-func ResetTinshop() {
-	// Init shop data
-	shopData = shop{}
-	shopData.config = config.New()
-	shopData.collection = collection.New(shopData.config)
-	shopData.sources = sources.New(shopData.collection)
+func ResetTinshop(myShop repository.Shop) {
+	shopData = myShop
 }
 
 func initServer() {
-	ResetTinshop()
+	// Init shop data
+	myShop := repository.Shop{}
+	myShop.Config = config.New()
+	myShop.Collection = collection.New(myShop.Config)
+	myShop.Sources = sources.New(myShop.Collection)
+	ResetTinshop(myShop)
 
 	// Load collection
-	shopData.collection.Load()
+	myShop.Collection.Load()
 
 	// Loading config
-	shopData.config.AddHook(shopData.collection.OnConfigUpdate)
-	shopData.config.AddHook(shopData.sources.OnConfigUpdate)
-	shopData.config.AddBeforeHook(shopData.sources.BeforeConfigUpdate)
-	shopData.config.LoadConfig()
+	myShop.Config.AddHook(myShop.Collection.OnConfigUpdate)
+	myShop.Config.AddHook(myShop.Sources.OnConfigUpdate)
+	myShop.Config.AddBeforeHook(myShop.Sources.BeforeConfigUpdate)
+	myShop.Config.LoadConfig()
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
@@ -135,11 +130,11 @@ func serveCollection(w http.ResponseWriter, tinfoilCollection interface{}) {
 
 // HomeHandler handles list of games
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	if shopData.collection == nil {
+	if shopData.Collection == nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	serveCollection(w, shopData.collection.Games())
+	serveCollection(w, shopData.Collection.Games())
 }
 
 // GamesHandler handles downloading games
@@ -147,7 +142,7 @@ func GamesHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	log.Println("Requesting game", vars["game"])
 
-	shopData.sources.DownloadGame(vars["game"], w, r)
+	shopData.Sources.DownloadGame(vars["game"], w, r)
 }
 
 // FilteringHandler handles filtering games collection
@@ -159,5 +154,5 @@ func FilteringHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	serveCollection(w, shopData.collection.Filter(vars["filter"]))
+	serveCollection(w, shopData.Collection.Filter(vars["filter"]))
 }

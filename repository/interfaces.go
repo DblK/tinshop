@@ -184,3 +184,10 @@ type Collection interface {
 	GetKey(string) (string, error)
 	ResetGamesCollection()
 }
+
+// Shop holds all tinshop information
+type Shop struct {
+	Collection Collection
+	Sources    Sources
+	Config     Config
+}
