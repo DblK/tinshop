@@ -13,13 +13,15 @@ import (
 type directorySource struct {
 	gameFiles  []repository.FileDesc
 	collection repository.Collection
+	config     repository.Config
 }
 
 // New create a directory source
-func New(collection repository.Collection) repository.Source {
+func New(collection repository.Collection, config repository.Config) repository.Source {
 	return &directorySource{
 		gameFiles:  make([]repository.FileDesc, 0),
 		collection: collection,
+		config:     config,
 	}
 }
 

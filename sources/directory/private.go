@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/DblK/tinshop/config"
 	"github.com/DblK/tinshop/nsp"
 	"github.com/DblK/tinshop/repository"
 	"github.com/DblK/tinshop/utils"
@@ -51,7 +50,7 @@ func (src *directorySource) addDirectoryGame(gameFiles []repository.FileDesc, ex
 			newFile.GameInfo = names.FullID()
 			newFile.HostType = repository.LocalFile
 
-			if config.GetConfig().VerifyNSP() {
+			if src.config.VerifyNSP() {
 				valid, errTicket := src.nspCheck(newFile)
 				if valid || (errTicket != nil && errTicket.Error() == "TitleDBKey for game "+newFile.GameID+" is not found") {
 					newGameFiles = append(newGameFiles, newFile)
@@ -107,7 +106,7 @@ func (src *directorySource) loadGamesDirectory(directory string) error {
 func (src *directorySource) nspCheck(file repository.FileDesc) (bool, error) {
 	key, err := src.collection.GetKey(file.GameID)
 	if err != nil {
-		if config.GetConfig().DebugTicket() && err.Error() == "TitleDBKey for game "+file.GameID+" is not found" {
+		if src.config.DebugTicket() && err.Error() == "TitleDBKey for game "+file.GameID+" is not found" {
 			log.Println(err)
 		}
 		return false, err

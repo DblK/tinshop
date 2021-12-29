@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/DblK/tinshop/config"
 	"github.com/DblK/tinshop/nsp"
 	"github.com/DblK/tinshop/repository"
 	"github.com/DblK/tinshop/utils"
@@ -26,7 +25,7 @@ func getHostTarget(share string) (string, string, error) {
 }
 
 func (src *nfsSource) loadGamesNfs(share string) {
-	if config.GetConfig().DebugNfs() {
+	if src.config.DebugNfs() {
 		util.DefaultLogger.SetDebug(true)
 	}
 
@@ -110,7 +109,7 @@ func (src *nfsSource) lookIntoNfsDirectory(v *nfs.Target, share, path string) []
 
 		var valid = true
 		var errTicket error
-		if config.GetConfig().VerifyNSP() {
+		if src.config.VerifyNSP() {
 			valid, errTicket = src.nspCheck(newFile)
 		}
 		if valid || (errTicket != nil && errTicket.Error() == "TitleDBKey for game "+newFile.GameID+" is not found") {
@@ -144,7 +143,7 @@ func computePath(path string, dir *nfs.EntryPlus) string {
 func (src *nfsSource) nspCheck(file repository.FileDesc) (bool, error) {
 	key, err := src.collection.GetKey(file.GameID)
 	if err != nil {
-		if config.GetConfig().DebugTicket() && err.Error() == "TitleDBKey for game "+file.GameID+" is not found" {
+		if src.config.DebugTicket() && err.Error() == "TitleDBKey for game "+file.GameID+" is not found" {
 			log.Println(err)
 		}
 		return false, err

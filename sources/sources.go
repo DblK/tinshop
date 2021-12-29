@@ -38,13 +38,13 @@ func (s *allSources) OnConfigUpdate(cfg repository.Config) {
 	log.Println("Sources loading...")
 
 	// Directories
-	srcDirectories := directory.New(s.collection)
+	srcDirectories := directory.New(s.collection, cfg)
 	srcDirectories.Reset()
 	srcDirectories.Load(cfg.Directories(), len(cfg.NfsShares()) == 0)
 	s.sourcesProvider.Directory = srcDirectories
 
 	// NFS
-	srcNFS := nfs.New(s.collection)
+	srcNFS := nfs.New(s.collection, cfg)
 	srcNFS.Reset()
 	srcNFS.Load(cfg.NfsShares(), false)
 	s.sourcesProvider.NFS = srcNFS

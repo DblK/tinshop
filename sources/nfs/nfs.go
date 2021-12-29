@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/DblK/tinshop/config"
 	"github.com/DblK/tinshop/repository"
 	"github.com/vmware/go-nfs-client/nfs/util"
 )
@@ -16,18 +15,20 @@ import (
 type nfsSource struct {
 	gameFiles  []repository.FileDesc
 	collection repository.Collection
+	config     repository.Config
 }
 
 // New create a nfs source
-func New(collection repository.Collection) repository.Source {
+func New(collection repository.Collection, config repository.Config) repository.Source {
 	return &nfsSource{
 		gameFiles:  make([]repository.FileDesc, 0),
 		collection: collection,
+		config:     config,
 	}
 }
 
 func (src *nfsSource) Download(w http.ResponseWriter, r *http.Request, game, share string) {
-	if config.GetConfig().DebugNfs() {
+	if src.config.DebugNfs() {
 		util.DefaultLogger.SetDebug(true)
 	}
 
