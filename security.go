@@ -10,8 +10,8 @@ import (
 	"github.com/DblK/tinshop/utils"
 )
 
-// Middleware to ensure not forged query and real tinfoil client
-func tinfoilMiddleware(next http.Handler) http.Handler {
+// TinfoilMiddleware is a middleware to ensure not forged query and real tinfoil client
+func TinfoilMiddleware(next http.Handler) http.Handler {
 	shopTemplate, _ := template.ParseFS(assetData, "assets/shop.tmpl")
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

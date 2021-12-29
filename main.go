@@ -31,7 +31,7 @@ func main() {
 	r.HandleFunc("/{filter}/", FilteringHandler)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	r.MethodNotAllowedHandler = http.HandlerFunc(notAllowed)
-	r.Use(tinfoilMiddleware)
+	r.Use(TinfoilMiddleware)
 	http.Handle("/", r)
 
 	srv := &http.Server{
