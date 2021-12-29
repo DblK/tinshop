@@ -283,10 +283,10 @@ func (mr *MockConfigMockRecorder) ShopTitle() *gomock.Call {
 }
 
 // Sources mocks base method.
-func (m *MockConfig) Sources() repository.Sources {
+func (m *MockConfig) Sources() repository.ConfigSources {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Sources")
-	ret0, _ := ret[0].(repository.Sources)
+	ret0, _ := ret[0].(repository.ConfigSources)
 	return ret0
 }
 

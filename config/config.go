@@ -41,7 +41,7 @@ type File struct {
 	ShopProtocol     string                             `mapstructure:"protocol"`
 	ShopPort         int                                `mapstructure:"port"`
 	Debug            debug                              `mapstructure:"debug"`
-	AllSources       repository.Sources                 `mapstructure:"sources"`
+	AllSources       repository.ConfigSources           `mapstructure:"sources"`
 	Name             string                             `mapstructure:"name"`
 	Security         security                           `mapstructure:"security"`
 	CustomTitleDB    map[string]repository.TitleDBEntry `mapstructure:"customTitledb"`
@@ -218,7 +218,7 @@ func (cfg *File) NfsShares() []string {
 }
 
 // Sources returns all available sources
-func (cfg *File) Sources() repository.Sources {
+func (cfg *File) Sources() repository.ConfigSources {
 	return cfg.AllSources
 }
 

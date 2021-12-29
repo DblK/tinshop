@@ -19,8 +19,8 @@ type GameID interface {
 	Extension() string
 }
 
-// Sources describe all sources type handled
-type Sources struct {
+// ConfigSources describe all sources type handled
+type ConfigSources struct {
 	Directories []string `mapstructure:"directories"`
 	Nfs         []string `mapstructure:"nfs"`
 }
@@ -37,7 +37,7 @@ type Config interface {
 	DebugNoSecurity() bool
 	DebugTicket() bool
 
-	Sources() Sources
+	Sources() ConfigSources
 	Directories() []string
 	NfsShares() []string
 	ShopTitle() string
@@ -152,6 +152,14 @@ type Source interface {
 	UnWatchAll()
 	Reset()
 	GetFiles() []FileDesc
+}
+
+// Sources describes all function to handle all sources
+type Sources interface {
+	OnConfigUpdate(Config)
+	BeforeConfigUpdate(Config)
+	GetFiles() []FileDesc
+	DownloadGame(string, http.ResponseWriter, *http.Request)
 }
 
 // Collection describes all information about collection

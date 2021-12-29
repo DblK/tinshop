@@ -25,6 +25,7 @@ var shopData shop
 
 type shop struct {
 	collection repository.Collection
+	sources    repository.Sources
 }
 
 func main() {
@@ -86,13 +87,14 @@ func initServer() {
 	// Load collection
 	shopData = shop{
 		collection: collection.New(),
+		sources:    sources.New(),
 	}
 	shopData.collection.Load()
 
 	// Loading config
 	config.AddHook(shopData.collection.OnConfigUpdate)
-	config.AddHook(sources.OnConfigUpdate)
-	config.AddBeforeHook(sources.BeforeConfigUpdate)
+	config.AddHook(shopData.sources.OnConfigUpdate)
+	config.AddBeforeHook(shopData.sources.BeforeConfigUpdate)
 	config.LoadConfig()
 }
 
@@ -133,7 +135,7 @@ func GamesHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	log.Println("Requesting game", vars["game"])
 
-	sources.DownloadGame(vars["game"], w, r)
+	shopData.sources.DownloadGame(vars["game"], w, r)
 }
 
 // FilteringHandler handles filtering games collection
