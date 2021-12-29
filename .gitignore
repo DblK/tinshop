@@ -21,3 +21,4 @@
 config.yaml
 titles.US.en.json
 /dist
+stats.db

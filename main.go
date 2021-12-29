@@ -14,6 +14,7 @@ import (
 	"github.com/DblK/tinshop/config"
 	collection "github.com/DblK/tinshop/gamescollection"
 	"github.com/DblK/tinshop/sources"
+	"github.com/DblK/tinshop/stats"
 	"github.com/DblK/tinshop/utils"
 	"github.com/gorilla/mux"
 )
@@ -85,6 +86,9 @@ func initServer() {
 	config.AddHook(sources.OnConfigUpdate)
 	config.AddBeforeHook(sources.BeforeConfigUpdate)
 	config.LoadConfig()
+
+	// Loading stats
+	stats.Load()
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
