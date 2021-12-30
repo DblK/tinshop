@@ -10,14 +10,14 @@ import (
 )
 
 // TinfoilMiddleware is a middleware to ensure not forged query and real tinfoil client
-func TinfoilMiddleware(next http.Handler) http.Handler {
+func (s *TinShop) TinfoilMiddleware(next http.Handler) http.Handler {
 	shopTemplate, _ := template.ParseFS(assetData, "assets/shop.tmpl")
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify all headers
 		headers := r.Header
 
-		if shopData.Config.DebugNoSecurity() {
+		if s.Shop.Config.DebugNoSecurity() {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -25,31 +25,31 @@ func TinfoilMiddleware(next http.Handler) http.Handler {
 		if r.RequestURI == "/" || utils.IsValidFilter(cleanPath(r.RequestURI)) {
 			// Check for blacklist/whitelist
 			var uid = strings.Join(headers["Uid"], "")
-			if shopData.Config.IsBlacklisted(uid) {
+			if s.Shop.Config.IsBlacklisted(uid) {
 				log.Println("[Security] Blacklisted switch detected...", uid)
-				_ = shopTemplate.Execute(w, shopData.Config.ShopTemplateData())
+				_ = shopTemplate.Execute(w, s.Shop.Config.ShopTemplateData())
 				return
 			}
 
 			// Check for banned theme
 			var theme = strings.Join(headers["Theme"], "")
-			if shopData.Config.IsBannedTheme(theme) {
+			if s.Shop.Config.IsBannedTheme(theme) {
 				log.Println("[Security] Banned theme detected...", uid, theme)
-				_ = shopTemplate.Execute(w, shopData.Config.ShopTemplateData())
+				_ = shopTemplate.Execute(w, s.Shop.Config.ShopTemplateData())
 				return
 			}
 
 			// No User-Agent for tinfoil app
 			if headers["User-Agent"] != nil {
 				log.Println("[Security] User-Agent detected...")
-				_ = shopTemplate.Execute(w, shopData.Config.ShopTemplateData())
+				_ = shopTemplate.Execute(w, s.Shop.Config.ShopTemplateData())
 				return
 			}
 
 			// Be sure all tinfoil headers are present
 			if headers["Theme"] == nil || headers["Uid"] == nil || headers["Version"] == nil || headers["Language"] == nil || headers["Hauth"] == nil || headers["Uauth"] == nil {
 				log.Println("[Security] Missing some expected headers...")
-				_ = shopTemplate.Execute(w, shopData.Config.ShopTemplateData())
+				_ = shopTemplate.Execute(w, s.Shop.Config.ShopTemplateData())
 				return
 			}
 

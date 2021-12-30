@@ -9,7 +9,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	tinshop "github.com/DblK/tinshop"
+	main "github.com/DblK/tinshop"
 	"github.com/DblK/tinshop/mock_repository"
 	"github.com/DblK/tinshop/repository"
 )
@@ -24,7 +24,7 @@ var _ = Describe("Main", func() {
 			myMockSources    *mock_repository.MockSources
 			myMockConfig     *mock_repository.MockConfig
 			ctrl             *gomock.Controller
-			myShop           repository.Shop
+			myShop           *main.TinShop
 		)
 
 		BeforeEach(func() {
@@ -32,22 +32,24 @@ var _ = Describe("Main", func() {
 			myMockCollection = mock_repository.NewMockCollection(ctrl)
 			myMockSources = mock_repository.NewMockSources(ctrl)
 			myMockConfig = mock_repository.NewMockConfig(ctrl)
+			myShop = &main.TinShop{}
 		})
 
 		JustBeforeEach(func() {
-			myShop = repository.Shop{}
-			myShop.Config = myMockConfig
-			myShop.Collection = myMockCollection
-			myShop.Sources = myMockSources
+			myShop.Shop = repository.Shop{}
+			myShop.Shop.Config = myMockConfig
+			myShop.Shop.Collection = myMockCollection
+			myShop.Shop.Sources = myMockSources
 		})
 
 		Context("With empty collection", func() {
 			BeforeEach(func() {
-				handler = http.HandlerFunc(tinshop.HomeHandler)
+				handler = http.HandlerFunc(myShop.HomeHandler)
 				req = httptest.NewRequest(http.MethodGet, "/", nil)
 				writer = httptest.NewRecorder()
 			})
 			It("Verify response without data", func() {
+				myShop.Shop.Collection = nil
 				handler.ServeHTTP(writer, req)
 				Expect(writer.Code).To(Equal(http.StatusNotFound))
 			})
@@ -59,7 +61,7 @@ var _ = Describe("Main", func() {
 					Return(*emptyCollection).
 					AnyTimes()
 
-				tinshop.ResetTinshop(myShop)
+				// tinshop.ResetTinshop(myShop)
 				handler.ServeHTTP(writer, req)
 				Expect(writer.Code).To(Equal(http.StatusOK))
 
@@ -75,10 +77,10 @@ var _ = Describe("Main", func() {
 		})
 		Context("With collection", func() {
 			JustBeforeEach(func() {
-				handler = http.HandlerFunc(tinshop.HomeHandler)
+				handler = http.HandlerFunc(myShop.HomeHandler)
 				req = httptest.NewRequest(http.MethodGet, "/", nil)
 				writer = httptest.NewRecorder()
-				tinshop.ResetTinshop(myShop)
+				// tinshop.ResetTinshop(myShop)
 			})
 			It("Verify status code", func() {
 				smallCollection := &repository.GameType{}
