@@ -44,21 +44,100 @@ var _ = Describe("Collection", func() {
 
 			games := testCollection.Games()
 			Expect(games.Files).To(HaveLen(0))
+			Expect(games.Titledb).To(HaveLen(0))
 		})
-		It("Add a game", func() {
-			newGames := make([]repository.FileDesc, 0)
-			newFile := repository.FileDesc{
-				Size:     42,
-				Path:     "/here/is/my/game",
-				GameID:   "0000000000000001",
-				GameInfo: "[0000000000000001][v0].nsp",
-				HostType: repository.LocalFile,
-			}
-			newGames = append(newGames, newFile)
-			testCollection.AddNewGames(newGames)
+		Context("No TitleDB", func() {
+			Context("With TitleDB", func() {
+				JustBeforeEach(func() {
+					customDB := make(map[string]repository.TitleDBEntry)
+					custom1 := repository.TitleDBEntry{
+						ID:              "0000000000000001",
+						Languages:       []string{"FR", "EN", "US"},
+						NumberOfPlayers: 1,
+						IconURL:         "http://fake.icon.url",
+					}
+					customDB["0000000000000001"] = custom1
+					myMockConfig = mock_repository.NewMockConfig(ctrl)
+					myMockConfig.EXPECT().
+						CustomDB().
+						Return(customDB).
+						AnyTimes()
+					myMockConfig.EXPECT().
+						BannedTheme().
+						Return(nil).
+						AnyTimes()
+					myMockConfig.EXPECT().
+						RootShop().
+						Return("http://tinshop.example.com").
+						AnyTimes()
 
-			games := testCollection.Games()
-			Expect(games.Files).To(HaveLen(1))
+					testCollection.OnConfigUpdate(myMockConfig)
+				})
+				It("Add a game", func() {
+					newGames := make([]repository.FileDesc, 0)
+					newFile := repository.FileDesc{
+						Size:     42,
+						Path:     "/here/is/my/game",
+						GameID:   "0000000000000001",
+						GameInfo: "[0000000000000001][v0].nsp",
+						HostType: repository.LocalFile,
+					}
+					newGames = append(newGames, newFile)
+					testCollection.AddNewGames(newGames)
+
+					games := testCollection.Games()
+					Expect(games.Files).To(HaveLen(1))
+					Expect(games.Titledb).To(HaveLen(1))
+				})
+				It("Add a duplicate game", func() {
+					newGames := make([]repository.FileDesc, 0)
+					newFile1 := repository.FileDesc{
+						Size:     42,
+						Path:     "/here/is/my/game",
+						GameID:   "0000000000000001",
+						GameInfo: "[0000000000000001][v0].nsp",
+						HostType: repository.LocalFile,
+					}
+					newFile2 := repository.FileDesc{
+						Size:     43,
+						Path:     "/here/is/my/game",
+						GameID:   "0000000000000001",
+						GameInfo: "[0000000000000001][v0].nsp",
+						HostType: repository.LocalFile,
+					}
+					newGames = append(newGames, newFile1)
+					newGames = append(newGames, newFile2)
+					testCollection.AddNewGames(newGames)
+
+					games := testCollection.Games()
+					Expect(games.Files).To(HaveLen(1))
+					Expect(games.Titledb).To(HaveLen(1))
+				})
+				It("Add a duplicate game (with different path)", func() {
+					newGames := make([]repository.FileDesc, 0)
+					newFile1 := repository.FileDesc{
+						Size:     42,
+						Path:     "/here/is/my/game1",
+						GameID:   "0000000000000001",
+						GameInfo: "[0000000000000001][v0].nsp",
+						HostType: repository.LocalFile,
+					}
+					newFile2 := repository.FileDesc{
+						Size:     43,
+						Path:     "/here/is/my/game2",
+						GameID:   "0000000000000001",
+						GameInfo: "[0000000000000001][v0].nsp",
+						HostType: repository.LocalFile,
+					}
+					newGames = append(newGames, newFile1)
+					newGames = append(newGames, newFile2)
+					testCollection.AddNewGames(newGames)
+
+					games := testCollection.Games()
+					Expect(games.Files).To(HaveLen(1))
+					Expect(games.Titledb).To(HaveLen(1))
+				})
+			})
 		})
 	})
 	Describe("RemoveGame", func() {

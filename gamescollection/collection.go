@@ -218,7 +218,16 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + file.GameInfo,
 			Size: file.Size,
 		}
-		gameList = append(gameList, game)
+
+		// Handle duplicate entry for file
+		idx := utils.Search(len(gameList), func(index int) bool {
+			return strings.Contains(gameList[index].URL, file.GameID)
+		})
+		if idx == -1 {
+			gameList = append(gameList, game)
+		} else {
+			log.Println("Duplicate Game", file.GameID, file.Path)
+		}
 
 		if c.HasGameIDInLibrary(file.GameID) {
 			// Verify already present and not update nor dlc
