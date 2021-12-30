@@ -52,11 +52,9 @@ type File struct {
 	beforeAllHooks []func(repository.Config)
 }
 
-var serverConfig File
-
 // New returns a new configuration
 func New() repository.Config {
-	return &serverConfig
+	return &File{}
 }
 
 // LoadConfig handles viper under the hood
@@ -91,23 +89,35 @@ func (cfg *File) configChange() {
 		hook(cfg)
 	}
 
-	serverConfig = loadAndCompute()
+	newConfig := loadAndCompute()
+	cfg.rootShop = newConfig.rootShop
+	cfg.ShopHost = newConfig.ShopHost
+	cfg.ShopProtocol = newConfig.ShopProtocol
+	cfg.ShopPort = newConfig.ShopPort
+	cfg.Debug = newConfig.Debug
+	cfg.AllSources = newConfig.AllSources
+	cfg.Name = newConfig.Name
+	cfg.Security = newConfig.Security
+	cfg.CustomTitleDB = newConfig.CustomTitleDB
+	cfg.NSP = newConfig.NSP
+	cfg.shopTemplateData = newConfig.shopTemplateData
 
 	// Call all hooks
-	for _, hook := range serverConfig.allHooks {
+	for _, hook := range cfg.allHooks {
 		hook(cfg)
 	}
 }
 
-func loadAndCompute() File {
-	err := viper.Unmarshal(&serverConfig)
+func loadAndCompute() *File {
+	var loadedConfig = &File{}
+	err := viper.Unmarshal(&loadedConfig)
 
 	if err != nil {
 		log.Fatalln(err)
 	}
-	ComputeDefaultValues(&serverConfig)
+	ComputeDefaultValues(loadedConfig)
 
-	return serverConfig
+	return loadedConfig
 }
 
 // ComputeDefaultValues change the value taken from the config file
