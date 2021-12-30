@@ -9,9 +9,7 @@ import (
 	"gopkg.in/fsnotify.v1"
 )
 
-var watcherDirectories *fsnotify.Watcher
-
-func newWatcher() *fsnotify.Watcher {
+func (src *directorySource) newWatcher() *fsnotify.Watcher {
 	watcherDirectories, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
@@ -24,14 +22,14 @@ func (src *directorySource) watchDirectory(directory string) {
 	initWG := sync.WaitGroup{}
 	initWG.Add(1)
 	go func() {
-		defer watcherDirectories.Close()
+		defer src.watcherDirectories.Close()
 
 		eventsWG := sync.WaitGroup{}
 		eventsWG.Add(1)
 		go func() {
 			for {
 				select {
-				case event, ok := <-watcherDirectories.Events:
+				case event, ok := <-src.watcherDirectories.Events:
 					if !ok { // 'Events' channel is closed
 						eventsWG.Done()
 						return
@@ -47,7 +45,7 @@ func (src *directorySource) watchDirectory(directory string) {
 						src.removeEntriesFromDirectory(event.Name)
 					}
 
-				case err, ok := <-watcherDirectories.Errors:
+				case err, ok := <-src.watcherDirectories.Errors:
 					if ok { // 'Errors' channel is not closed
 						log.Printf("watcher error: %v\n", err)
 					}
@@ -56,7 +54,7 @@ func (src *directorySource) watchDirectory(directory string) {
 				}
 			}
 		}()
-		errWatcher := watcherDirectories.Add(directory)
+		errWatcher := src.watcherDirectories.Add(directory)
 		initWG.Done()   // done initializing the watch in this go routine, so the parent routine can move on...
 		eventsWG.Wait() // now, wait for event loop to end in this go-routine...
 		if errWatcher != nil {

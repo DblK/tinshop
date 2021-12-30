@@ -12,10 +12,10 @@ import (
 	"github.com/DblK/tinshop/utils"
 )
 
-func removeGamesWatcherDirectories() {
+func (src *directorySource) removeGamesWatcherDirectories() {
 	log.Println("Removing watcher from all directories")
-	if watcherDirectories != nil {
-		watcherDirectories.Close()
+	if src.watcherDirectories != nil {
+		src.watcherDirectories.Close()
 	}
 }
 
@@ -28,7 +28,7 @@ func (src *directorySource) removeEntriesFromDirectory(directory string) {
 
 			// Stop watching of directories
 			if directory == filepath.Dir(directory) {
-				_ = watcherDirectories.Remove(filepath.Dir(game.Path))
+				_ = src.watcherDirectories.Remove(filepath.Dir(game.Path))
 			}
 
 			// Remove entry from collection

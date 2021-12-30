@@ -8,12 +8,14 @@ import (
 	"time"
 
 	"github.com/DblK/tinshop/repository"
+	"gopkg.in/fsnotify.v1"
 )
 
 type directorySource struct {
-	gameFiles  []repository.FileDesc
-	collection repository.Collection
-	config     repository.Config
+	gameFiles          []repository.FileDesc
+	collection         repository.Collection
+	config             repository.Config
+	watcherDirectories *fsnotify.Watcher
 }
 
 // New create a directory source
@@ -59,12 +61,12 @@ func (src *directorySource) Load(directories []string, uniqueSource bool) {
 }
 
 func (src *directorySource) Reset() {
-	watcherDirectories = newWatcher()
+	src.watcherDirectories = src.newWatcher()
 	src.gameFiles = make([]repository.FileDesc, 0)
 }
 
 func (src *directorySource) UnWatchAll() {
-	removeGamesWatcherDirectories()
+	src.removeGamesWatcherDirectories()
 }
 
 func (src *directorySource) GetFiles() []repository.FileDesc {

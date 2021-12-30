@@ -20,7 +20,7 @@ import (
 )
 
 //go:embed assets/*
-var assetData embed.FS
+var assetData embed.FS //nolint:gochecknoglobals
 
 // TinShop holds all information about the Shop
 type TinShop struct {
