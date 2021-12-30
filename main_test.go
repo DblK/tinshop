@@ -10,10 +10,8 @@ import (
 	. "github.com/onsi/gomega"
 
 	tinshop "github.com/DblK/tinshop"
-	"github.com/DblK/tinshop/config"
 	"github.com/DblK/tinshop/mock_repository"
 	"github.com/DblK/tinshop/repository"
-	"github.com/DblK/tinshop/sources"
 )
 
 var _ = Describe("Main", func() {
@@ -23,6 +21,8 @@ var _ = Describe("Main", func() {
 			handler          http.Handler
 			writer           *httptest.ResponseRecorder
 			myMockCollection *mock_repository.MockCollection
+			myMockSources    *mock_repository.MockSources
+			myMockConfig     *mock_repository.MockConfig
 			ctrl             *gomock.Controller
 			myShop           repository.Shop
 		)
@@ -30,13 +30,15 @@ var _ = Describe("Main", func() {
 		BeforeEach(func() {
 			ctrl = gomock.NewController(GinkgoT())
 			myMockCollection = mock_repository.NewMockCollection(ctrl)
+			myMockSources = mock_repository.NewMockSources(ctrl)
+			myMockConfig = mock_repository.NewMockConfig(ctrl)
 		})
 
 		JustBeforeEach(func() {
 			myShop = repository.Shop{}
-			myShop.Config = config.New()
+			myShop.Config = myMockConfig
 			myShop.Collection = myMockCollection
-			myShop.Sources = sources.New(myShop.Collection)
+			myShop.Sources = myMockSources
 		})
 
 		Context("With empty collection", func() {
