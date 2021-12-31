@@ -170,5 +170,10 @@ func (s *TinShop) FilteringHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if s.Shop.Collection == nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
 	serveCollection(w, s.Shop.Collection.Filter(vars["filter"]))
 }
