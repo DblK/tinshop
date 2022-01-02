@@ -145,21 +145,37 @@ var _ = Describe("Main", func() {
 		})
 
 		Context("With empty collection", func() {
-			Context("Filtering 'world'", func() {
+			Context("Filtering with  path", func() {
 				BeforeEach(func() {
 					r := mux.NewRouter()
 					r.HandleFunc("/{filter}", myShop.FilteringHandler)
 					r.HandleFunc("/{filter}/", myShop.FilteringHandler)
 					handler = r
-					req = httptest.NewRequest(http.MethodGet, "/world", nil)
-					writer = httptest.NewRecorder()
 				})
-				It("Verify response without data", func() {
+				DescribeTable("Verify response without data", func(path string, valid bool) {
+					req = httptest.NewRequest(http.MethodGet, "/"+path, nil)
+					writer = httptest.NewRecorder()
 					myShop.Shop.Collection = nil
 					handler.ServeHTTP(writer, req)
+					if !valid {
+						Expect(writer.Code).To(Equal(http.StatusNotAcceptable))
+						return
+					}
 					Expect(writer.Code).To(Equal(http.StatusNotFound))
-				})
-				It("Verify empty response", func() {
+				},
+					Entry("with path 'world'", "world", true),
+					Entry("with path 'world/'", "world/", true),
+					Entry("with path 'multi'", "multi", true),
+					Entry("with path 'multi/'", "multi/", true),
+					Entry("with path 'fr'", "fr", true),
+					Entry("with path 'fr/'", "fr/", true),
+					Entry("with path 'us'", "us", true),
+					Entry("with path 'us/'", "us/", true),
+					Entry("with path 'dblk'", "dblk", false),
+				)
+				DescribeTable("Verify empty response", func(path string, valid bool) {
+					req = httptest.NewRequest(http.MethodGet, "/"+path, nil)
+					writer = httptest.NewRecorder()
 					emptyCollection := &repository.GameType{}
 
 					myMockCollection.EXPECT().
@@ -172,6 +188,10 @@ var _ = Describe("Main", func() {
 						AnyTimes()
 
 					handler.ServeHTTP(writer, req)
+					if !valid {
+						Expect(writer.Code).To(Equal(http.StatusNotAcceptable))
+						return
+					}
 					Expect(writer.Code).To(Equal(http.StatusOK))
 
 					var list repository.GameType
@@ -182,11 +202,21 @@ var _ = Describe("Main", func() {
 					Expect(list.ThemeBlackList).To(BeNil())
 					Expect(list.Success).To(BeEmpty())
 					Expect(list.Titledb).To(HaveLen(0))
-				})
+				},
+					Entry("with path 'world'", "world", true),
+					Entry("with path 'world/'", "world/", true),
+					Entry("with path 'multi'", "multi", true),
+					Entry("with path 'multi/'", "multi/", true),
+					Entry("with path 'fr'", "fr", true),
+					Entry("with path 'fr/'", "fr/", true),
+					Entry("with path 'us'", "us", true),
+					Entry("with path 'us/'", "us/", true),
+					Entry("with path 'dblk'", "dblk", false),
+				)
 			})
 		})
 		Context("With collection", func() {
-			Context("Filtering 'world'", func() {
+			Context("Filtering with path", func() {
 				JustBeforeEach(func() {
 					r := mux.NewRouter()
 					r.HandleFunc("/{filter}", myShop.FilteringHandler)
@@ -195,7 +225,9 @@ var _ = Describe("Main", func() {
 					req = httptest.NewRequest(http.MethodGet, "/world", nil)
 					writer = httptest.NewRecorder()
 				})
-				It("Verify status code", func() {
+				DescribeTable("Verify status code", func(path string, valid bool) {
+					req = httptest.NewRequest(http.MethodGet, "/"+path, nil)
+					writer = httptest.NewRecorder()
 					smallCollection := &repository.GameType{}
 					smallCollection.Files = make([]repository.GameFileType, 0)
 					oneFile := &repository.GameFileType{
@@ -216,6 +248,10 @@ var _ = Describe("Main", func() {
 						AnyTimes()
 
 					handler.ServeHTTP(writer, req)
+					if !valid {
+						Expect(writer.Code).To(Equal(http.StatusNotAcceptable))
+						return
+					}
 					Expect(writer.Code).To(Equal(http.StatusOK))
 
 					var list repository.GameType
@@ -226,7 +262,17 @@ var _ = Describe("Main", func() {
 					Expect(list.ThemeBlackList).To(BeNil())
 					Expect(list.Success).To(Equal("Welcome to your own shop!"))
 					Expect(list.Titledb).To(HaveLen(1))
-				})
+				},
+					Entry("with path 'world'", "world", true),
+					Entry("with path 'world/'", "world/", true),
+					Entry("with path 'multi'", "multi", true),
+					Entry("with path 'multi/'", "multi/", true),
+					Entry("with path 'fr'", "fr", true),
+					Entry("with path 'fr/'", "fr/", true),
+					Entry("with path 'us'", "us", true),
+					Entry("with path 'us/'", "us/", true),
+					Entry("with path 'dblk'", "dblk", false),
+				)
 			})
 		})
 	})
