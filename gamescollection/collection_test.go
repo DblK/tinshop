@@ -243,14 +243,14 @@ var _ = Describe("Collection", func() {
 		It("Filtering world", func() {
 			filteredGames := testCollection.Filter("WORLD")
 			Expect(len(filteredGames.Titledb)).To(Equal(2))
-			Expect(filteredGames.Titledb["0000000000000001"]).To(Not(BeNil()))
-			Expect(filteredGames.Titledb["0000000000000002"]).To(Not(BeNil()))
+			Expect(filteredGames.Titledb["0000000000000001"]).NotTo(BeNil())
+			Expect(filteredGames.Titledb["0000000000000002"]).NotTo(BeNil())
 			Expect(len(filteredGames.Files)).To(Equal(2))
 		})
 		It("Filtering US", func() {
 			filteredGames := testCollection.Filter("US")
 			Expect(len(filteredGames.Titledb)).To(Equal(1))
-			Expect(filteredGames.Titledb["0000000000000001"]).To(Not(BeNil()))
+			Expect(filteredGames.Titledb["0000000000000001"]).NotTo(BeNil())
 			_, ok := filteredGames.Titledb["0000000000000002"]
 			Expect(ok).To(BeFalse())
 			Expect(len(filteredGames.Files)).To(Equal(1))
@@ -265,7 +265,7 @@ var _ = Describe("Collection", func() {
 			Expect(len(filteredGames.Titledb)).To(Equal(1))
 			_, ok := filteredGames.Titledb["0000000000000001"]
 			Expect(ok).To(BeFalse())
-			Expect(filteredGames.Titledb["0000000000000002"]).To(Not(BeNil()))
+			Expect(filteredGames.Titledb["0000000000000002"]).NotTo(BeNil())
 			Expect(len(filteredGames.Files)).To(Equal(1))
 		})
 	})
@@ -342,12 +342,12 @@ var _ = Describe("Collection", func() {
 		It("Retrieving existing Key", func() {
 			key, err := testCollection.GetKey("0000000000000001")
 			Expect(err).To(BeNil())
-			Expect(key).To(Not(BeEmpty()))
+			Expect(key).NotTo(BeEmpty())
 			Expect(key).To(Equal("My Key"))
 		})
 		It("Retrieving not existing Key", func() {
 			key, err := testCollection.GetKey("0000000000000002")
-			Expect(err).To(Not(BeNil()))
+			Expect(err).NotTo(BeNil())
 			Expect(err.Error()).To(Equal("TitleDBKey for game 0000000000000002 is not found"))
 			Expect(key).To(BeEmpty())
 		})
