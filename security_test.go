@@ -83,11 +83,14 @@ var _ = Describe("Security", func() {
 				r := mux.NewRouter()
 				r.Use(myShop.TinfoilMiddleware)
 				r.HandleFunc("/", myShop.HomeHandler)
+				r.HandleFunc("/{filter}", myShop.HomeHandler)  // Testing purpose
+				r.HandleFunc("/{filter}/", myShop.HomeHandler) // Testing purpose
 				handler = r
-				req = httptest.NewRequest(http.MethodGet, "/", nil)
-				writer = httptest.NewRecorder()
 			})
-			It("test for blacklisted switch", func() {
+			DescribeTable("test for blacklisted switch", func(path string, valid bool) {
+				req = httptest.NewRequest(http.MethodGet, "/"+path, nil)
+				writer = httptest.NewRecorder()
+
 				emptyCollection := &repository.GameType{}
 
 				myMockCollection.EXPECT().
@@ -115,13 +118,33 @@ var _ = Describe("Security", func() {
 
 				handler.ServeHTTP(writer, req)
 
+				if !valid {
+					Expect(writer.Code).To(Equal(http.StatusOK))
+					var list repository.GameType
+					err := json.NewDecoder(writer.Body).Decode(&list)
+					Expect(err).To(BeNil())
+					return
+				}
+
 				Expect(writer.Code).To(Equal(http.StatusOK))
 
 				var list repository.GameType
 				err := json.NewDecoder(writer.Body).Decode(&list)
-				Expect(err).To(Not(BeNil()))
-			})
-			It("test for banned theme switch", func() {
+				Expect(err).NotTo(BeNil())
+			},
+				Entry("Root path", "", true),
+				Entry("'world' path", "world", true),
+				Entry("'world/' path", "world/", true),
+				Entry("'multi' path", "multi", true),
+				Entry("'multi/' path", "multi/", true),
+				Entry("'fr' path", "fr", true),
+				Entry("'fr/' path", "fr/", true),
+				Entry("'dblk/' path", "dblk/", false),
+			)
+			DescribeTable("test for banned theme switch", func(path string, valid bool) {
+				req = httptest.NewRequest(http.MethodGet, "/"+path, nil)
+				writer = httptest.NewRecorder()
+
 				emptyCollection := &repository.GameType{}
 
 				myMockCollection.EXPECT().
@@ -154,13 +177,33 @@ var _ = Describe("Security", func() {
 
 				handler.ServeHTTP(writer, req)
 
+				if !valid {
+					Expect(writer.Code).To(Equal(http.StatusOK))
+					var list repository.GameType
+					err := json.NewDecoder(writer.Body).Decode(&list)
+					Expect(err).To(BeNil())
+					return
+				}
+
 				Expect(writer.Code).To(Equal(http.StatusOK))
 
 				var list repository.GameType
 				err := json.NewDecoder(writer.Body).Decode(&list)
-				Expect(err).To(Not(BeNil()))
-			})
-			It("test for an existing user agent", func() {
+				Expect(err).NotTo(BeNil())
+			},
+				Entry("Root path", "", true),
+				Entry("'world' path", "world", true),
+				Entry("'world/' path", "world/", true),
+				Entry("'multi' path", "multi", true),
+				Entry("'multi/' path", "multi/", true),
+				Entry("'fr' path", "fr", true),
+				Entry("'fr/' path", "fr/", true),
+				Entry("'dblk/' path", "dblk/", false),
+			)
+			DescribeTable("test for an existing user agent", func(path string, valid bool) {
+				req = httptest.NewRequest(http.MethodGet, "/"+path, nil)
+				writer = httptest.NewRecorder()
+
 				emptyCollection := &repository.GameType{}
 
 				myMockCollection.EXPECT().
@@ -194,13 +237,33 @@ var _ = Describe("Security", func() {
 				req.Header.Set("User-Agent", "Tinshop testing!")
 				handler.ServeHTTP(writer, req)
 
+				if !valid {
+					Expect(writer.Code).To(Equal(http.StatusOK))
+					var list repository.GameType
+					err := json.NewDecoder(writer.Body).Decode(&list)
+					Expect(err).To(BeNil())
+					return
+				}
+
 				Expect(writer.Code).To(Equal(http.StatusOK))
 
 				var list repository.GameType
 				err := json.NewDecoder(writer.Body).Decode(&list)
-				Expect(err).To(Not(BeNil()))
-			})
-			It("test for with missing mandatory headers", func() {
+				Expect(err).NotTo(BeNil())
+			},
+				Entry("Root path", "", true),
+				Entry("'world' path", "world", true),
+				Entry("'world/' path", "world/", true),
+				Entry("'multi' path", "multi", true),
+				Entry("'multi/' path", "multi/", true),
+				Entry("'fr' path", "fr", true),
+				Entry("'fr/' path", "fr/", true),
+				Entry("'dblk/' path", "dblk/", false),
+			)
+			DescribeTable("test for with missing mandatory headers", func(path string, valid bool) {
+				req = httptest.NewRequest(http.MethodGet, "/"+path, nil)
+				writer = httptest.NewRecorder()
+
 				emptyCollection := &repository.GameType{}
 
 				myMockCollection.EXPECT().
@@ -233,12 +296,99 @@ var _ = Describe("Security", func() {
 
 				handler.ServeHTTP(writer, req)
 
+				if !valid {
+					Expect(writer.Code).To(Equal(http.StatusOK))
+					var list repository.GameType
+					err := json.NewDecoder(writer.Body).Decode(&list)
+					Expect(err).To(BeNil())
+					return
+				}
+
 				Expect(writer.Code).To(Equal(http.StatusOK))
 
 				var list repository.GameType
 				err := json.NewDecoder(writer.Body).Decode(&list)
-				Expect(err).To(Not(BeNil()))
-			})
+				Expect(err).NotTo(BeNil())
+			},
+				Entry("Root path", "", true),
+				Entry("'world' path", "world", true),
+				Entry("'world/' path", "world/", true),
+				Entry("'multi' path", "multi", true),
+				Entry("'multi/' path", "multi/", true),
+				Entry("'fr' path", "fr", true),
+				Entry("'fr/' path", "fr/", true),
+				Entry("'dblk/' path", "dblk/", false),
+			)
+			DescribeTable("test with all mandatory headers", func(path string, valid bool) {
+				req = httptest.NewRequest(http.MethodGet, "/"+path, nil)
+				writer = httptest.NewRecorder()
+
+				emptyCollection := &repository.GameType{}
+
+				myMockCollection.EXPECT().
+					Games().
+					Return(*emptyCollection).
+					AnyTimes()
+
+				myMockConfig.EXPECT().
+					DebugNoSecurity().
+					Return(false).
+					AnyTimes()
+
+				myMockConfig.EXPECT().
+					IsBlacklisted(gomock.Any()).
+					Return(false).
+					AnyTimes()
+
+				myMockConfig.EXPECT().
+					IsBannedTheme(gomock.Any()).
+					Return(false).
+					AnyTimes()
+
+				shopTemplateData := &repository.ShopTemplate{
+					ShopTitle: "Unit Test",
+				}
+				myMockConfig.EXPECT().
+					ShopTemplateData().
+					Return(*shopTemplateData).
+					AnyTimes()
+
+				req.Header.Set("Theme", "Tinshop testing!")
+				req.Header.Set("Uid", "Tinshop testing!")
+				req.Header.Set("Version", "13.0")
+				req.Header.Set("Language", "FR")
+				req.Header.Set("Hauth", "XX")
+				req.Header.Set("Uauth", "XX")
+				handler.ServeHTTP(writer, req)
+
+				if !valid {
+					Expect(writer.Code).To(Equal(http.StatusOK))
+					var list repository.GameType
+					err := json.NewDecoder(writer.Body).Decode(&list)
+					Expect(err).To(BeNil())
+					return
+				}
+
+				Expect(writer.Code).To(Equal(http.StatusOK))
+
+				var list repository.GameType
+				err := json.NewDecoder(writer.Body).Decode(&list)
+
+				Expect(err).To(BeNil())
+				Expect(list.Files).To(HaveLen(0))
+				Expect(list.ThemeBlackList).To(BeNil())
+				Expect(list.Success).To(BeEmpty())
+				Expect(list.Titledb).To(HaveLen(0))
+			},
+				Entry("Root path", "", true),
+				Entry("'world' path", "world", true),
+				Entry("'world/' path", "world/", true),
+				Entry("'multi' path", "multi", true),
+				Entry("'multi/' path", "multi/", true),
+				Entry("'fr' path", "fr", true),
+				Entry("'fr/' path", "fr/", true),
+				Entry("'dblk/' path", "dblk/", false),
+			)
 		})
 	})
 })
