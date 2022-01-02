@@ -185,9 +185,15 @@ type Collection interface {
 	ResetGamesCollection()
 }
 
+// Stats holds all information about statistics
+type Stats interface {
+	Load()
+}
+
 // Shop holds all tinshop information
 type Shop struct {
 	Collection Collection
 	Sources    Sources
 	Config     Config
+	Stats      Stats
 }
