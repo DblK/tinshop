@@ -48,7 +48,9 @@ Here is the list of all main features so far:
 - [X] You can specify custom titledb to be merged with official one
 - [X] Auto-watch for mounted directories
 - [X] Add filters path for shop
-- [X] Simple ticket check in NSP/NSZ
+- [X] Simple ticket check in NSP/NSZ (based on titledb file)
+- [X] Collect basic statistics
+- [X] An API to query information about your shop
 
 ## Filtering
 
