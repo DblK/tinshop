@@ -1,6 +1,9 @@
 package utils_test
 
 import (
+	"net/http"
+	"net/http/httptest"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -223,6 +226,19 @@ var _ = Describe("Utils", func() {
 		})
 		It("Test superpath (Not valid entry)", func() {
 			Expect(utils.IsValidFilter("superpath")).To(BeFalse())
+		})
+	})
+	Describe("GetIPFromRequest", func() {
+		It("Test with ip", func() {
+			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			req.RemoteAddr = "10.0.0.10"
+			Expect(utils.GetIPFromRequest(req)).To(Equal("10.0.0.10"))
+		})
+		It("Test with ip and X-Forwarded-For", func() {
+			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			req.RemoteAddr = "10.0.0.10"
+			req.Header.Set("X-Forwarded-For", "1.1.1.1")
+			Expect(utils.GetIPFromRequest(req)).To(Equal("1.1.1.1"))
 		})
 	})
 })
