@@ -185,9 +185,21 @@ type Collection interface {
 	ResetGamesCollection()
 }
 
+// Switch holds all information about the switch
+type Switch struct {
+	ID       int
+	IP       string
+	UID      string
+	Theme    string
+	Version  string
+	Language string
+}
+
 // Stats holds all information about statistics
 type Stats interface {
 	Load()
+	Close() error
+	ListVisit(*Switch)
 }
 
 // Shop holds all tinshop information

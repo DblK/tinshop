@@ -76,6 +76,7 @@ func createShop() TinShop {
 	r.HandleFunc("/{filter}/", shop.FilteringHandler)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	r.MethodNotAllowedHandler = http.HandlerFunc(notAllowed)
+	r.Use(shop.StatsMiddleware)
 	r.Use(shop.TinfoilMiddleware)
 	http.Handle("/", r)
 
@@ -181,4 +182,21 @@ func (s *TinShop) FilteringHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	serveCollection(w, s.Shop.Collection.Filter(vars["filter"]))
+}
+
+// StatsMiddleware is a middleware to collect statistics
+func (s *TinShop) StatsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.RequestURI == "/" || utils.IsValidFilter(cleanPath(r.RequestURI)) {
+			console := &repository.Switch{
+				IP:       utils.GetIPFromRequest(r),
+				UID:      r.Header.Get("Uid"),
+				Theme:    r.Header.Get("Theme"),
+				Version:  r.Header.Get("Version"),
+				Language: r.Header.Get("Language"),
+			}
+			s.Shop.Stats.ListVisit(console)
+		}
+		next.ServeHTTP(w, r)
+	})
 }
