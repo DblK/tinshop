@@ -196,6 +196,9 @@ func (s *TinShop) StatsMiddleware(next http.Handler) http.Handler {
 				Language: r.Header.Get("Language"),
 			}
 			s.Shop.Stats.ListVisit(console)
+		} else if r.RequestURI[0:7] == "/games/" {
+			vars := mux.Vars(r)
+			s.Shop.Stats.DownloadAsked(vars["game"])
 		}
 		next.ServeHTTP(w, r)
 	})

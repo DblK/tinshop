@@ -200,6 +200,7 @@ type Stats interface {
 	Load()
 	Close() error
 	ListVisit(*Switch)
+	DownloadAsked(string)
 }
 
 // Shop holds all tinshop information

@@ -43,6 +43,10 @@ func (s *stat) Close() error {
 	return s.db.Close()
 }
 
+func (s *stat) DownloadAsked(gameID string) {
+	fmt.Println("Stats", gameID)
+}
+
 func (s *stat) ListVisit(console *repository.Switch) {
 	fmt.Println(console.IP)
 	fmt.Println(s.db)

@@ -48,6 +48,18 @@ func (mr *MockStatsMockRecorder) Close() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockStats)(nil).Close))
 }
 
+// DownloadAsked mocks base method.
+func (m *MockStats) DownloadAsked(arg0 string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "DownloadAsked", arg0)
+}
+
+// DownloadAsked indicates an expected call of DownloadAsked.
+func (mr *MockStatsMockRecorder) DownloadAsked(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DownloadAsked", reflect.TypeOf((*MockStats)(nil).DownloadAsked), arg0)
+}
+
 // ListVisit mocks base method.
 func (m *MockStats) ListVisit(arg0 *repository.Switch) {
 	m.ctrl.T.Helper()
