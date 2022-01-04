@@ -43,6 +43,12 @@ func (s *stat) Close() error {
 	return s.db.Close()
 }
 
+func (s *stat) Summary() repository.StatsSummary {
+	return repository.StatsSummary{
+		NumberVisit: 0,
+	}
+}
+
 func (s *stat) DownloadAsked(gameID string) {
 	fmt.Println("Stats", gameID)
 }

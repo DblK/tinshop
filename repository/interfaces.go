@@ -195,12 +195,18 @@ type Switch struct {
 	Language string
 }
 
+// StatsSummary holds all information about tinshop
+type StatsSummary struct {
+	NumberVisit int `json:"numberVisit"`
+}
+
 // Stats holds all information about statistics
 type Stats interface {
 	Load()
 	Close() error
 	ListVisit(*Switch)
 	DownloadAsked(string)
+	Summary() StatsSummary
 }
 
 // Shop holds all tinshop information
@@ -209,4 +215,10 @@ type Shop struct {
 	Sources    Sources
 	Config     Config
 	Stats      Stats
+	API        API
+}
+
+// API holds all function for api
+type API interface {
+	Stats(http.ResponseWriter, StatsSummary)
 }

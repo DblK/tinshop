@@ -83,3 +83,17 @@ func (mr *MockStatsMockRecorder) Load() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Load", reflect.TypeOf((*MockStats)(nil).Load))
 }
+
+// Summary mocks base method.
+func (m *MockStats) Summary() repository.StatsSummary {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Summary")
+	ret0, _ := ret[0].(repository.StatsSummary)
+	return ret0
+}
+
+// Summary indicates an expected call of Summary.
+func (mr *MockStatsMockRecorder) Summary() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Summary", reflect.TypeOf((*MockStats)(nil).Summary))
+}

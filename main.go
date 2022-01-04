@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/DblK/tinshop/api"
 	"github.com/DblK/tinshop/config"
 	collection "github.com/DblK/tinshop/gamescollection"
 	"github.com/DblK/tinshop/repository"
@@ -74,6 +75,7 @@ func createShop() TinShop {
 	r.HandleFunc("/games/{game}", shop.GamesHandler)
 	r.HandleFunc("/{filter}", shop.FilteringHandler)
 	r.HandleFunc("/{filter}/", shop.FilteringHandler)
+	r.HandleFunc("/api/{endpoint}", shop.APIHandler)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	r.MethodNotAllowedHandler = http.HandlerFunc(notAllowed)
 	r.Use(shop.StatsMiddleware)
@@ -106,7 +108,7 @@ func initShop() repository.Shop {
 	myShop.Collection = collection.New(myShop.Config)
 	myShop.Sources = sources.New(myShop.Collection)
 	myShop.Stats = stats.New()
-	// ResetTinshop(myShop)
+	myShop.API = api.New()
 
 	// Load collection
 	myShop.Collection.Load()
@@ -182,6 +184,15 @@ func (s *TinShop) FilteringHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	serveCollection(w, s.Shop.Collection.Filter(vars["filter"]))
+}
+
+// APIHandler handles api calls
+func (s *TinShop) APIHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	if vars["endpoint"] == "stats" {
+		s.Shop.API.Stats(w, s.Shop.Stats.Summary())
+	}
 }
 
 // StatsMiddleware is a middleware to collect statistics
