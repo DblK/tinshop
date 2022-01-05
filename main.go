@@ -192,7 +192,13 @@ func (s *TinShop) APIHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	if vars["endpoint"] == "stats" {
-		s.Shop.API.Stats(w, s.Shop.Stats.Summary())
+		summary, err := s.Shop.Stats.Summary()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		s.Shop.API.Stats(w, summary)
 		return
 	}
 	// Everything not existing

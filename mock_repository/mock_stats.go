@@ -89,11 +89,12 @@ func (mr *MockStatsMockRecorder) Load() *gomock.Call {
 }
 
 // Summary mocks base method.
-func (m *MockStats) Summary() repository.StatsSummary {
+func (m *MockStats) Summary() (repository.StatsSummary, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Summary")
 	ret0, _ := ret[0].(repository.StatsSummary)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Summary indicates an expected call of Summary.

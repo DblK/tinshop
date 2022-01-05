@@ -187,7 +187,6 @@ type Collection interface {
 
 // Switch holds all information about the switch
 type Switch struct {
-	ID       int
 	IP       string
 	UID      string
 	Theme    string
@@ -197,7 +196,9 @@ type Switch struct {
 
 // StatsSummary holds all information about tinshop
 type StatsSummary struct {
-	NumberVisit int `json:"numberVisit"`
+	Visit         uint64 `json:"visit,omitempty"`
+	UniqueSwitch  uint64 `json:"uniqueSwitch,omitempty"`
+	DownloadAsked uint64 `json:"downloadAsked,omitempty"`
 }
 
 // Stats holds all information about statistics
@@ -206,7 +207,7 @@ type Stats interface {
 	Close() error
 	ListVisit(*Switch) error
 	DownloadAsked(string, string) error
-	Summary() StatsSummary
+	Summary() (StatsSummary, error)
 }
 
 // Shop holds all tinshop information
