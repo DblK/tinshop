@@ -80,6 +80,7 @@ func createShop() TinShop {
 	r.MethodNotAllowedHandler = http.HandlerFunc(notAllowed)
 	r.Use(shop.StatsMiddleware)
 	r.Use(shop.TinfoilMiddleware)
+	r.Use(shop.CORSMiddleware)
 	http.Handle("/", r)
 
 	srv := &http.Server{
