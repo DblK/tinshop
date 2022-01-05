@@ -196,9 +196,10 @@ type Switch struct {
 
 // StatsSummary holds all information about tinshop
 type StatsSummary struct {
-	Visit         uint64 `json:"visit,omitempty"`
-	UniqueSwitch  uint64 `json:"uniqueSwitch,omitempty"`
-	DownloadAsked uint64 `json:"downloadAsked,omitempty"`
+	Visit          uint64                 `json:"visit,omitempty"`
+	UniqueSwitch   uint64                 `json:"uniqueSwitch,omitempty"`
+	VisitPerSwitch map[string]interface{} `json:"visitPerSwitch,omitempty"`
+	DownloadAsked  uint64                 `json:"downloadAsked,omitempty"`
 }
 
 // Stats holds all information about statistics

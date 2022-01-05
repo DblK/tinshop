@@ -50,14 +50,16 @@ func (s *stat) Close() error {
 func (s *stat) Summary() (repository.StatsSummary, error) {
 	var visit uint64
 	var uniqueSwitch int
+	var consoles map[string]interface{}
 
 	err := s.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("global"))
 		visit = byteToUint64(b.Get([]byte("visit")))
 
-		consoles, err := byteToMap(b.Get([]byte("switch")))
-		if err != nil {
-			return err
+		var errConsoles error
+		consoles, errConsoles = byteToMap(b.Get([]byte("switch")))
+		if errConsoles != nil {
+			return errConsoles
 		}
 		uniqueSwitch = len(consoles)
 
@@ -68,8 +70,9 @@ func (s *stat) Summary() (repository.StatsSummary, error) {
 	}
 
 	return repository.StatsSummary{
-		Visit:        visit,
-		UniqueSwitch: uint64(uniqueSwitch),
+		Visit:          visit,
+		UniqueSwitch:   uint64(uniqueSwitch),
+		VisitPerSwitch: consoles,
 		// DownloadAsked: 0,
 	}, nil
 
@@ -125,16 +128,6 @@ func (s *stat) ListVisit(console *repository.Switch) error {
 	})
 }
 
-func byteToSlice(bytes []byte) ([]interface{}, error) {
-	val := make([]interface{}, 0)
-	if len(bytes) > 0 {
-		err := json.Unmarshal(bytes, &val)
-		if err != nil {
-			return make([]interface{}, 0), err
-		}
-	}
-	return val, nil
-}
 func byteToMap(bytes []byte) (map[string]interface{}, error) {
 	val := make(map[string]interface{})
 	if len(bytes) > 0 {
