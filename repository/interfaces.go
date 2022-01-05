@@ -166,6 +166,7 @@ type Sources interface {
 	OnConfigUpdate(Config)
 	BeforeConfigUpdate(Config)
 	GetFiles() []FileDesc
+	HasGame(string) bool
 	DownloadGame(string, http.ResponseWriter, *http.Request)
 }
 

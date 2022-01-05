@@ -219,7 +219,9 @@ func (s *TinShop) StatsMiddleware(next http.Handler) http.Handler {
 			_ = s.Shop.Stats.ListVisit(console)
 		} else if r.RequestURI[0:7] == "/games/" {
 			vars := mux.Vars(r)
-			_ = s.Shop.Stats.DownloadAsked(utils.GetIPFromRequest(r), vars["game"])
+			if s.Shop.Sources.HasGame(vars["game"]) {
+				_ = s.Shop.Stats.DownloadAsked(utils.GetIPFromRequest(r), vars["game"])
+			}
 		}
 		next.ServeHTTP(w, r)
 	})

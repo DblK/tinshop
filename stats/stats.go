@@ -75,8 +75,6 @@ func (s *stat) Summary() (repository.StatsSummary, error) {
 		VisitPerSwitch: consoles,
 		// DownloadAsked: 0,
 	}, nil
-
-	// fmt.Println(b.Stats().KeyN) // Num of element
 }
 
 // DownloadAsked compute stats when we download a game
@@ -87,12 +85,6 @@ func (s *stat) DownloadAsked(IP string, gameID string) error {
 
 	return nil
 }
-
-// Marshal user data into bytes.
-// buf, err := json.Marshal(console)
-// if err != nil {
-// 	return err
-// }
 
 // ListVisit count every visit to the listing page (either root or filter)
 func (s *stat) ListVisit(console *repository.Switch) error {
