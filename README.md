@@ -6,12 +6,14 @@
     Your own personal shop right into tinfoil!
 </p>
 
+<p align="center">
 [![golangci-lint](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml/badge.svg?event=release)](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml)
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/DblK/tinshop.svg)](https://github.com/DblK/tinshop)
 [![GoDoc reference example](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/DblK/tinshop)
 [![GoReportCard](https://goreportcard.com/badge/github.com/DblK/tinshop)](https://goreportcard.com/report/github.com/DblK/tinshop)
 [![GitHub release](https://img.shields.io/github/release/DblK/tinshop.svg)](https://GitHub.com/DblK/tinshop/releases/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+</p>
 
 # Disclaimer
 

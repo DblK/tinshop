@@ -192,7 +192,10 @@ func (s *TinShop) APIHandler(w http.ResponseWriter, r *http.Request) {
 
 	if vars["endpoint"] == "stats" {
 		s.Shop.API.Stats(w, s.Shop.Stats.Summary())
+		return
 	}
+	// Everything not existing
+	w.WriteHeader(http.StatusBadRequest)
 }
 
 // StatsMiddleware is a middleware to collect statistics
@@ -206,10 +209,10 @@ func (s *TinShop) StatsMiddleware(next http.Handler) http.Handler {
 				Version:  r.Header.Get("Version"),
 				Language: r.Header.Get("Language"),
 			}
-			s.Shop.Stats.ListVisit(console)
+			_ = s.Shop.Stats.ListVisit(console)
 		} else if r.RequestURI[0:7] == "/games/" {
 			vars := mux.Vars(r)
-			s.Shop.Stats.DownloadAsked(vars["game"])
+			_ = s.Shop.Stats.DownloadAsked(utils.GetIPFromRequest(r), vars["game"])
 		}
 		next.ServeHTTP(w, r)
 	})

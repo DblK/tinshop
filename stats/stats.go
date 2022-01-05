@@ -15,12 +15,11 @@ type stat struct {
 
 // New create a new stats object
 func New() repository.Stats {
-	// TODO: Add bbolt and Create buckets
 	return &stat{}
 }
 
 func (s *stat) initDB() {
-	s.db.Update(func(tx *bolt.Tx) error {
+	_ = s.db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte("switch"))
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
@@ -43,21 +42,26 @@ func (s *stat) Close() error {
 	return s.db.Close()
 }
 
+// Summary return the summary of all stats
 func (s *stat) Summary() repository.StatsSummary {
+	// fmt.Println(b.Stats().KeyN) // Num of element
 	return repository.StatsSummary{
-		NumberVisit: 0,
+		NumberVisit: 42,
 	}
 }
 
-func (s *stat) DownloadAsked(gameID string) {
-	fmt.Println("Stats", gameID)
+// DownloadAsked compute stats when we download a game
+func (s *stat) DownloadAsked(IP string, gameID string) error {
+	fmt.Println("[Stats] DownloadAsked", IP, gameID)
+	// TODO: Add in global download games stats
+	// TODO: Add in global IP download stats
+
+	return nil
 }
 
-func (s *stat) ListVisit(console *repository.Switch) {
-	fmt.Println(console.IP)
-	fmt.Println(s.db)
-
-	err := s.db.Update(func(tx *bolt.Tx) error {
+// ListVisit count every visit to the listing page (either root or filter)
+func (s *stat) ListVisit(console *repository.Switch) error {
+	return s.db.Update(func(tx *bolt.Tx) error {
 		// Retrieve the users bucket.
 		// This should be created when the DB is first opened.
 		b := tx.Bucket([]byte("switch"))
@@ -67,7 +71,6 @@ func (s *stat) ListVisit(console *repository.Switch) {
 		// That can't happen in an Update() call so I ignore the error check.
 		id, _ := b.NextSequence()
 		console.ID = int(id)
-		fmt.Println(b.Stats().KeyN) // Num of element
 
 		// Marshal user data into bytes.
 		buf, err := json.Marshal(console)
@@ -75,15 +78,9 @@ func (s *stat) ListVisit(console *repository.Switch) {
 			return err
 		}
 
-		fmt.Println(console)
-
 		// Persist bytes to users bucket.
 		return b.Put(itob(console.ID), buf)
 	})
-
-	if err != nil {
-		fmt.Println(err)
-	}
 }
 
 // itob returns an 8-byte big endian representation of v.

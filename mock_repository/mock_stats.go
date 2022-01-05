@@ -49,21 +49,25 @@ func (mr *MockStatsMockRecorder) Close() *gomock.Call {
 }
 
 // DownloadAsked mocks base method.
-func (m *MockStats) DownloadAsked(arg0 string) {
+func (m *MockStats) DownloadAsked(arg0, arg1 string) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "DownloadAsked", arg0)
+	ret := m.ctrl.Call(m, "DownloadAsked", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // DownloadAsked indicates an expected call of DownloadAsked.
-func (mr *MockStatsMockRecorder) DownloadAsked(arg0 interface{}) *gomock.Call {
+func (mr *MockStatsMockRecorder) DownloadAsked(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DownloadAsked", reflect.TypeOf((*MockStats)(nil).DownloadAsked), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DownloadAsked", reflect.TypeOf((*MockStats)(nil).DownloadAsked), arg0, arg1)
 }
 
 // ListVisit mocks base method.
-func (m *MockStats) ListVisit(arg0 *repository.Switch) {
+func (m *MockStats) ListVisit(arg0 *repository.Switch) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "ListVisit", arg0)
+	ret := m.ctrl.Call(m, "ListVisit", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // ListVisit indicates an expected call of ListVisit.

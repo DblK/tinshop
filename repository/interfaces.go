@@ -204,8 +204,8 @@ type StatsSummary struct {
 type Stats interface {
 	Load()
 	Close() error
-	ListVisit(*Switch)
-	DownloadAsked(string)
+	ListVisit(*Switch) error
+	DownloadAsked(string, string) error
 	Summary() StatsSummary
 }
 
