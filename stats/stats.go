@@ -2,6 +2,7 @@ package stats
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 
 	"github.com/DblK/tinshop/repository"
@@ -48,18 +49,27 @@ func (s *stat) Close() error {
 // Summary return the summary of all stats
 func (s *stat) Summary() (repository.StatsSummary, error) {
 	var visit uint64
+	var uniqueSwitch int
 
 	err := s.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("global"))
 		visit = byteToUint64(b.Get([]byte("visit")))
+
+		consoles, err := byteToMap(b.Get([]byte("switch")))
+		if err != nil {
+			return err
+		}
+		uniqueSwitch = len(consoles)
+
 		return nil
 	})
 	if err != nil {
 		return repository.StatsSummary{}, err
 	}
+
 	return repository.StatsSummary{
-		Visit: visit,
-		// UniqueSwitch: 0,
+		Visit:        visit,
+		UniqueSwitch: uint64(uniqueSwitch),
 		// DownloadAsked: 0,
 	}, nil
 
@@ -83,13 +93,57 @@ func (s *stat) DownloadAsked(IP string, gameID string) error {
 
 // ListVisit count every visit to the listing page (either root or filter)
 func (s *stat) ListVisit(console *repository.Switch) error {
-	fmt.Println("[Stats] ListVisit")
 	return s.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("global"))
 		visit := byteToUint64(b.Get([]byte("visit")))
 
-		return b.Put([]byte("visit"), itob(visit+1))
+		errVisit := b.Put([]byte("visit"), itob(visit+1))
+		if errVisit != nil {
+			return errVisit
+		}
+		consoles, err := byteToMap(b.Get([]byte("switch")))
+		if err != nil {
+			return err
+		}
+		currentID := console.UID
+		if currentID == "" {
+			currentID = "Unknown"
+		}
+
+		if consoles[currentID] == nil {
+			consoles[currentID] = uint64(1)
+		} else {
+			consoles[currentID] = uint64(consoles[currentID].(float64)) + 1
+		}
+
+		// Store back to bytes
+		buf, err := json.Marshal(consoles)
+		if err != nil {
+			return err
+		}
+		return b.Put([]byte("switch"), buf)
 	})
+}
+
+func byteToSlice(bytes []byte) ([]interface{}, error) {
+	val := make([]interface{}, 0)
+	if len(bytes) > 0 {
+		err := json.Unmarshal(bytes, &val)
+		if err != nil {
+			return make([]interface{}, 0), err
+		}
+	}
+	return val, nil
+}
+func byteToMap(bytes []byte) (map[string]interface{}, error) {
+	val := make(map[string]interface{})
+	if len(bytes) > 0 {
+		err := json.Unmarshal(bytes, &val)
+		if err != nil {
+			return make(map[string]interface{}), err
+		}
+	}
+	return val, nil
 }
 
 func byteToUint64(bytes []byte) uint64 {
