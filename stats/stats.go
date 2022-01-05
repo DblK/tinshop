@@ -110,7 +110,7 @@ func (s *stat) ListVisit(console *repository.Switch) error {
 		}
 		currentID := console.UID
 		if currentID == "" {
-			currentID = "Unknown"
+			currentID = "Unknown-" + console.IP
 		}
 
 		if consoles[currentID] == nil {
