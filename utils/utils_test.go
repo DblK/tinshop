@@ -241,4 +241,23 @@ var _ = Describe("Utils", func() {
 			Expect(utils.GetIPFromRequest(req)).To(Equal("1.1.1.1"))
 		})
 	})
+	Describe("Search", func() {
+		It("Test with not found value", func() {
+			myTab := make([]string, 0)
+			myTab = append(myTab, "test")
+			idxMyTab := utils.Search(len(myTab), func(index int) bool {
+				return myTab[index] == "dblk"
+			})
+			Expect(idxMyTab).To(Equal(-1))
+		})
+		It("Test with found value", func() {
+			myTab := make([]string, 0)
+			myTab = append(myTab, "dblk")
+			myTab = append(myTab, "test")
+			idxMyTab := utils.Search(len(myTab), func(index int) bool {
+				return myTab[index] == "test"
+			})
+			Expect(idxMyTab).To(Equal(1))
+		})
+	})
 })
