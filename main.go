@@ -5,6 +5,8 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
+	"fmt"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -23,6 +25,12 @@ import (
 
 //go:embed assets/*
 var assetData embed.FS //nolint:gochecknoglobals
+
+//go:embed ui/build/*
+var webUI embed.FS //nolint:gochecknoglobals
+
+//go:embed ui/build/index.html
+var indexPage []byte //nolint:gochecknoglobals
 
 // TinShop holds all information about the Shop
 type TinShop struct {
@@ -71,16 +79,41 @@ func createShop() TinShop {
 	shop.Shop = initShop()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/", shop.HomeHandler)
-	r.HandleFunc("/games/{game}", shop.GamesHandler)
-	r.HandleFunc("/{filter}", shop.FilteringHandler)
-	r.HandleFunc("/{filter}/", shop.FilteringHandler)
-	r.HandleFunc("/api/{endpoint}", shop.APIHandler)
+	// r.HandleFunc("/", shop.HomeHandler)
+	// r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	w.WriteHeader(200)
+	// 	w.Write(indexPage)
+	// 	fmt.Println(http.FS(webUI))
+	// })
+	distFS, err := fs.Sub(webUI, "ui/build")
+	if err != nil {
+		fmt.Println(err)
+	}
+	r.Handle("/", http.FileServer(http.FS(distFS)))
+	fs.WalkDir(distFS, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		fmt.Printf("path=%q, isDir=%v\n", path, d.IsDir())
+		return nil
+	})
+	// r.HandleFunc("/{rest:.*}", func(w http.ResponseWriter, req *http.Request) {
+	// 	fmt.Println("other")
+	// 	fmt.Println(mux.Vars(req)["rest"])
+	// 	fmt.Println(req.URL.Path)
+	// })
+	r.Handle("/{rest:.*}", http.FileServer(http.FS(distFS)))
+
+	// r.HandleFunc("/games/{game}", shop.GamesHandler)
+	// r.HandleFunc("/{filter}", shop.FilteringHandler)
+	// r.HandleFunc("/{filter}/", shop.FilteringHandler)
+	// r.HandleFunc("/api/{endpoint}", shop.APIHandler)
+
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	r.MethodNotAllowedHandler = http.HandlerFunc(notAllowed)
-	r.Use(shop.StatsMiddleware)
-	r.Use(shop.TinfoilMiddleware)
-	r.Use(shop.CORSMiddleware)
+	// r.Use(shop.StatsMiddleware)
+	// r.Use(shop.TinfoilMiddleware)
+	// r.Use(shop.CORSMiddleware)
 	http.Handle("/", r)
 
 	srv := &http.Server{
@@ -128,14 +161,14 @@ func initShop() repository.Shop {
 
 func notFound(w http.ResponseWriter, r *http.Request) {
 	log.Println("notFound")
-	log.Println(r.Header)
+	// log.Println(r.Header)
 	log.Println(r.RequestURI)
 	w.WriteHeader(http.StatusNotFound)
 }
 
 func notAllowed(w http.ResponseWriter, r *http.Request) {
 	log.Println("notAllowed")
-	log.Println(r.Header)
+	// log.Println(r.Header)
 	log.Println(r.RequestURI)
 	w.WriteHeader(http.StatusMethodNotAllowed)
 }
@@ -151,6 +184,11 @@ func serveCollection(w http.ResponseWriter, tinfoilCollection interface{}) {
 
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(jsonResponse)
+}
+
+// WebUIHandler render admin ui
+func (s *TinShop) WebUIHandler(w http.ResponseWriter, r *http.Request) {
+
 }
 
 // HomeHandler handles list of games
@@ -217,7 +255,7 @@ func (s *TinShop) StatsMiddleware(next http.Handler) http.Handler {
 				Language: r.Header.Get("Language"),
 			}
 			_ = s.Shop.Stats.ListVisit(console)
-		} else if r.RequestURI[0:7] == "/games/" {
+		} else if len(r.RequestURI) > 7 && r.RequestURI[0:7] == "/games/" {
 			vars := mux.Vars(r)
 			if s.Shop.Sources.HasGame(vars["game"]) {
 				_ = s.Shop.Stats.DownloadAsked(utils.GetIPFromRequest(r), vars["game"])
