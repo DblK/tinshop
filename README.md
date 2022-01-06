@@ -83,7 +83,8 @@ If you change an interface (or add a new one), do not forget to execute `./updat
 
 ## What to launch tests?
 
-You can run `ginkgo -r` for one shot or `ginkgo watch -r` during development.
+You can run `ginkgo -r` for one shot or `ginkgo watch -r` during development.  
+Note: you can add `-cover` to have an idea of the code coverage.
 # Roadmap
 
 You can see the [roadmap here](https://github.com/DblK/tinshop/projects/1).
