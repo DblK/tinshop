@@ -279,4 +279,73 @@ var _ = Describe("Main", func() {
 			})
 		})
 	})
+	Describe("TinfoilMiddleware", func() {
+		var (
+			req              *http.Request
+			handler          http.Handler
+			writer           *httptest.ResponseRecorder
+			myMockCollection *mock_repository.MockCollection
+			myMockSources    *mock_repository.MockSources
+			myMockConfig     *mock_repository.MockConfig
+			myMockStats      *mock_repository.MockStats
+			ctrl             *gomock.Controller
+			myShop           *main.TinShop
+		)
+
+		BeforeEach(func() {
+			ctrl = gomock.NewController(GinkgoT())
+			myMockCollection = mock_repository.NewMockCollection(ctrl)
+			myMockSources = mock_repository.NewMockSources(ctrl)
+			myMockConfig = mock_repository.NewMockConfig(ctrl)
+			myMockStats = mock_repository.NewMockStats(ctrl)
+			myShop = &main.TinShop{}
+		})
+
+		JustBeforeEach(func() {
+			myShop.Shop = repository.Shop{}
+			myShop.Shop.Config = myMockConfig
+			myShop.Shop.Collection = myMockCollection
+			myShop.Shop.Sources = myMockSources
+			myShop.Shop.Stats = myMockStats
+		})
+		Context("Not handled endpoint", func() {
+			BeforeEach(func() {
+				r := mux.NewRouter()
+				r.Use(myShop.StatsMiddleware)
+				r.HandleFunc("/", myShop.HomeHandler)
+				r.HandleFunc("/{filter}", myShop.HomeHandler)       // Testing purpose
+				r.HandleFunc("/{filter}/", myShop.HomeHandler)      // Testing purpose
+				r.HandleFunc("/api/{endpoint}", myShop.HomeHandler) // Testing purpose
+				handler = r
+			})
+
+			It("Test with the api endpoint", func() {
+				req = httptest.NewRequest(http.MethodGet, "/api/stats", nil)
+				writer = httptest.NewRecorder()
+
+				emptyCollection := &repository.GameType{}
+
+				myMockCollection.EXPECT().
+					Games().
+					Return(*emptyCollection).
+					AnyTimes()
+
+				myMockSources.EXPECT().
+					HasGame(gomock.Any()).
+					Return(true).
+					Times(0)
+				myMockStats.EXPECT().
+					ListVisit(gomock.Any()).
+					Return(nil).
+					Times(0)
+				myMockStats.EXPECT().
+					DownloadAsked(gomock.Any(), gomock.Any()).
+					Return(nil).
+					Times(0)
+
+				handler.ServeHTTP(writer, req)
+				Expect(writer.Code).To(Equal(http.StatusOK))
+			})
+		})
+	})
 })
