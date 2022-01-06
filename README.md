@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+
 [![golangci-lint](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml/badge.svg?branch=master&event=release)](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml)
 [![test](https://github.com/DblK/tinshop/actions/workflows/ginkgo.yml/badge.svg?branch=master&event=release)](https://github.com/DblK/tinshop/actions/workflows/ginkgo.yml)
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/DblK/tinshop.svg)](https://github.com/DblK/tinshop)
