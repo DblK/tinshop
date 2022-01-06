@@ -1,12 +1,6 @@
-<p align="center">
-<p align="center">
-    <img alt="TinShop" src="./logo.png" width="50%">  
-</p>
-<p align="center">
-    Your own personal shop right into tinfoil!
-</p>
-
-<p align="center">
+<div align="center">
+<img alt="TinShop" src="./logo.png" width="50%"><br>
+Your own personal shop right into tinfoil!<br>
 
 [![golangci-lint](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml/badge.svg?branch=master&event=release)](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml)
 [![test](https://github.com/DblK/tinshop/actions/workflows/ginkgo.yml/badge.svg?branch=master&event=release)](https://github.com/DblK/tinshop/actions/workflows/ginkgo.yml)
@@ -15,7 +9,7 @@
 [![GoReportCard](https://goreportcard.com/badge/github.com/DblK/tinshop)](https://goreportcard.com/report/github.com/DblK/tinshop)
 [![GitHub release](https://img.shields.io/github/release/DblK/tinshop.svg)](https://GitHub.com/DblK/tinshop/releases/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-</p>
+</div>
 
 # Disclaimer
 
