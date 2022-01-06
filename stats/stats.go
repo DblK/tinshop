@@ -1,11 +1,11 @@
 package stats
 
 import (
-	"encoding/binary"
 	"encoding/json"
 	"fmt"
 
 	"github.com/DblK/tinshop/repository"
+	"github.com/DblK/tinshop/utils"
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -52,19 +52,19 @@ func (s *stat) Summary() (repository.StatsSummary, error) {
 
 	err := s.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("global"))
-		visit = byteToUint64(b.Get([]byte("visit")))
+		visit = utils.ByteToUint64(b.Get([]byte("visit")))
 
 		var errConsoles error
-		consoles, errConsoles = byteToMap(b.Get([]byte("switch")))
+		consoles, errConsoles = utils.ByteToMap(b.Get([]byte("switch")))
 		if errConsoles != nil {
 			return errConsoles
 		}
 		uniqueSwitch = len(consoles)
 
-		download = byteToUint64(b.Get([]byte("download")))
+		download = utils.ByteToUint64(b.Get([]byte("download")))
 
 		var errDownloadDetails error
-		downloadDetails, errDownloadDetails = byteToMap(b.Get([]byte("downloadDetails")))
+		downloadDetails, errDownloadDetails = utils.ByteToMap(b.Get([]byte("downloadDetails")))
 		if errDownloadDetails != nil {
 			return errDownloadDetails
 		}
@@ -93,14 +93,14 @@ func (s *stat) DownloadAsked(IP string, gameID string) error {
 		b := tx.Bucket([]byte("global"))
 
 		// Handle download
-		download := byteToUint64(b.Get([]byte("download")))
-		errDownload := b.Put([]byte("download"), itob(download+1))
+		download := utils.ByteToUint64(b.Get([]byte("download")))
+		errDownload := b.Put([]byte("download"), utils.Itob(download+1))
 		if errDownload != nil {
 			return errDownload
 		}
 
 		// Handle download per IP
-		allDownloads, err := byteToMap(b.Get([]byte("downloadDetails")))
+		allDownloads, err := utils.ByteToMap(b.Get([]byte("downloadDetails")))
 		if err != nil {
 			return err
 		}
@@ -122,14 +122,14 @@ func (s *stat) ListVisit(console *repository.Switch) error {
 		b := tx.Bucket([]byte("global"))
 
 		// Handle visit
-		visit := byteToUint64(b.Get([]byte("visit")))
-		errVisit := b.Put([]byte("visit"), itob(visit+1))
+		visit := utils.ByteToUint64(b.Get([]byte("visit")))
+		errVisit := b.Put([]byte("visit"), utils.Itob(visit+1))
 		if errVisit != nil {
 			return errVisit
 		}
 
 		// Handle visit per switch
-		consoles, err := byteToMap(b.Get([]byte("switch")))
+		consoles, err := utils.ByteToMap(b.Get([]byte("switch")))
 		if err != nil {
 			return err
 		}
@@ -148,30 +148,4 @@ func (s *stat) ListVisit(console *repository.Switch) error {
 		}
 		return b.Put([]byte("switch"), buf)
 	})
-}
-
-func byteToMap(bytes []byte) (map[string]interface{}, error) {
-	val := make(map[string]interface{})
-	if len(bytes) > 0 {
-		err := json.Unmarshal(bytes, &val)
-		if err != nil {
-			return make(map[string]interface{}), err
-		}
-	}
-	return val, nil
-}
-
-func byteToUint64(bytes []byte) uint64 {
-	num := uint64(0)
-	if len(bytes) > 0 {
-		num = binary.BigEndian.Uint64(bytes)
-	}
-	return num
-}
-
-// itob returns an 8-byte big endian representation of v.
-func itob(v uint64) []byte {
-	b := make([]byte, 8)
-	binary.BigEndian.PutUint64(b, v)
-	return b
 }
