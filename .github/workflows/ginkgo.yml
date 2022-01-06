@@ -1,0 +1,23 @@
+name: test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        id: vars
+        run: |
+          echo ::set-output name=go_version::$(cat go.mod | head -3 | tail -1 | cut -d ' ' -f 2)
+          echo "Using Go version ${{ steps.vars.outputs.go_version }}"
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ steps.vars.outputs.go_version }}
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: go mod tidy && git diff --exit-code go.mod go.sum
+      - run: go run ./ginkgo -r --randomizeAllSpecs --randomizeSuites --race --trace
