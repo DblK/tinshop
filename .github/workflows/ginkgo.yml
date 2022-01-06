@@ -20,4 +20,6 @@ jobs:
         with:
           go-version: ${{ steps.vars.outputs.go_version }}
       - run: go mod tidy && git diff --exit-code go.mod go.sum
-      - run: go run ./ginkgo -r --randomizeAllSpecs --randomizeSuites --race --trace
+      - name: Print out Ginkgo version
+        run: ginkgo version
+      - run: ginkgo -r --randomizeAllSpecs --randomizeSuites --race --trace
