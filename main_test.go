@@ -312,9 +312,6 @@ var _ = Describe("Main", func() {
 			BeforeEach(func() {
 				r := mux.NewRouter()
 				r.Use(myShop.StatsMiddleware)
-				r.HandleFunc("/", myShop.HomeHandler)
-				r.HandleFunc("/{filter}", myShop.HomeHandler)       // Testing purpose
-				r.HandleFunc("/{filter}/", myShop.HomeHandler)      // Testing purpose
 				r.HandleFunc("/api/{endpoint}", myShop.HomeHandler) // Testing purpose
 				handler = r
 			})
@@ -338,6 +335,135 @@ var _ = Describe("Main", func() {
 					ListVisit(gomock.Any()).
 					Return(nil).
 					Times(0)
+				myMockStats.EXPECT().
+					DownloadAsked(gomock.Any(), gomock.Any()).
+					Return(nil).
+					Times(0)
+
+				handler.ServeHTTP(writer, req)
+				Expect(writer.Code).To(Equal(http.StatusOK))
+			})
+		})
+		Context("Games endpoint", func() {
+			BeforeEach(func() {
+				r := mux.NewRouter()
+				r.Use(myShop.StatsMiddleware)
+				r.HandleFunc("/games/{game}", myShop.HomeHandler) // Testing purpose
+				handler = r
+			})
+
+			It("Test with a not found game", func() {
+				req = httptest.NewRequest(http.MethodGet, "/games/notFound", nil)
+				writer = httptest.NewRecorder()
+
+				emptyCollection := &repository.GameType{}
+
+				myMockCollection.EXPECT().
+					Games().
+					Return(*emptyCollection).
+					AnyTimes()
+
+				myMockSources.EXPECT().
+					HasGame("notFound").
+					Return(false).
+					Times(1)
+				myMockStats.EXPECT().
+					ListVisit(gomock.Any()).
+					Return(nil).
+					Times(0)
+				myMockStats.EXPECT().
+					DownloadAsked(gomock.Any(), gomock.Any()).
+					Return(nil).
+					Times(0)
+
+				handler.ServeHTTP(writer, req)
+				Expect(writer.Code).To(Equal(http.StatusOK))
+			})
+			It("Test with a found game", func() {
+				req = httptest.NewRequest(http.MethodGet, "/games/existingGame", nil)
+				req.RemoteAddr = "10.0.0.10"
+				writer = httptest.NewRecorder()
+
+				emptyCollection := &repository.GameType{}
+
+				myMockCollection.EXPECT().
+					Games().
+					Return(*emptyCollection).
+					AnyTimes()
+
+				myMockSources.EXPECT().
+					HasGame("existingGame").
+					Return(true).
+					Times(1)
+				myMockStats.EXPECT().
+					ListVisit(gomock.Any()).
+					Return(nil).
+					Times(0)
+				myMockStats.EXPECT().
+					DownloadAsked("10.0.0.10", "existingGame").
+					Return(nil).
+					Times(1)
+
+				handler.ServeHTTP(writer, req)
+				Expect(writer.Code).To(Equal(http.StatusOK))
+			})
+		})
+		Context("Listing endpoint", func() {
+			BeforeEach(func() {
+				r := mux.NewRouter()
+				r.Use(myShop.StatsMiddleware)
+				r.HandleFunc("/", myShop.HomeHandler)
+				r.HandleFunc("/{filter}", myShop.HomeHandler)  // Testing purpose
+				r.HandleFunc("/{filter}/", myShop.HomeHandler) // Testing purpose
+				handler = r
+			})
+
+			It("Test with root endpoint", func() {
+				req = httptest.NewRequest(http.MethodGet, "/", nil)
+				writer = httptest.NewRecorder()
+
+				emptyCollection := &repository.GameType{}
+
+				myMockCollection.EXPECT().
+					Games().
+					Return(*emptyCollection).
+					AnyTimes()
+
+				myMockSources.EXPECT().
+					HasGame(gomock.Any()).
+					Return(false).
+					Times(0)
+				myMockStats.EXPECT().
+					ListVisit(gomock.Any()).
+					Return(nil).
+					Times(1)
+				myMockStats.EXPECT().
+					DownloadAsked(gomock.Any(), gomock.Any()).
+					Return(nil).
+					Times(0)
+
+				handler.ServeHTTP(writer, req)
+				Expect(writer.Code).To(Equal(http.StatusOK))
+			})
+			It("Test with a filter endpoint", func() {
+				req = httptest.NewRequest(http.MethodGet, "/FR", nil)
+				writer = httptest.NewRecorder()
+
+				emptyCollection := &repository.GameType{}
+
+				myMockCollection.EXPECT().
+					Games().
+					Return(*emptyCollection).
+					AnyTimes()
+
+				myMockSources.EXPECT().
+					HasGame(gomock.Any()).
+					Return(true).
+					Times(0)
+				myMockStats.EXPECT().
+					ListVisit(gomock.Any()).
+					Return(nil).
+					Times(1)
 				myMockStats.EXPECT().
 					DownloadAsked(gomock.Any(), gomock.Any()).
 					Return(nil).
