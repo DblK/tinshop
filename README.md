@@ -1,6 +1,6 @@
 <div align="center">
-<img alt="TinShop" src="./logo.png" width="50%"><br>
-Your own personal shop right into tinfoil!<br>
+<img alt="TinShop" src="./logo.png" width="50%"><br><br>
+Your own personal shop right into tinfoil!<br><br>
 
 [![golangci-lint](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml/badge.svg?branch=master&event=release)](https://github.com/DblK/tinshop/actions/workflows/golangci-lint.yml)
 [![test](https://github.com/DblK/tinshop/actions/workflows/ginkgo.yml/badge.svg?branch=master&event=release)](https://github.com/DblK/tinshop/actions/workflows/ginkgo.yml)
