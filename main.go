@@ -29,9 +29,6 @@ var assetData embed.FS //nolint:gochecknoglobals
 //go:embed ui/build/*
 var webUI embed.FS //nolint:gochecknoglobals
 
-//go:embed ui/build/index.html
-var indexPage []byte //nolint:gochecknoglobals
-
 // TinShop holds all information about the Shop
 type TinShop struct {
 	Shop   repository.Shop
@@ -80,33 +77,19 @@ func createShop() TinShop {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", shop.HomeHandler)
-	// r.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) {
-	// 	w.WriteHeader(200)
-	// 	w.Write(indexPage)
-	// })
+
+	// WebUI
 	distFS, err := fs.Sub(webUI, "ui/build")
 	if err != nil {
 		fmt.Println(err)
 	}
-	r.Handle("/admin", http.StripPrefix("/admin", http.FileServer(http.FS(distFS))))
-	fs.WalkDir(distFS, ".", func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		fmt.Printf("path=%q, isDir=%v\n", path, d.IsDir())
-		return nil
-	})
-	// r.PathPrefix("/admin/").HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-	// 	fmt.Println("other")
-	// 	fmt.Println(req.URL.Path)
-	// })
+	r.Handle("/admin", http.StripPrefix("/admin", http.FileServer(http.FS(distFS)))) // Index
 	r.PathPrefix("/admin/").Handler(http.StripPrefix("/admin", http.FileServer(http.FS(distFS))))
-	// r.Handle("/{rest:.*}", http.FileServer(http.FS(distFS)))
 
 	r.HandleFunc("/games/{game}", shop.GamesHandler)
+	r.HandleFunc("/api/{endpoint}", shop.APIHandler)
 	r.HandleFunc("/{filter}", shop.FilteringHandler)
 	r.HandleFunc("/{filter}/", shop.FilteringHandler)
-	r.HandleFunc("/api/{endpoint}", shop.APIHandler)
 
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	r.MethodNotAllowedHandler = http.HandlerFunc(notAllowed)
