@@ -49,6 +49,7 @@ Here is the list of all main features so far:
 - [X] Simple ticket check in NSP/NSZ (based on titledb file)
 - [X] Collect basic statistics
 - [X] An API to query information about your shop
+- [X] WebUI to manage `tinshop` and your collection!
 
 ## Filtering
 
@@ -57,12 +58,18 @@ When you setup your shop inside `tinfoil` you can now add the following path:
 - `fr`, `en`, ... : Filter by languages
 - `world` : All games without any filter (equivalent without path)
 
+## WebUI
+
+The webUI will be available at `http://localIp:3000/admin`.  
+It should like this:
+
+
 # Dev or build from source
 
 I suggest to use a tiny executable [gow](https://github.com/mitranim/gow) to help you during the process (hot reload, etc..).  
 For example I use the following command to develop `gow -c run .`.
 
-If you want to build `TinShop` from source, please run `go build`.
+If you want to build `TinShop` from source, first generate the webapp `cd ui && npm run build` then run `go build` (webUI in embed inside binary).
 
 And then, simply run `./tinshop`.
 
@@ -72,6 +79,8 @@ Wanting to generate all possible os binaries (macOS, linux, windows) with all ar
 Here is the command `goreleaser release --snapshot --skip-publish --rm-dist`.
 
 Dead simple, thanks to Golang!
+
+Note: Do NOT forget to generate webUI first!
 
 ## Changing the structure of an interface?
 
