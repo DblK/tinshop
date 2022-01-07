@@ -83,8 +83,7 @@ func createShop() TinShop {
 	if err != nil {
 		fmt.Println(err)
 	}
-	r.Handle("/admin", http.StripPrefix("/admin", http.FileServer(http.FS(distFS)))) // Index
-	r.PathPrefix("/admin/").Handler(http.StripPrefix("/admin", http.FileServer(http.FS(distFS))))
+	r.PathPrefix("/admin").Handler(http.StripPrefix("/admin", http.FileServer(http.FS(distFS))))
 
 	r.HandleFunc("/games/{game}", shop.GamesHandler)
 	r.HandleFunc("/api/{endpoint}", shop.APIHandler)
