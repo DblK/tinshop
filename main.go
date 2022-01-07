@@ -79,17 +79,16 @@ func createShop() TinShop {
 	shop.Shop = initShop()
 
 	r := mux.NewRouter()
-	// r.HandleFunc("/", shop.HomeHandler)
-	// r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/", shop.HomeHandler)
+	// r.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) {
 	// 	w.WriteHeader(200)
 	// 	w.Write(indexPage)
-	// 	fmt.Println(http.FS(webUI))
 	// })
 	distFS, err := fs.Sub(webUI, "ui/build")
 	if err != nil {
 		fmt.Println(err)
 	}
-	r.Handle("/", http.FileServer(http.FS(distFS)))
+	r.Handle("/admin", http.StripPrefix("/admin", http.FileServer(http.FS(distFS))))
 	fs.WalkDir(distFS, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -97,23 +96,23 @@ func createShop() TinShop {
 		fmt.Printf("path=%q, isDir=%v\n", path, d.IsDir())
 		return nil
 	})
-	// r.HandleFunc("/{rest:.*}", func(w http.ResponseWriter, req *http.Request) {
+	// r.PathPrefix("/admin/").HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 	// 	fmt.Println("other")
-	// 	fmt.Println(mux.Vars(req)["rest"])
 	// 	fmt.Println(req.URL.Path)
 	// })
-	r.Handle("/{rest:.*}", http.FileServer(http.FS(distFS)))
+	r.PathPrefix("/admin/").Handler(http.StripPrefix("/admin", http.FileServer(http.FS(distFS))))
+	// r.Handle("/{rest:.*}", http.FileServer(http.FS(distFS)))
 
-	// r.HandleFunc("/games/{game}", shop.GamesHandler)
-	// r.HandleFunc("/{filter}", shop.FilteringHandler)
-	// r.HandleFunc("/{filter}/", shop.FilteringHandler)
-	// r.HandleFunc("/api/{endpoint}", shop.APIHandler)
+	r.HandleFunc("/games/{game}", shop.GamesHandler)
+	r.HandleFunc("/{filter}", shop.FilteringHandler)
+	r.HandleFunc("/{filter}/", shop.FilteringHandler)
+	r.HandleFunc("/api/{endpoint}", shop.APIHandler)
 
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	r.MethodNotAllowedHandler = http.HandlerFunc(notAllowed)
-	// r.Use(shop.StatsMiddleware)
-	// r.Use(shop.TinfoilMiddleware)
-	// r.Use(shop.CORSMiddleware)
+	r.Use(shop.StatsMiddleware)
+	r.Use(shop.TinfoilMiddleware)
+	r.Use(shop.CORSMiddleware)
 	http.Handle("/", r)
 
 	srv := &http.Server{
@@ -184,11 +183,6 @@ func serveCollection(w http.ResponseWriter, tinfoilCollection interface{}) {
 
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(jsonResponse)
-}
-
-// WebUIHandler render admin ui
-func (s *TinShop) WebUIHandler(w http.ResponseWriter, r *http.Request) {
-
 }
 
 // HomeHandler handles list of games
