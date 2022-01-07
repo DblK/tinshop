@@ -472,6 +472,33 @@ var _ = Describe("Main", func() {
 				handler.ServeHTTP(writer, req)
 				Expect(writer.Code).To(Equal(http.StatusOK))
 			})
+			It("Test with a not handled short endpoint", func() {
+				req = httptest.NewRequest(http.MethodGet, "/dblk", nil)
+				writer = httptest.NewRecorder()
+
+				emptyCollection := &repository.GameType{}
+
+				myMockCollection.EXPECT().
+					Games().
+					Return(*emptyCollection).
+					AnyTimes()
+
+				myMockSources.EXPECT().
+					HasGame(gomock.Any()).
+					Return(true).
+					Times(0)
+				myMockStats.EXPECT().
+					ListVisit(gomock.Any()).
+					Return(nil).
+					Times(0)
+				myMockStats.EXPECT().
+					DownloadAsked(gomock.Any(), gomock.Any()).
+					Return(nil).
+					Times(0)
+
+				handler.ServeHTTP(writer, req)
+				Expect(writer.Code).To(Equal(http.StatusOK))
+			})
 		})
 	})
 })
