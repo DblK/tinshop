@@ -12,7 +12,7 @@ import (
 // CORSMiddleware is a middleware to ensure right CORS headers
 func (s *TinShop) CORSMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.Contains(r.RequestURI, "/api/") {
+		if strings.Contains(r.RequestURI, "/api/") && !s.Shop.Config.DebugNoSecurity() {
 			w.Header().Set("Access-Control-Allow-Origin", s.Shop.Config.RootShop())
 			w.Header().Set("Vary", "Origin")
 		} else {
