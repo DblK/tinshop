@@ -13,6 +13,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Install and Build Web UI
+        run: |
+          cd ui
+          npm install
+          npm run build
       -
         id: vars
         run: |
