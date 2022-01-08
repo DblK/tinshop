@@ -8,9 +8,14 @@
     "preview": "svelte-kit preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "eslint --ignore-path .gitignore ."
+    "lint": "eslint --ignore-path .gitignore .",
+    "prepare": "npm run smui-theme-light && npm run smui-theme-dark",
+    "smui-theme-light": "smui-theme compile static/smui.css -i src/theme",
+    "smui-theme-dark": "smui-theme compile static/smui-dark.css -i src/theme/dark"
   },
   "devDependencies": {
+    "@smui/button": "^6.0.0-beta.13",
+    "@smui/layout-grid": "^6.0.0-beta.13",
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/adapter-static": "^1.0.0-next.24",
     "@sveltejs/kit": "next",
@@ -18,6 +23,7 @@
     "@typescript-eslint/parser": "^5.9.0",
     "eslint": "^8.6.0",
     "eslint-plugin-svelte3": "^3.3.0",
+    "smui-theme": "^6.0.0-beta.13",
     "svelte": "^3.45.0",
     "svelte-check": "^2.2.11",
     "svelte-preprocess": "^4.10.1",

@@ -22,6 +22,7 @@ const config = {
 		amp: false,
 		appDir: 'internal',
 		ssr: false,
+		browser: true,
 
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte'
