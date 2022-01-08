@@ -3,8 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="description" content="" />
-		<!-- <link rel="icon" href=`${%svelte.assets%}/favicon.png` /> -->
-		<link rel="icon" href="/admin/favicon.png" />
+		<link rel="icon" href="%svelte.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%svelte.head%
 		<!-- Material Icons -->
@@ -23,12 +22,8 @@
 		href="https://fonts.googleapis.com/css?family=Roboto+Mono"
 		/>
 		<!-- SMUI Styles -->
-		<link rel="stylesheet" href="/admin/smui.css" media="(prefers-color-scheme: light)" />
-		<link
-		rel="stylesheet"
-		href="/admin/smui-dark.css"
-		media="screen and (prefers-color-scheme: dark)"
-		/>
+		<link rel="stylesheet" href="%svelte.assets%/smui.css" media="(prefers-color-scheme: light)" />
+		<link rel="stylesheet" href="%svelte.assets%/smui-dark.css" media="screen and (prefers-color-scheme: dark)" />
 	</head>
 	<body>
 		<div id="svelte">%svelte.body%</div>
