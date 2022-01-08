@@ -51,7 +51,7 @@
 </style>
 
 <main>
-    <img class="icon" src="/favicon.png" alt="tinshop">
+    <img class="icon" src="/admin/favicon.png" alt="tinshop">
     <p>tinshop</p>
 
     <div class="mdc-layout-grid">
