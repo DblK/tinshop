@@ -2,9 +2,7 @@
 	export const prerender = true;
     import { onMount } from 'svelte';
     import LayoutGrid, { Cell } from '@smui/layout-grid';
-    import { dev } from '$app/env';
-
-    console.log(dev)
+    import { variables } from '$lib/variables';
 
     let stats;
     let keyMetrics = []
@@ -51,7 +49,7 @@
 </style>
 
 <main>
-    <img class="icon" src="/admin/favicon.png" alt="tinshop">
+    <img class="icon" src="{variables.basePath}favicon.png" alt="tinshop">
     <p>tinshop</p>
 
     <div class="mdc-layout-grid">
