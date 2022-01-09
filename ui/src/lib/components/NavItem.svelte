@@ -14,32 +14,34 @@
     // div {
         // background-color: green;
     // }
-    .material-icon {
-        display: flex;
-        align-items: center;
-    }
 
     .icon {
-        width: 48px;
-        text-align: center;
-        padding-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        &.img {
+            width: 48px;
+            padding-top: 0.5rem;
+        }
     }
     .bottom {
         // background-color: hotpink;
         flex-grow: 1;
         display: flex;
         flex-direction: column-reverse;
+        & > div.icon {
+            color: var(--mdc-theme-primary, #F66709);
+        }
     }
 </style>
 
-<div class="{bottom ? ' bottom': ''}">
+<div class="{bottom ? 'bottom': ''}">
     {#if materialIcon}
-        <div class="material-icon">
+        <div class="icon">
             <IconButton class="material-icons tinshop-button">{materialIcon}</IconButton>
         </div>
     {:else}
         <a href="{variables.basePath}{link}">
-            <img class="icon" src="{variables.basePath}{icon}" alt="{alt}" title="{alt}">
+            <img class="icon img" src="{variables.basePath}{icon}" alt="{alt}" title="{alt}">
         </a>
     {/if}
 </div>
