@@ -2,7 +2,8 @@
 	export const prerender = true;
     import { onMount } from 'svelte';
     import LayoutGrid, { Cell } from '@smui/layout-grid';
-    import { variables } from '$lib/variables';
+    import Nav from '$lib/components/nav.svelte';
+    import Content from '$lib/components/Content.svelte';
 
     let stats;
     let keyMetrics = []
@@ -25,8 +26,11 @@
 </script>
 
 <style type="scss">
-    .icon {
-        width: 64px;
+    :global(body) {
+		margin: 0;
+	}
+    main {
+        display: flex;
     }
     .primary-stats {
         padding: 0.5rem;
@@ -49,20 +53,21 @@
 </style>
 
 <main>
-    <img class="icon" src="{variables.basePath}favicon.png" alt="tinshop">
-    <p>tinshop</p>
-
-    <div class="mdc-layout-grid">
-    <LayoutGrid>
-        {#each keyMetrics as metric}
-            <Cell>
-                <div class='primary-stats'>
-                    <div class="big-number">{metric.value}</div>
-                    <div class="description">{metric.description}</div>
-                </div>
-            </Cell>
-        {/each}
-    </LayoutGrid>
-    </div>
-    
+    <Nav>
+        <span>test: {keyMetrics[0]?.value}</span>
+    </Nav>
+    <Content>
+        <div class="mdc-layout-grid">
+            <LayoutGrid>
+                {#each keyMetrics as metric}
+                    <Cell>
+                        <div class='primary-stats'>
+                            <div class="big-number">{metric.value}</div>
+                            <div class="description">{metric.description}</div>
+                        </div>
+                    </Cell>
+                {/each}
+            </LayoutGrid>
+        </div>
+    </Content>
 </main>
