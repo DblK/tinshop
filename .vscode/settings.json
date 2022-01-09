@@ -45,13 +45,17 @@
         "nolintlint",
         "nxdumptool",
         "prealloc",
+        "precompress",
+        "preprocessors",
         "renameio",
         "robustio",
         "scopelint",
         "sirupsen",
+        "smui",
         "staticcheck",
         "structcheck",
         "stylecheck",
+        "sveltejs",
         "testdata",
         "testpackage",
         "tinshop",
@@ -62,6 +66,7 @@
         "unmarshalling",
         "unparam",
         "varcheck",
-        "Warnf"
+        "Warnf",
+        "webui"
     ]
 }

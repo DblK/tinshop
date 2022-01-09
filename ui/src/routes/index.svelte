@@ -4,6 +4,7 @@
     import LayoutGrid, { Cell } from '@smui/layout-grid';
     import Nav from '$lib/components/nav.svelte';
     import Content from '$lib/components/Content.svelte';
+    import NavItem from '$lib/components/NavItem.svelte';
 
     let stats;
     let keyMetrics = []
@@ -54,7 +55,12 @@
 
 <main>
     <Nav>
-        <span>test: {keyMetrics[0]?.value}</span>
+        <NavItem alt="tinshop" icon="favicon.png"></NavItem>
+        <!-- <NavItem alt="tinshop" icon="favicon.png"></NavItem> -->
+        <!-- <NavItem alt="tinshop" icon="favicon.png"></NavItem> -->
+        <!-- <NavItem alt="tinshop" icon="favicon.png"></NavItem> -->
+        
+        <NavItem alt="Settings" icon="favicon.png" bottom={true}></NavItem>
     </Nav>
     <Content>
         <div class="mdc-layout-grid">
