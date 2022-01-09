@@ -11,6 +11,10 @@
   $error: color-palette.$red-900
 );
 
+ :root {
+  --mdc-layout-grid-margin-desktop: 5px;
+}
+
 html,
 body {
   background-color: theme.$surface;
