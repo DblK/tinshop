@@ -60,7 +60,7 @@
         <!-- <NavItem alt="tinshop" icon="favicon.png"></NavItem> -->
         <!-- <NavItem alt="tinshop" icon="favicon.png"></NavItem> -->
         
-        <NavItem alt="Settings" icon="favicon.png" bottom={true}></NavItem>
+        <NavItem alt="Settings" materialIcon="settings" bottom={true}></NavItem>
     </Nav>
     <Content>
         <div class="mdc-layout-grid">

@@ -11,6 +11,8 @@
   $error: color-palette.$red-900
 );
 
+  // Manually edit generated file to replace value until
+  // https://github.com/hperrin/svelte-material-ui/issues/389 is fixed
  :root {
   --mdc-layout-grid-margin-desktop: 5px;
 }

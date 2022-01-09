@@ -16,9 +16,9 @@ const config = {
 			// fallback: '200.html',
 			fallback: 'index.html',
 		}),
-		paths: {
-			base: '/admin'
-		},
+		// paths: {
+			// base: '/admin'
+		// },
 		amp: false,
 		appDir: 'internal',
 		ssr: false,
