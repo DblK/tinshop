@@ -14,6 +14,11 @@
     // div {
         // background-color: green;
     // }
+    .material-icon {
+        display: flex;
+        align-items: center;
+    }
+
     .icon {
         width: 48px;
         text-align: center;
@@ -29,8 +34,8 @@
 
 <div class="{bottom ? ' bottom': ''}">
     {#if materialIcon}
-        <div style="display: flex; align-items: center;">
-            <IconButton class="material-icons">{materialIcon}</IconButton>
+        <div class="material-icon">
+            <IconButton class="material-icons tinshop-button">{materialIcon}</IconButton>
         </div>
     {:else}
         <a href="{variables.basePath}{link}">
