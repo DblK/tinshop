@@ -5,11 +5,12 @@
     import Nav from '$lib/components/nav.svelte';
     import Content from '$lib/components/Content.svelte';
     import NavItem from '$lib/components/NavItem.svelte';
+import { variables } from '$lib/variables';
 
     let stats;
     let keyMetrics = []
     onMount(async () => {
-        const res = await fetch("http://localhost:3000/api/stats");
+        const res = await fetch(variables.api + "/stats");
         const JSONStats = await res.json();
         // console.log(JSONStats)
         stats = JSONStats
