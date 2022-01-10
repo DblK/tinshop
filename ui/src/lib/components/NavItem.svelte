@@ -4,7 +4,7 @@
 
     export const prerender = true;
     export let link : string = ""
-    export let icon : string
+    export let icon : string = ""
     export let alt : string
     export let bottom: boolean = false
     export let materialIcon: string = ""
