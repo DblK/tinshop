@@ -2,10 +2,10 @@
 	export const prerender = true;
     import { onMount } from 'svelte';
     import LayoutGrid, { Cell } from '@smui/layout-grid';
-    import Nav from '$lib/components/nav.svelte';
+    import Nav from '$lib/components/Nav.svelte';
     import Content from '$lib/components/Content.svelte';
     import NavItem from '$lib/components/NavItem.svelte';
-import { variables } from '$lib/variables';
+    import { variables } from '$lib/variables';
 
     let stats;
     let keyMetrics = []
