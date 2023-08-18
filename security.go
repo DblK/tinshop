@@ -47,6 +47,8 @@ func (s *TinShop) TinfoilMiddleware(next http.Handler) http.Handler {
 				return
 			}
 
+			// TODO: Here implement usage of IsWhitelisted
+
 			// Check for banned theme
 			var theme = strings.Join(headers["Theme"], "")
 			if s.Shop.Config.IsBannedTheme(theme) {
@@ -72,6 +74,25 @@ func (s *TinShop) TinfoilMiddleware(next http.Handler) http.Handler {
 			// Enforce true tinfoil queries
 			// TODO: Check Uauth and Hauth headers
 			log.Printf("Switch %s, %s, %s, %s, %s, %s requesting %s", headers["Theme"], headers["Uid"], headers["Version"], headers["Language"], headers["Hauth"], headers["Uauth"], r.RequestURI)
+
+			// Check user password
+			if s.Shop.Config.ForwardAuthUrl() != "" && headers["Authorization"] != nil {
+				log.Println("[Security] Forwarding auth to", s.Shop.Config.ForwardAuthUrl())
+				client := &http.Client{}
+				req, _ := http.NewRequest("GET", s.Shop.Config.ForwardAuthUrl(), nil)
+				req.Header.Add("Authorization", strings.Join(headers["Authorization"], ""))
+				req.Header.Add("Device-Id", strings.Join(headers["Uid"], ""))
+				resp, err := client.Do(req)
+				if err != nil {
+					log.Fatalln(err)
+					_ = shopTemplate.Execute(w, s.Shop.Config.ShopTemplateData())
+					return
+				}
+				if resp.StatusCode != 200 {
+					_ = shopTemplate.Execute(w, s.Shop.Config.ShopTemplateData())
+					return
+				}
+			}
 		}
 
 		// Call the next handler, which can be another middleware in the chain, or the final handler.
