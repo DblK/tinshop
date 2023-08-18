@@ -49,6 +49,7 @@ Here is the list of all main features so far:
 - [X] Simple ticket check in NSP/NSZ (based on titledb file)
 - [X] Collect basic statistics
 - [X] An API to query information about your shop
+- [X] Handle Basic Auth from Tinfoil through Forward Auth Endpoint
 
 ## Filtering
 
