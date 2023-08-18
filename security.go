@@ -76,18 +76,19 @@ func (s *TinShop) TinfoilMiddleware(next http.Handler) http.Handler {
 			log.Printf("Switch %s, %s, %s, %s, %s, %s requesting %s", headers["Theme"], headers["Uid"], headers["Version"], headers["Language"], headers["Hauth"], headers["Uauth"], r.RequestURI)
 
 			// Check user password
-			if s.Shop.Config.ForwardAuthUrl() != "" && headers["Authorization"] != nil {
-				log.Println("[Security] Forwarding auth to", s.Shop.Config.ForwardAuthUrl())
+			if s.Shop.Config.ForwardAuthURL() != "" && headers["Authorization"] != nil {
+				log.Println("[Security] Forwarding auth to", s.Shop.Config.ForwardAuthURL())
 				client := &http.Client{}
-				req, _ := http.NewRequest("GET", s.Shop.Config.ForwardAuthUrl(), nil)
+				req, _ := http.NewRequest("GET", s.Shop.Config.ForwardAuthURL(), nil)
 				req.Header.Add("Authorization", strings.Join(headers["Authorization"], ""))
 				req.Header.Add("Device-Id", strings.Join(headers["Uid"], ""))
 				resp, err := client.Do(req)
 				if err != nil {
-					log.Fatalln(err)
+					log.Print(err)
 					_ = shopTemplate.Execute(w, s.Shop.Config.ShopTemplateData())
 					return
 				}
+				defer resp.Body.Close()
 				if resp.StatusCode != 200 {
 					_ = shopTemplate.Execute(w, s.Shop.Config.ShopTemplateData())
 					return

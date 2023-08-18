@@ -262,8 +262,8 @@ func (cfg *File) VerifyNSP() bool {
 	return cfg.NSP.CheckVerified
 }
 
-// ForwardAuthUrl returns the url of the forward auth
-func (cfg *File) ForwardAuthUrl() string {
+// ForwardAuthURL returns the url of the forward auth
+func (cfg *File) ForwardAuthURL() string {
 	return cfg.Security.ForwardAuth
 }
 

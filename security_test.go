@@ -107,7 +107,7 @@ var _ = Describe("Security", func() {
 					AnyTimes()
 
 				myMockConfig.EXPECT().
-					ForwardAuthUrl().
+					ForwardAuthURL().
 					Return("").
 					AnyTimes()
 
@@ -166,7 +166,7 @@ var _ = Describe("Security", func() {
 					AnyTimes()
 
 				myMockConfig.EXPECT().
-					ForwardAuthUrl().
+					ForwardAuthURL().
 					Return("").
 					AnyTimes()
 
@@ -230,7 +230,7 @@ var _ = Describe("Security", func() {
 					AnyTimes()
 
 				myMockConfig.EXPECT().
-					ForwardAuthUrl().
+					ForwardAuthURL().
 					Return("").
 					AnyTimes()
 
@@ -295,7 +295,7 @@ var _ = Describe("Security", func() {
 					AnyTimes()
 
 				myMockConfig.EXPECT().
-					ForwardAuthUrl().
+					ForwardAuthURL().
 					Return("").
 					AnyTimes()
 
@@ -359,7 +359,7 @@ var _ = Describe("Security", func() {
 					AnyTimes()
 
 				myMockConfig.EXPECT().
-					ForwardAuthUrl().
+					ForwardAuthURL().
 					Return("").
 					AnyTimes()
 
