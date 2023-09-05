@@ -11,6 +11,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/DblK/tinshop/repository"
@@ -221,7 +222,7 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 
 	for _, file := range newGames {
 		game := repository.GameFileType{
-			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + file.GameInfo,
+			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + path.Base(file.Path),
 			Size: file.Size,
 		}
 
