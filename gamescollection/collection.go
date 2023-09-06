@@ -235,8 +235,6 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 			extra = fmt.Sprintf(" [v%d]", title.Version)
 		}
 
-		log.Println(baseTitle.Name + extra)
-
 		game := repository.GameFileType{
 			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + c.getFriendlyName(file),
 			Size: file.Size,
