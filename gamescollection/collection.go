@@ -13,6 +13,7 @@ import (
 	"log"
 	"math/big"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/DblK/tinshop/repository"
@@ -236,10 +237,8 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 			extra = fmt.Sprintf(" [v%d]", title.Version)
 		}
 
-		log.Println(baseTitle.Name + extra)
-
 		game := repository.GameFileType{
-			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + baseTitle.Name + extra,
+			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + baseTitle.Name + extra + filepath.Ext(file.Path),
 			Size: file.Size,
 		}
 
