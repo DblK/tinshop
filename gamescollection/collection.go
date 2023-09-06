@@ -8,10 +8,11 @@ package gamescollection
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
+	"math/big"
 	"os"
-	"path"
 	"strings"
 
 	"github.com/DblK/tinshop/repository"
@@ -221,8 +222,26 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 	var gameList = make([]repository.GameFileType, 0)
 
 	for _, file := range newGames {
+		
+		baseID, update, dlc := GetTitleMeta(file.GameID)
+		baseTitle := c.Library()[baseID]
+		title := c.Library()[file.GameID]
+
+		var extra = " [BASE]"
+
+		if dlc {
+			extra = " - " + title.Name + " [DLC]"
+		} 
+
+		if update {
+			extra = fmt.Sprintf(" [v%d]", title.Version)
+		}
+		
+
+		log.Println(baseTitle.Name + extra)
+		
 		game := repository.GameFileType{
-			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + path.Base(file.Path),
+			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + baseTitle.Name + extra,
 			Size: file.Size,
 		}
 
@@ -258,4 +277,42 @@ func (c *collect) GetKey(gameID string) (string, error) {
 		return "", errors.New("TitleDBKey for game " + gameID + " is not found")
 	}
 	return string(key), nil
+}
+
+// GetTtitleMeta returns the BaseID of the content, as well as Update / DLC flags
+func GetTitleMeta(titleID string) (string, bool, bool) {
+	var lastDigit = titleID[len(titleID)-1:]
+	var baseID = strings.Join([]string{titleID[:len(titleID)-3], "000"}, "")
+	var update = false
+	var dlc = false
+
+	if titleID != baseID {
+		update = true
+	}
+
+	if lastDigit != "0" {
+		dlc = true
+		update = false
+
+		// Parse the hexadecimal string into a big integer
+		intValue, success := new(big.Int).SetString(baseID, 16)
+		if !success {
+			return "", false, false
+		}
+
+		// Parse the subtraction value (in hexadecimal)
+		subtractionValue := new(big.Int)
+		subtractionValue, success = subtractionValue.SetString("1000", 16)
+		if !success {
+			return "", false, false
+		}
+
+		// Subtract the values
+		intValue.Sub(intValue, subtractionValue)
+
+		// Convert the resulting integer back to a hexadecimal string, left padded with 0 to 16 chars
+		baseID = fmt.Sprintf("0000000000000000%X", intValue)
+		baseID = baseID[len(baseID)-16:]
+	}
+	return baseID, update, dlc
 }
