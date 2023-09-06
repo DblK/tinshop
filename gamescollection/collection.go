@@ -12,6 +12,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/DblK/tinshop/repository"
@@ -224,16 +225,23 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 		baseID, update, dlc := GetTitleMeta(file.GameID)
 		baseTitle := c.Library()[baseID]
 		title := c.Library()[file.GameID]
+		extension := filepath.Ext(file.Path)
 
-		var extra = " [BASE]"
+		// Default extra for Base title
+		var extra = "[BASE]"
 
+		// Append DLC Name and tag when dlc
 		if dlc {
-			extra = " - " + title.Name + " [DLC]"
+			extra = fmt.Sprintf("- %s [DLC]", title.Name)
 		}
 
+		// Append version when update
 		if update {
-			extra = fmt.Sprintf(" [v%d]", title.Version)
+			extra = fmt.Sprintf("[v%d]", title.Version)
 		}
+
+		// Build the friendly name for Tinfoil
+		friendlyName := fmt.Sprintf("%s (%s) %s%s", baseTitle.Name, baseTitle.Region, extra, extension)
 
 		game := repository.GameFileType{
 			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + c.getFriendlyName(file),
