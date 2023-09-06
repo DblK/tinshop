@@ -238,7 +238,7 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 
 		// Append version when update
 		if update {
-			extra = fmt.Sprintf("[v%d]", title.Version)
+			extra = fmt.Sprintf("[v%d][UPD]", title.Version)
 		}
 
 		// Build the friendly name for Tinfoil
