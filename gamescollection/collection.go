@@ -230,15 +230,14 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 
 		if dlc {
 			extra = " - " + title.Name + " [DLC]"
-		} 
+		}
 
 		if update {
 			extra = fmt.Sprintf(" [v%d]", title.Version)
 		}
-		
 
 		log.Println(baseTitle.Name + extra)
-		
+
 		game := repository.GameFileType{
 			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + baseTitle.Name + extra,
 			Size: file.Size,
