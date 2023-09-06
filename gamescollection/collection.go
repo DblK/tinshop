@@ -221,6 +221,23 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 	var gameList = make([]repository.GameFileType, 0)
 
 	for _, file := range newGames {
+
+		baseID, update, dlc := GetTitleMeta(file.GameID)
+		baseTitle := c.Library()[baseID]
+		title := c.Library()[file.GameID]
+
+		var extra = " [BASE]"
+
+		if dlc {
+			extra = " - " + title.Name + " [DLC]"
+		}
+
+		if update {
+			extra = fmt.Sprintf(" [v%d]", title.Version)
+		}
+
+		log.Println(baseTitle.Name + extra)
+
 		game := repository.GameFileType{
 			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + c.getFriendlyName(file),
 			Size: file.Size,
