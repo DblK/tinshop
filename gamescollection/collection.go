@@ -222,7 +222,7 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 	var gameList = make([]repository.GameFileType, 0)
 
 	for _, file := range newGames {
-		baseID, update, dlc := GetTitleMeta(file.GameID)
+		baseID, update, dlc := utils.GetTitleMeta(file.GameID)
 		baseTitle := c.Library()[baseID]
 		title := c.Library()[file.GameID]
 		extension := filepath.Ext(file.Path)
