@@ -242,7 +242,7 @@ func (c *collect) AddNewGames(newGames []repository.FileDesc) {
 		}
 
 		// Build the friendly name for Tinfoil
-		friendlyName := fmt.Sprintf("%s (%s) %s%s", baseTitle.Name, baseTitle.Region, extra, extension)
+		friendlyName := fmt.Sprintf("[%s] %s (%s) %s%s", file.GameID, baseTitle.Name, baseTitle.Region, extra, extension)
 
 		game := repository.GameFileType{
 			URL:  c.config.RootShop() + "/games/" + file.GameID + "#" + friendlyName,
