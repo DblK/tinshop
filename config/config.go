@@ -135,6 +135,12 @@ func (cfg *Configuration) configChange() {
 		cfg.ShopWelcomeMessage = "Welcome to your own TinShop!"
 	}
 	cfg.ShopNoWelcomeMessage = newConfig.ShopNoWelcomeMessage
+	if newConfig.ShopAppendTag != "" {
+		cfg.ShopAppendTag = newConfig.ShopAppendTag
+	} else {
+		cfg.ShopAppendTag = "tinshop"
+	}
+	cfg.ShopNoAppendTag = newConfig.ShopNoAppendTag
 	cfg.Proxy = newConfig.Proxy
 	cfg.Debug = newConfig.Debug
 	cfg.AllSources = newConfig.AllSources
