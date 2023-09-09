@@ -61,7 +61,7 @@ All of the settings in the `config.yaml` file are valid Environment Variables. T
 
 | ENV_VAR                      | `config.yaml` entry | Default Value                  | Example Value                     |
 |------------------------------|---------------------|--------------------------------|-----------------------------------|
-| TINSHOP_HOST                 | host                | `0.0.0.0`                      | `127.0.0.`                        |
+| TINSHOP_HOST                 | host                | `<empty>`                      | `tinshop.example.com`             |
 | TINSHOP_PROTOCOL             | protocol            | `http`                         | `https`                           |
 | TINSHOP_NAME                 | name                | `TinShop`                      | `MyShop`                          |
 | TINSHOP_REVERSEPROXY         | reverseProxy        | `false`                        | `true`                            |
@@ -70,7 +70,7 @@ All of the settings in the `config.yaml` file are valid Environment Variables. T
 | TINSHOP_DEBUG_NFS            | debug.nfs           | `false`                        | `true`                            |
 | TINSHOP_DEBUG_NOSECURITY     | debug.nosecurity    | `false`                        | `true`                            |
 | TINSHOP_DEBUG_TICKET         | debug.ticket        | `false`                        | `true`                            |
-| TINSHOP_NSP_CHECKVERIFIED    | nsp.checkVerified   | `true`                         | `false`                           |
+| TINSHOP_NSP_CHECKVERIFIED    | nsp.checkVerified   | `false`                        | `true`                            |
 | TINSHOP_SOURCES_DIRECTORIES  | sources.directories | `./games`                      | `/games /path/two /path/three`    |
 | TINSHOP_SOURCES_NSF          | sources.nfs         | `null`                         | `192.168.1.100:/path/to/games`    |
 | TINSHOP_SECURITY_BANNEDTHEME | sources.bannedTheme | `null`                         | `THEME1 THEME2 THEME3`            |
@@ -222,7 +222,7 @@ port: 3000
 reverseProxy: true
 ```
 
-If you want to have HTTPS, ensure `traefik` handle it (it will with Let's Encrypt) and change `https` in the config and remove `:80` in the `Caddyfile` example.
+If you want to have HTTPS, ensure `traefik` can handle it (it will with Let's Encrypt) and use protocol `https` in the config.
 
 For more details on Traefik + Let's Encrypt, [click here](https://doc.traefik.io/traefik/https/acme/).
 </details>

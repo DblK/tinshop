@@ -69,7 +69,7 @@ func (cfg *Configuration) LoadConfig() {
 	viper.AddConfigPath(".")          // optionally look for config in the working directory
 	viper.SetTypeByDefaultValue(true) // Allows []string to be parsed from Env Vars
 
-	viper.SetDefault("host", "tinshop.example.com")
+	viper.SetDefault("host", "")
 	viper.SetDefault("protocol", "http")
 	viper.SetDefault("name", "TinShop")
 	viper.SetDefault("reverseProxy", false)
@@ -80,7 +80,7 @@ func (cfg *Configuration) LoadConfig() {
 	viper.SetDefault("debug.noSecurity", false)
 	viper.SetDefault("debug.ticket", false)
 
-	viper.SetDefault("nsp.checkVerified", true)
+	viper.SetDefault("nsp.checkVerified", false)
 
 	viper.SetDefault("sources.directories", []string{"./games"})
 	viper.SetDefault("sources.nfs", []string{})
