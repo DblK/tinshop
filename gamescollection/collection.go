@@ -94,10 +94,16 @@ func (c *collect) OnConfigUpdate(cfg repository.Config) {
 	// Create merged library
 	c.mergedLibrary = make(map[string]repository.TitleDBEntry)
 
+	tag := ""
+	if !c.config.NoAppendTag() {
+		tag = fmt.Sprintf("[%s]", c.config.AppendTag())
+	}
+
 	// Copy library
 	for key, entry := range c.library {
 		gameID := strings.ToUpper(key)
-
+		entry.Name = fmt.Sprintf("%s%s", entry.Name, tag)
+		log.Println(entry.Name)
 		c.mergedLibrary[gameID] = entry
 	}
 

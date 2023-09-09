@@ -72,6 +72,7 @@ func (cfg *Configuration) LoadConfig() {
 	viper.SetTypeByDefaultValue(true) // Allows []string to be parsed from Env Vars
 
 	viper.SetDefault("host", "")
+	viper.SetDefault("port", 3000)
 	viper.SetDefault("protocol", "http")
 	viper.SetDefault("name", "TinShop")
 	viper.SetDefault("reverseProxy", false)
@@ -240,6 +241,16 @@ func (cfg *Configuration) WelcomeMessage() string {
 // NoWelcomeMessage returns the NoWelcomeMessage
 func (cfg *Configuration) NoWelcomeMessage() bool {
 	return cfg.ShopNoWelcomeMessage
+}
+
+// AppendTag returns the AppendTag
+func (cfg *Configuration) AppendTag() string {
+	return cfg.ShopAppendTag
+}
+
+// NoAppendTag returns the NoAppendTag
+func (cfg *Configuration) NoAppendTag() bool {
+	return cfg.ShopNoAppendTag
 }
 
 // Protocol returns the protocol scheme (http or https)

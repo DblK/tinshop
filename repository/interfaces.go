@@ -35,6 +35,8 @@ type Config interface {
 	ReverseProxy() bool
 	WelcomeMessage() string
 	NoWelcomeMessage() bool
+	AppendTag() string
+	NoAppendTag() bool
 
 	DebugNfs() bool
 	DebugNoSecurity() bool

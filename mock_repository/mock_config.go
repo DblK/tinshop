@@ -58,6 +58,20 @@ func (mr *MockConfigMockRecorder) AddHook(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddHook", reflect.TypeOf((*MockConfig)(nil).AddHook), arg0)
 }
 
+// AppendTag mocks base method.
+func (m *MockConfig) AppendTag() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AppendTag")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// AppendTag indicates an expected call of AppendTag.
+func (mr *MockConfigMockRecorder) AppendTag() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppendTag", reflect.TypeOf((*MockConfig)(nil).AppendTag))
+}
+
 // BannedTheme mocks base method.
 func (m *MockConfig) BannedTheme() []string {
 	m.ctrl.T.Helper()
@@ -236,6 +250,20 @@ func (m *MockConfig) NfsShares() []string {
 func (mr *MockConfigMockRecorder) NfsShares() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NfsShares", reflect.TypeOf((*MockConfig)(nil).NfsShares))
+}
+
+// NoAppendTag mocks base method.
+func (m *MockConfig) NoAppendTag() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NoAppendTag")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// NoAppendTag indicates an expected call of NoAppendTag.
+func (mr *MockConfigMockRecorder) NoAppendTag() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NoAppendTag", reflect.TypeOf((*MockConfig)(nil).NoAppendTag))
 }
 
 // NoWelcomeMessage mocks base method.
