@@ -11,6 +11,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/DblK/tinshop/repository"
 	"github.com/DblK/tinshop/utils"
@@ -69,6 +70,9 @@ func (cfg *File) LoadConfig() {
 	viper.SetDefault("sources.directories", "./games")
 	viper.SetDefault("welcomeMessage", "Welcome to your own TinShop!")
 	viper.SetDefault("noWelcomeMessage", false)
+	viper.SetEnvPrefix("TINSHOP")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
@@ -169,7 +173,7 @@ func ComputeDefaultValues(config repository.Config) repository.Config {
 			rootShop += ":" + strconv.Itoa(config.Port())
 		}
 	}
-	log.Println((rootShop))
+	log.Println(rootShop)
 	config.SetRootShop(rootShop)
 
 	config.SetShopTemplateData(repository.ShopTemplate{
