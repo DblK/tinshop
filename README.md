@@ -102,6 +102,8 @@ All of the settings in the `config.yaml` file are valid Environment Variables. T
 | TINSHOP_REVERSEPROXY         | reverseProxy        | `false`                        | `true`                            |
 | TINSHOP_WELCOMEMESSAGE       | welcomeMessage      | `Welcome to your own TinShop!` | `Welcome to my shop!`             |
 | TINSHOP_NOWELCOMEMESSAGE     | noWelcomeMessage    | `false`                        | `true`                            |
+| TINSHOP_APPENDTAG            | appendTag           | `tinshop`                      | `nsw`                             |
+| TINSHOP_NOAPPENDTAG          | noAppendTag         | `false`                        | `true`                            |
 | TINSHOP_DEBUG_NFS            | debug.nfs           | `false`                        | `true`                            |
 | TINSHOP_DEBUG_NOSECURITY     | debug.nosecurity    | `false`                        | `true`                            |
 | TINSHOP_DEBUG_TICKET         | debug.ticket        | `false`                        | `true`                            |

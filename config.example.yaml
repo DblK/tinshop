@@ -24,6 +24,11 @@ welcomeMessage: "Welcome to your own TinShop!"
 # If you want to disable the welcome message, set it to true [optional]
 noWelcomeMessage: false
 
+# Append a [tag] for Tinshop games
+# The default tag will be "tinshop". Tags are always surrounded by [square brackets]
+appendTag: tinshop
+noAppendTag: false
+
 # All debug flags will be stored here
 debug:
   # Display more information when connecting to nfs share

@@ -43,6 +43,8 @@ type Configuration struct {
 	ShopProtocol         string                             `mapstructure:"protocol"`
 	ShopWelcomeMessage   string                             `mapstructure:"welcomeMessage"`
 	ShopNoWelcomeMessage bool                               `mapstructure:"noWelcomeMessage"`
+	ShopAppendTag        string                             `mapstructure:"appendTag"`
+	ShopNoAppendTag      bool                               `mapstructure:"noAppendTag"`
 	ShopPort             int                                `mapstructure:"port"`
 	Debug                debug                              `mapstructure:"debug"`
 	Proxy                bool                               `mapstructure:"reverseProxy"`
@@ -75,6 +77,8 @@ func (cfg *Configuration) LoadConfig() {
 	viper.SetDefault("reverseProxy", false)
 	viper.SetDefault("welcomeMessage", "Welcome to your own TinShop!")
 	viper.SetDefault("noWelcomeMessage", false)
+	viper.SetDefault("appendTag", "tinshop")
+	viper.SetDefault("noAppendTag", false)
 
 	viper.SetDefault("debug.nfs", false)
 	viper.SetDefault("debug.noSecurity", false)
