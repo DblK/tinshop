@@ -59,20 +59,24 @@ services:
 ```
 All of the settings in the `config.yaml` file are valid Environment Variables. They must be `UPPERCASE` and prefixed by `TINSHOP_`. Nested properties should be prefixed by `_`. Here are a few examples:
 
-| ENV_VAR                     | `config.yaml` entry | Default Value                  | Example Value                  |
-|-----------------------------|---------------------|--------------------------------|--------------------------------|
-| TINSHOP_HOST                | host                | `0.0.0.0`                      | `127.0.0.`                     |
-| TINSHOP_PROTOCOL            | protocol            | `http`                         | `https`                        |
-| TINSHOP_NAME                | name                | `TinShop`                      | `MyShop`                       |
-| TINSHOP_REVERSEPROXY        | reverseProxy        | `false`                        | `true`                         |
-| TINSHOP_WELCOMEMESSAGE      | welcomeMessage      | `Welcome to your own TinShop!` | `Welcome to my shop!`          |
-| TINSHOP_NOWELCOMEMESSAGE    | noWelcomeMessage    | `false`                        | `true`                         |
-| TINSHOP_DEBUG_NFS           | debug.nfs           | `false`                        | `true`                         |
-| TINSHOP_DEBUG_NOSECURITY    | debug.nosecurity    | `false`                        | `true`                         |
-| TINSHOP_DEBUG_TICKET        | debug.ticket        | `false`                        | `true`                         |
-| TINSHOP_NSP_CHECKVERIFIED   | nsp.checkVerified   | `true`                         | `false`                        |
-| TINSHOP_SOURCES_DIRECTORIES | sources.directories | `./games`                      | `/games`                       |
-| TINSHOP_SOURCES_NSF         | sources.nfs         | `null`                         | `192.168.1.100:/path/to/games` |
+| ENV_VAR                      | `config.yaml` entry | Default Value                  | Example Value                     |
+|------------------------------|---------------------|--------------------------------|-----------------------------------|
+| TINSHOP_HOST                 | host                | `0.0.0.0`                      | `127.0.0.`                        |
+| TINSHOP_PROTOCOL             | protocol            | `http`                         | `https`                           |
+| TINSHOP_NAME                 | name                | `TinShop`                      | `MyShop`                          |
+| TINSHOP_REVERSEPROXY         | reverseProxy        | `false`                        | `true`                            |
+| TINSHOP_WELCOMEMESSAGE       | welcomeMessage      | `Welcome to your own TinShop!` | `Welcome to my shop!`             |
+| TINSHOP_NOWELCOMEMESSAGE     | noWelcomeMessage    | `false`                        | `true`                            |
+| TINSHOP_DEBUG_NFS            | debug.nfs           | `false`                        | `true`                            |
+| TINSHOP_DEBUG_NOSECURITY     | debug.nosecurity    | `false`                        | `true`                            |
+| TINSHOP_DEBUG_TICKET         | debug.ticket        | `false`                        | `true`                            |
+| TINSHOP_NSP_CHECKVERIFIED    | nsp.checkVerified   | `true`                         | `false`                           |
+| TINSHOP_SOURCES_DIRECTORIES  | sources.directories | `./games`                      | `/games /path/two /path/three`    |
+| TINSHOP_SOURCES_NSF          | sources.nfs         | `null`                         | `192.168.1.100:/path/to/games`    |
+| TINSHOP_SECURITY_BANNEDTHEME | sources.bannedTheme | `null`                         | `THEME1 THEME2 THEME3`            |
+| TINSHOP_SECURITY_WHITELIST   | sources.whitelist   | `null`                         | `NSWID1 NSWID2 NSWID3`            |
+| TINSHOP_SECURITY_BLACKLIST   | sources.blacklist   | `null`                         | `NSWID4 NSWID5 NSWID6`            |
+| TINSHOP_SECURITY_FORWARDAUTH | sources.forwardAuth | `null`                         | `https://auth.tinshop.com/switch` |
 
 # 🎉 Features
 
