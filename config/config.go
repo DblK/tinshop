@@ -64,15 +64,37 @@ func New() repository.Config {
 
 // LoadConfig handles viper under the hood
 func (cfg *File) LoadConfig() {
-	viper.SetConfigName("config") // name of config file (without extension)
-	viper.SetConfigType("yaml")   // REQUIRED if the config file does not have the extension in the name
-	viper.AddConfigPath(".")      // optionally look for config in the working directory
-	viper.SetDefault("sources.directories", "./games")
+	viper.SetConfigName("config")     // name of config file (without extension)
+	viper.SetConfigType("yaml")       // REQUIRED if the config file does not have the extension in the name
+	viper.AddConfigPath(".")          // optionally look for config in the working directory
+	viper.SetTypeByDefaultValue(true) // Allows []string to be parsed from Env Vars
+
+	viper.SetDefault("host", "tinshop.example.com")
+	viper.SetDefault("protocol", "http")
+	viper.SetDefault("name", "TinShop")
+	viper.SetDefault("reverseProxy", false)
 	viper.SetDefault("welcomeMessage", "Welcome to your own TinShop!")
 	viper.SetDefault("noWelcomeMessage", false)
+
+	viper.SetDefault("debug.nfs", false)
+	viper.SetDefault("debug.noSecurity", false)
+	viper.SetDefault("debug.ticket", false)
+
+	viper.SetDefault("nsp.checkVerified", true)
+
+	viper.SetDefault("sources.directories", []string{"./games"})
+	viper.SetDefault("sources.nfs", []string{})
+
+	viper.SetDefault("security.bannedTheme", []string{})
+	viper.SetDefault("security.whitelist", []string{})
+	viper.SetDefault("security.blacklist", []string{})
+	viper.SetDefault("security.forwardAuth", "")
+
 	viper.SetEnvPrefix("TINSHOP")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
+
+	viper.SafeWriteConfig()
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
