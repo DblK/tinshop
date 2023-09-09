@@ -190,7 +190,6 @@ reverseProxy: true
 ```
 
 If you want to have HTTPS, ensure `caddy` handle it (it will with Let's Encrypt) and change `https` in the config and remove `:80` in the `Caddyfile` example.
-</details>
 
 ### Example for traefik
 
