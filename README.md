@@ -32,6 +32,41 @@ To proper use this software, here is the checklist:
 
 Now simply run it and add a shop inside tinfoil with the address setup in `config` (or `http://localIp:3000` if not specified).
 
+# 🎉 Features
+
+Here is the list of all main features so far:
+- [X] Automatically download `titles.US.en.json` if missing at startup
+- [X] Basic protection from forged queries (should allow only tinfoil to use the shop)
+- [X] Serve from several mounted directories
+- [X] Serve from several network directories (Using NFS)
+- [X] Display a webpage for forbidden devices
+- [X] Auto-refresh configuration on file change
+- [X] Add the possibility to whitelist or blacklist a switch
+- [X] Add the possibility to ban theme
+- [X] You can specify custom titledb to be merged with official one
+- [X] Auto-watch for mounted directories
+- [X] Add filters path for shop
+- [X] Simple ticket check in NSP/NSZ (based on titledb file)
+- [X] Collect basic statistics
+- [X] An API to query information about your shop
+- [X] Handle Basic Auth from Tinfoil through Forward Auth Endpoint
+
+## 🏳️ Filtering
+
+When you setup your shop inside `tinfoil` you can now add the following path:
+- `multi` : Filter only multiplayer games
+- `fr`, `en`, ... : Filter by languages
+- `world` : All games without any filter (equivalent without path)
+
+# 🧱 Dev or build from source
+
+I suggest to use a tiny executable [gow](https://github.com/mitranim/gow) to help you during the process (hot reload, etc..).  
+For example I use the following command to develop `gow -c run .`.
+
+If you want to build `TinShop` from source, please run `go build`.
+
+And then, simply run `./tinshop`.
+
 # 🐋 Docker
 
 To run with [Docker](https://docs.docker.com/engine/install/), you can use this as a starting `cli` example:
@@ -77,41 +112,6 @@ All of the settings in the `config.yaml` file are valid Environment Variables. T
 | TINSHOP_SECURITY_WHITELIST   | sources.whitelist   | `null`                         | `NSWID1 NSWID2 NSWID3`            |
 | TINSHOP_SECURITY_BLACKLIST   | sources.blacklist   | `null`                         | `NSWID4 NSWID5 NSWID6`            |
 | TINSHOP_SECURITY_FORWARDAUTH | sources.forwardAuth | `null`                         | `https://auth.tinshop.com/switch` |
-
-# 🎉 Features
-
-Here is the list of all main features so far:
-- [X] Automatically download `titles.US.en.json` if missing at startup
-- [X] Basic protection from forged queries (should allow only tinfoil to use the shop)
-- [X] Serve from several mounted directories
-- [X] Serve from several network directories (Using NFS)
-- [X] Display a webpage for forbidden devices
-- [X] Auto-refresh configuration on file change
-- [X] Add the possibility to whitelist or blacklist a switch
-- [X] Add the possibility to ban theme
-- [X] You can specify custom titledb to be merged with official one
-- [X] Auto-watch for mounted directories
-- [X] Add filters path for shop
-- [X] Simple ticket check in NSP/NSZ (based on titledb file)
-- [X] Collect basic statistics
-- [X] An API to query information about your shop
-- [X] Handle Basic Auth from Tinfoil through Forward Auth Endpoint
-
-## 🏳️ Filtering
-
-When you setup your shop inside `tinfoil` you can now add the following path:
-- `multi` : Filter only multiplayer games
-- `fr`, `en`, ... : Filter by languages
-- `world` : All games without any filter (equivalent without path)
-
-# 🧱 Dev or build from source
-
-I suggest to use a tiny executable [gow](https://github.com/mitranim/gow) to help you during the process (hot reload, etc..).  
-For example I use the following command to develop `gow -c run .`.
-
-If you want to build `TinShop` from source, please run `go build`.
-
-And then, simply run `./tinshop`.
 
 ## 🥍 Want to do cross-build generation?
 
