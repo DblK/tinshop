@@ -149,7 +149,7 @@ var _ = Describe("Collection", func() {
 				games := testCollection.Games()
 				Expect(games.Files).To(HaveLen(1))
 				Expect(games.Titledb).To(HaveLen(1))
-				Expect(games.Files[0].URL).To(Equal("http://tinshop.example.com/games/0100574002AF4000#[0100574002AF4000] ONE PIECE: Unlimited World Red Deluxe Edition [BASE].nsp"))
+				Expect(games.Files[0].URL).To(Equal("http://tinshop.example.com/games/0100574002AF4000#ONE PIECE: Unlimited World Red Deluxe Edition [0100574002AF4000][v0][BASE].nsp"))
 			})
 			It("Add a base game (without any information)", func() {
 				newGames := make([]repository.FileDesc, 0)
@@ -185,7 +185,7 @@ var _ = Describe("Collection", func() {
 				games := testCollection.Games()
 				Expect(games.Files).To(HaveLen(1))
 				Expect(games.Titledb).To(HaveLen(1))
-				Expect(games.Files[0].URL).To(Equal("http://tinshop.example.com/games/010034500641B001#[010034500641B001] Attack on Titan 2 (US) - Additional Episode, \"A Sudden Rain\" [DLC].nsp"))
+				Expect(games.Files[0].URL).To(Equal("http://tinshop.example.com/games/010034500641B001#Attack on Titan 2 - Additional Episode, \"A Sudden Rain\" (US) [010034500641B001][v0][DLC].nsp"))
 			})
 			It("Add an UPDATE game", func() {
 				newGames := make([]repository.FileDesc, 0)
@@ -203,7 +203,7 @@ var _ = Describe("Collection", func() {
 				games := testCollection.Games()
 				Expect(games.Files).To(HaveLen(1))
 				Expect(games.Titledb).To(HaveLen(1))
-				Expect(games.Files[0].URL).To(Equal("http://tinshop.example.com/games/010034500641A800#[010034500641A800] Attack on Titan 2 (US) [v917504][UPD].nsp"))
+				Expect(games.Files[0].URL).To(Equal("http://tinshop.example.com/games/010034500641A800#Attack on Titan 2 (US) [010034500641A800][v917504][UPD].nsp"))
 			})
 			It("Add a duplicate game", func() {
 				newGames := make([]repository.FileDesc, 0)
@@ -230,7 +230,7 @@ var _ = Describe("Collection", func() {
 				games := testCollection.Games()
 				Expect(games.Files).To(HaveLen(1))
 				Expect(games.Titledb).To(HaveLen(1))
-				Expect(games.Files[0].URL).To(Equal("http://tinshop.example.com/games/010034500641A000#[010034500641A000] Attack on Titan 2 (US) [BASE].nsp"))
+				Expect(games.Files[0].URL).To(Equal("http://tinshop.example.com/games/010034500641A000#Attack on Titan 2 (US) [010034500641A000][v0][BASE].nsp"))
 			})
 			It("Add a duplicate game (with different path)", func() {
 				newGames := make([]repository.FileDesc, 0)
@@ -257,7 +257,7 @@ var _ = Describe("Collection", func() {
 				games := testCollection.Games()
 				Expect(games.Files).To(HaveLen(1))
 				Expect(games.Titledb).To(HaveLen(1))
-				Expect(games.Files[0].URL).To(Equal("http://tinshop.example.com/games/010034500641A000#[010034500641A000] Attack on Titan 2 (US) [BASE].nsp"))
+				Expect(games.Files[0].URL).To(Equal("http://tinshop.example.com/games/010034500641A000#Attack on Titan 2 (US) [010034500641A000][v0][BASE].nsp"))
 			})
 		})
 	})
