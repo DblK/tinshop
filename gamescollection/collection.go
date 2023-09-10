@@ -266,29 +266,29 @@ func (c *collect) getFriendlyName(file repository.FileDesc) string {
 	title := c.Library()[file.GameID]
 
 	// Default extra for Base title
-	var extra = " [BASE]"
-
-	// Append DLC Name and tag when dlc
-	if dlc {
-		extra = " - " + title.Name + " [DLC]"
-	}
+	var extra = "BASE"
 
 	// Append version when update
 	if update {
-		extra = fmt.Sprintf(" [v%d][UPD]", title.Version)
+		extra = "UPD"
 	}
 
 	name := ""
 	if baseTitle.Name != "" {
-		name = " " + baseTitle.Name
+		name = baseTitle.Name
+	}
+
+	// Append DLC Name and tag when dlc
+	if dlc {
+		extra = "DLC"
+		name = fmt.Sprintf("%s - %s", name, title.Name)
 	}
 
 	region := ""
 	if baseTitle.Region != "" {
-		region = " (" + baseTitle.Region + ")"
+		region = fmt.Sprintf("(%s)", baseTitle.Region)
 	}
 
 	// Build the friendly name for Tinfoil
-	reg := []string{"[" + file.GameID + "]", name, region, extra, "." + file.Extension}
-	return strings.Join(reg[:], "")
+	return fmt.Sprintf("%s %s [%s][v%d][%s].%s", name, region, file.GameID, title.Version, extra, file.Extension)
 }
