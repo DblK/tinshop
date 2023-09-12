@@ -82,7 +82,7 @@ version: '3.9'
 services:
   tinshop:
     container_name: tinshop
-    image: helvio/tinshop:latest
+    image: ghcr.io/dblk/tinshop:latest
     restart: always
     ports:
       - 3000:3000
