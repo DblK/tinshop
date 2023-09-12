@@ -71,7 +71,7 @@ And then, simply run `./tinshop`.
 
 To run with [Docker](https://docs.docker.com/engine/install/), you can use this as a starting `cli` example:
 
-`docker run -d --restart=always -e TINSHOP_SOURCES_DIRECTORIES=/games -e TINSHOP_WELCOMEMESSAGE="Welcome to my Tinshop!" -v /local/game/backups:/games -p 3000:3000`
+`docker run -d --restart=always -e TINSHOP_SOURCES_DIRECTORIES=/games -e TINSHOP_WELCOMEMESSAGE="Welcome to my Tinshop!" -v /local/game/backups:/games -p 3000:3000 ghcr.io/dblk/tinshop:latest`
 
 This will run Tinshop on  `http://localhost:3000` and persist across reboots!
 
