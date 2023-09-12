@@ -28,7 +28,7 @@ To proper use this software, here is the checklist:
     - [ ] Comment/Uncomment parts in the config according to your needs
 - [ ] Games should have in their name `[ID][v0]` to be recognized
 - [ ] Games extension should be `nsp` or `nsz`
-- [ ] Retrieve binary from [latest release](https://github.com/DblK/tinshop/releases) or [container](https://github.com/DblK/tinshop/pkgs/container/tinshop) or build from source (See [`Dev`](https://github.com/DblK/tinshop/tree/master#-dev-or-build-from-source) section below)
+- [ ] Retrieve binary from [latest release](https://github.com/DblK/tinshop/releases) or [container](https://github.com/DblK/tinshop/pkgs/container/tinshop) (See [`Docker`](https://github.com/DblK/tinshop/tree/master#-docker) section below) or build from source (See [`Dev`](https://github.com/DblK/tinshop/tree/master#-dev-or-build-from-source) section below)
 
 Now simply run it and add a shop inside tinfoil with the address setup in `config` (or `http://localIp:3000` if not specified).
 
